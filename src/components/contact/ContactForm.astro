@@ -1,0 +1,85 @@
+---
+import { useTranslations } from '../../i18n/utils';
+import { siteConfig } from '../../lib/site-config';
+import type { Locale } from '../../i18n/config';
+
+interface Props {
+  locale: Locale;
+  services: { slug: string; title: string }[];
+}
+
+const { locale, services } = Astro.props;
+const t = useTranslations(locale);
+---
+
+<form id="contact-form" class="space-y-5" data-email={siteConfig.email}>
+  <div>
+    <label for="name" class="mb-2 block text-sm font-medium text-text-primary">{t('form.name')}</label>
+    <input
+      id="name"
+      name="name"
+      type="text"
+      required
+      class="h-12 w-full rounded-xl border border-border bg-surface px-4 text-sm text-text-primary focus:border-accent"
+    />
+  </div>
+  <div>
+    <label for="company" class="mb-2 block text-sm font-medium text-text-primary">{t('form.company')}</label>
+    <input
+      id="company"
+      name="company"
+      type="text"
+      class="h-12 w-full rounded-xl border border-border bg-surface px-4 text-sm text-text-primary focus:border-accent"
+    />
+  </div>
+  <div>
+    <label for="service" class="mb-2 block text-sm font-medium text-text-primary">{t('form.service')}</label>
+    <select
+      id="service"
+      name="service"
+      required
+      class="h-12 w-full rounded-xl border border-border bg-surface px-4 text-sm text-text-primary focus:border-accent"
+    >
+      <option value="" selected disabled>{t('form.servicePlaceholder')}</option>
+      {services.map((s) => <option value={s.title}>{s.title}</option>)}
+    </select>
+  </div>
+  <div>
+    <label for="message" class="mb-2 block text-sm font-medium text-text-primary">{t('form.message')}</label>
+    <textarea
+      id="message"
+      name="message"
+      rows="5"
+      required
+      class="w-full rounded-xl border border-border bg-surface px-4 py-3 text-sm text-text-primary focus:border-accent"
+    ></textarea>
+  </div>
+  <button
+    type="submit"
+    class="flex h-13 w-full items-center justify-center rounded-full bg-accent text-base font-semibold text-accent-foreground transition-transform hover:scale-[1.01]"
+  >
+    {t('form.submit')}
+  </button>
+  <p class="text-center text-xs text-text-secondary">{t('form.responseTime')}</p>
+</form>
+
+<script>
+  const form = document.getElementById('contact-form') as HTMLFormElement | null;
+
+  form?.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const email = form.dataset.email;
+    const data = new FormData(form);
+    const name = String(data.get('name') || '');
+    const company = String(data.get('company') || '');
+    const service = String(data.get('service') || '');
+    const message = String(data.get('message') || '');
+
+    const subject = `Nouveau projet : ${service} — ${name}`;
+    const body = [`Nom : ${name}`, company && `Entreprise : ${company}`, `Service : ${service}`, '', message]
+      .filter(Boolean)
+      .join('\n');
+
+    window.location.href = `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+  });
+</script>

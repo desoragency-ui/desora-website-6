@@ -1,0 +1,42 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { siteConfig } from '../../lib/site-config';
+
+const locale = 'ar' as const;
+---
+
+<BaseLayout title="الإشعار القانوني" description="الإشعار القانوني لديزورا." locale={locale}>
+  <section class="px-5 pb-24 pt-36 sm:px-8">
+    <div class="prose-content mx-auto max-w-2xl">
+      <h1 class="font-display text-3xl font-semibold text-text-primary">الإشعار القانوني</h1>
+
+      <div class="mt-8 rounded-2xl border border-dashed border-border bg-surface p-6 text-sm text-text-secondary">
+        معلومات التسجيل أدناه هي عناصر مؤقتة يجب استكمالها بالبيانات الحقيقية للشركة (ICE، RC، الشكل القانوني، المقر الاجتماعي) قبل النشر النهائي للموقع.
+      </div>
+
+      <div class="mt-8 space-y-6 text-sm leading-relaxed text-text-secondary">
+        <div>
+          <h2 class="font-display text-lg font-semibold text-text-primary">ناشر الموقع</h2>
+          <p class="mt-2">
+            ديزورا<br />
+            {'{{PLACEHOLDER_LEGAL_FORM}}'}<br />
+            {'{{PLACEHOLDER_REGISTERED_ADDRESS}}'}<br />
+            ICE: {'{{PLACEHOLDER_ICE}}'}<br />
+            RC: {'{{PLACEHOLDER_RC}}'}<br />
+            التواصل: <a href={`mailto:${siteConfig.email}`} class="text-accent underline">{siteConfig.email}</a>
+          </p>
+        </div>
+        <div>
+          <h2 class="font-display text-lg font-semibold text-text-primary">الاستضافة</h2>
+          <p class="mt-2">هذا الموقع مُستضاف من طرف Cloudflare, Inc.</p>
+        </div>
+        <div>
+          <h2 class="font-display text-lg font-semibold text-text-primary">الملكية الفكرية</h2>
+          <p class="mt-2">
+            جميع محتويات هذا الموقع (النصوص، الصور، الهوية البصرية) هي ملك لديزورا، ما لم يُذكر خلاف ذلك، ولا يجوز نسخها دون إذن كتابي مسبق.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

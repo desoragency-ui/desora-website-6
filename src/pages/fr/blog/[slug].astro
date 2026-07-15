@@ -1,0 +1,64 @@
+---
+import { render } from 'astro:content';
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import TableOfContents from '../../../components/blog/TableOfContents.astro';
+import ShareButtons from '../../../components/blog/ShareButtons.astro';
+import Icon from '../../../components/Icon.astro';
+import { useTranslations, localizedPath } from '../../../i18n/utils';
+import { getBlogPosts, getCategoryMeta, estimateReadingMinutes } from '../../../lib/content';
+import { getCollection } from 'astro:content';
+
+export async function getStaticPaths() {
+  const all = await getCollection('blog', (entry) => entry.id.startsWith('fr/'));
+  return all.map((entry) => ({ params: { slug: entry.id.slice('fr/'.length) } }));
+}
+
+const locale = 'fr' as const;
+const t = useTranslations(locale);
+const { slug } = Astro.params;
+
+const posts = await getBlogPosts(locale);
+const post = posts.find((p) => p.slug === slug);
+if (!post) throw new Error(`Missing blog post: ${locale}/${slug}`);
+
+const { Content, headings } = await render(post.entry);
+const category = await getCategoryMeta(locale, post.entry.data.category);
+const categoryLabel = category.slug === 'marketing-general' ? t('blog.category.marketingGeneral') : category.label;
+const readingMinutes = estimateReadingMinutes(post.entry.body ?? '');
+const formattedDate = new Intl.DateTimeFormat(locale === 'fr' ? 'fr-MA' : locale, { dateStyle: 'long' }).format(
+  post.entry.data.publishDate
+);
+---
+
+<BaseLayout title={post.entry.data.seoTitle} description={post.entry.data.seoDescription} locale={locale}>
+  <article class="px-5 pb-24 pt-32 sm:px-8">
+    <div class="mx-auto max-w-3xl" data-reveal>
+      <a href={localizedPath(locale, 'blog')} class="flex items-center gap-2 text-sm font-medium text-text-secondary hover:text-accent">
+        <Icon name="arrow-right" class="h-4 w-4 rotate-180 rtl:rotate-0" />
+        {t('cta.backToBlog')}
+      </a>
+
+      <span class="mt-6 flex w-fit items-center gap-1.5 rounded-full bg-bg-secondary px-3 py-1 text-xs font-semibold uppercase tracking-wide text-accent">
+        {categoryLabel}
+      </span>
+      <h1 class="mt-4 font-display text-[clamp(2rem,4.5vw,3.25rem)] font-semibold leading-[1.12] tracking-tight text-text-primary">
+        {post.entry.data.title}
+      </h1>
+      <div class="mt-5 flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-text-secondary">
+        <span>{t('blog.publishedOn', { date: formattedDate })}</span>
+        <span aria-hidden="true">·</span>
+        <span>{t('blog.readingTime', { min: String(readingMinutes) })}</span>
+      </div>
+    </div>
+
+    <div class="mx-auto mt-12 grid max-w-5xl grid-cols-1 gap-10 lg:grid-cols-[1fr_260px]">
+      <div class="prose-content min-w-0 max-w-2xl text-text-primary [&_a]:text-accent [&_a]:underline [&_h2]:mt-10 [&_h2]:font-display [&_h2]:text-2xl [&_h2]:font-semibold [&_h3]:mt-8 [&_h3]:font-display [&_h3]:text-xl [&_h3]:font-semibold [&_p]:mt-4 [&_p]:leading-relaxed [&_p]:text-text-secondary [&_ul]:mt-4 [&_ul]:list-disc [&_ul]:ps-5 [&_li]:mt-2 [&_li]:text-text-secondary">
+        <Content />
+      </div>
+      <aside class="space-y-6">
+        <TableOfContents locale={locale} headings={headings} />
+        <ShareButtons locale={locale} title={post.entry.data.title} />
+      </aside>
+    </div>
+  </article>
+</BaseLayout>

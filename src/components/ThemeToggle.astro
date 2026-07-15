@@ -1,0 +1,40 @@
+---
+import Icon from './Icon.astro';
+import { useTranslations } from '../i18n/utils';
+import type { Locale } from '../i18n/config';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const t = useTranslations(locale);
+---
+
+<button
+  type="button"
+  id="theme-toggle"
+  class="flex h-11 w-11 items-center justify-center rounded-full text-text-primary transition-colors hover:bg-bg-secondary"
+  aria-label={t('theme.toggleToDark')}
+>
+  <span class="sr-only" data-theme-label></span>
+  <Icon name="sun" class="hidden h-5 w-5 dark:block" />
+  <Icon name="moon" class="block h-5 w-5 dark:hidden" />
+</button>
+
+<script>
+  const STORAGE_KEY = 'desora-theme';
+  const toggle = document.getElementById('theme-toggle');
+
+  toggle?.addEventListener('click', () => {
+    const root = document.documentElement;
+    const current = root.getAttribute('data-theme') === 'dark' ? 'dark' : 'light';
+    const next = current === 'dark' ? 'light' : 'dark';
+    root.setAttribute('data-theme', next);
+    try {
+      localStorage.setItem(STORAGE_KEY, next);
+    } catch (e) {
+      /* private browsing / storage disabled: theme just won't persist */
+    }
+  });
+</script>

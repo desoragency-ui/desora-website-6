@@ -1,0 +1,42 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { siteConfig } from '../../lib/site-config';
+
+const locale = 'fr' as const;
+---
+
+<BaseLayout title="Mentions légales" description="Mentions légales de DESORA." locale={locale}>
+  <section class="px-5 pb-24 pt-36 sm:px-8">
+    <div class="prose-content mx-auto max-w-2xl">
+      <h1 class="font-display text-3xl font-semibold text-text-primary">Mentions légales</h1>
+
+      <div class="mt-8 rounded-2xl border border-dashed border-border bg-surface p-6 text-sm text-text-secondary">
+        Les informations d'immatriculation ci-dessous sont des espaces réservés à compléter avec les données réelles de l'entreprise (ICE, RC, forme juridique, siège social) avant la mise en ligne définitive du site.
+      </div>
+
+      <div class="mt-8 space-y-6 text-sm leading-relaxed text-text-secondary">
+        <div>
+          <h2 class="font-display text-lg font-semibold text-text-primary">Éditeur du site</h2>
+          <p class="mt-2">
+            DESORA<br />
+            {'{{PLACEHOLDER_FORME_JURIDIQUE}}'}<br />
+            {'{{PLACEHOLDER_ADRESSE_SIEGE}}'}<br />
+            ICE : {'{{PLACEHOLDER_ICE}}'}<br />
+            RC : {'{{PLACEHOLDER_RC}}'}<br />
+            Contact : <a href={`mailto:${siteConfig.email}`} class="text-accent underline">{siteConfig.email}</a>
+          </p>
+        </div>
+        <div>
+          <h2 class="font-display text-lg font-semibold text-text-primary">Hébergement</h2>
+          <p class="mt-2">Ce site est hébergé par Cloudflare, Inc.</p>
+        </div>
+        <div>
+          <h2 class="font-display text-lg font-semibold text-text-primary">Propriété intellectuelle</h2>
+          <p class="mt-2">
+            L'ensemble des contenus présents sur ce site (textes, visuels, identité de marque) sont la propriété de DESORA, sauf mention contraire, et ne peuvent être reproduits sans autorisation écrite préalable.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

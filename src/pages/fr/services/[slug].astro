@@ -1,0 +1,17 @@
+---
+import ServiceLayout from '../../../layouts/ServiceLayout.astro';
+import { getServiceSlugs, getServiceBySlug } from '../../../lib/content';
+
+export async function getStaticPaths() {
+  const slugs = await getServiceSlugs();
+  return slugs.map((slug) => ({ params: { slug } }));
+}
+
+const locale = 'fr' as const;
+const { slug } = Astro.params;
+const service = await getServiceBySlug(locale, slug!);
+
+if (!service) throw new Error(`Missing service content: ${locale}/${slug}`);
+---
+
+<ServiceLayout locale={locale} service={service} />

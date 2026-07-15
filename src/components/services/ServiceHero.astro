@@ -1,0 +1,50 @@
+---
+import Icon from '../Icon.astro';
+import { useTranslations, localizedPath } from '../../i18n/utils';
+import { siteConfig } from '../../lib/site-config';
+import type { Locale } from '../../i18n/config';
+
+interface Props {
+  locale: Locale;
+  icon: string;
+  title: string;
+  h1: string;
+}
+
+const { locale, icon, title, h1 } = Astro.props;
+const t = useTranslations(locale);
+---
+
+<section class="relative overflow-hidden px-5 pb-16 pt-36 sm:px-8">
+  <div class="pointer-events-none absolute inset-0 -z-10 overflow-hidden" aria-hidden="true">
+    <div class="absolute -right-[10%] top-[-10%] h-[40vw] w-[40vw] max-h-[500px] max-w-[500px] rounded-full bg-accent/15 blur-[110px]"></div>
+  </div>
+  <div class="mx-auto max-w-4xl" data-reveal>
+    <div class="flex items-center gap-3 text-sm font-semibold uppercase tracking-wide text-accent">
+      <span class="flex h-9 w-9 items-center justify-center rounded-lg bg-accent/10">
+        <Icon name={icon as any} class="h-4.5 w-4.5" />
+      </span>
+      {title}
+    </div>
+    <h1 class="mt-6 font-display text-[clamp(2.25rem,5.5vw,4rem)] font-semibold leading-[1.08] tracking-tight text-text-primary">
+      {h1}
+    </h1>
+    <div class="mt-9 flex flex-wrap items-center gap-4">
+      <a
+        href={localizedPath(locale, 'contact')}
+        class="flex h-13 items-center rounded-full bg-accent px-7 text-base font-semibold text-accent-foreground transition-transform hover:scale-[1.03]"
+      >
+        {t('cta.discussProject')}
+      </a>
+      <a
+        href={siteConfig.whatsappUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+        class="flex h-13 items-center gap-2 rounded-full border border-border px-7 text-base font-semibold text-text-primary transition-colors hover:border-accent hover:text-accent"
+      >
+        <Icon name="whatsapp" class="h-5 w-5" />
+        {t('cta.whatsapp')}
+      </a>
+    </div>
+  </div>
+</section>

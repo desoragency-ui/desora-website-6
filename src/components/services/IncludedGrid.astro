@@ -1,0 +1,29 @@
+---
+import Icon from '../Icon.astro';
+import { useTranslations } from '../../i18n/utils';
+import type { Locale } from '../../i18n/config';
+
+interface Props {
+  locale: Locale;
+  items: { icon: string; label: string }[];
+}
+
+const { locale, items } = Astro.props;
+const t = useTranslations(locale);
+---
+
+<section class="mx-auto max-w-7xl px-5 py-16 sm:px-8">
+  <h2 class="font-display text-2xl font-semibold text-text-primary">{t('pricing.included')}</h2>
+  <div class="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3" data-reveal-group>
+    {
+      items.map((item) => (
+        <div class="flex min-w-0 items-center gap-3 rounded-xl border border-border bg-surface p-4">
+          <span class="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-bg-secondary text-accent">
+            <Icon name={item.icon as any} class="h-4.5 w-4.5" />
+          </span>
+          <span class="text-sm font-medium text-text-primary">{item.label}</span>
+        </div>
+      ))
+    }
+  </div>
+</section>

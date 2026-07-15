@@ -1,0 +1,76 @@
+---
+order: 3
+icon: "leads"
+title: "Génération de Leads"
+h1: "Des prospects qualifiés. Pas juste des clics."
+tagline: "Un système qui transforme les visiteurs en prospects prêts à acheter."
+seoTitle: "Génération de leads qualifiés au Maroc | DESORA"
+seoDescription: "Tunnels de conversion, landing pages et systèmes de qualification pensés pour générer des prospects réellement prêts à acheter, pas juste des clics."
+includedItems:
+  - icon: "target"
+    label: "Audit du tunnel de conversion"
+  - icon: "web"
+    label: "Landing pages optimisées"
+  - icon: "leads"
+    label: "Formulaires & lead magnets"
+  - icon: "seo"
+    label: "Qualification automatisée"
+  - icon: "email"
+    label: "Intégration CRM"
+  - icon: "clock"
+    label: "Système de relance"
+subServices:
+  - title: "Audit du tunnel de conversion"
+    description: "On identifie précisément où vos visiteurs abandonnent avant de devenir prospects. Souvent, le problème n'est pas le trafic, c'est ce qui se passe après le clic."
+  - title: "Landing pages optimisées"
+    description: "Une page dédiée à un seul objectif, sans distraction, conçue pour convertir plutôt que pour simplement informer."
+  - title: "Formulaires et lead magnets"
+    description: "Un contenu de valeur échangé contre un contact qualifié, pas un formulaire générique que personne n'a envie de remplir."
+  - title: "Qualification automatisée"
+    description: "Chaque prospect est trié selon sa probabilité réelle d'achat, pour que votre équipe commerciale priorise son temps sur les bons contacts."
+  - title: "Intégration CRM"
+    description: "Les prospects arrivent directement là où votre équipe travaille déjà, sans ressaisie manuelle ni prospect perdu entre deux outils."
+  - title: "Système de relance"
+    description: "La majorité des prospects n'achètent pas au premier contact. Un système de relance structuré rattrape ceux que vous auriez perdus."
+process:
+  - title: "Audit & diagnostic"
+    description: "Analyse du parcours actuel de vos visiteurs pour identifier où et pourquoi les prospects se perdent."
+  - title: "Construction du tunnel"
+    description: "Landing pages, formulaires et lead magnets conçus pour capter l'intérêt au bon moment."
+  - title: "Intégration & automatisation"
+    description: "Connexion à votre CRM et mise en place des règles de qualification et de relance automatique."
+  - title: "Suivi & optimisation"
+    description: "Analyse du volume et de la qualité des prospects générés, ajustements réguliers pour améliorer le taux de conversion."
+pricing:
+  essentiel:
+    features:
+      - "Une landing page optimisée"
+      - "Formulaire de capture"
+      - "Intégration email automatique"
+  croissance:
+    features:
+      - "Tunnel multi-étapes"
+      - "Lead magnet créé sur-mesure"
+      - "Scoring des leads"
+      - "Intégration CRM et WhatsApp Business"
+  signature:
+    features:
+      - "Système de génération de leads complet multi-canal"
+      - "Automatisation des relances"
+      - "Reporting du retour sur investissement par source d'acquisition"
+faq:
+  - question: "Quelle est la différence entre la génération de leads et la publicité Meta Ads ?"
+    answer: "Meta Ads amène du trafic vers votre offre. La génération de leads construit ce qui transforme ce trafic en contact qualifié, qu'il vienne de la publicité, du SEO ou des réseaux sociaux."
+  - question: "Comment savez-vous qu'un lead est vraiment qualifié ?"
+    answer: "On définit avec vous les critères qui comptent réellement pour votre activité (budget, délai, besoin réel), puis on configure le scoring pour trier automatiquement selon ces critères."
+  - question: "Est-ce que ça fonctionne pour la vente en B2B et en B2C ?"
+    answer: "Oui, la logique change mais le principe reste le même : un formulaire, une offre de valeur et une qualification adaptés à la façon dont vos clients décident d'acheter."
+  - question: "Que se passe-t-il avec les leads une fois captés ?"
+    answer: "Ils arrivent directement dans votre CRM ou par WhatsApp Business, avec un système de relance automatique pour ceux qui n'ont pas encore répondu."
+  - question: "Puis-je voir le retour sur investissement précis de ce service ?"
+    answer: "Oui, c'est justement l'objet du reporting du pack Signature : savoir combien chaque source de trafic vous rapporte réellement en prospects qualifiés."
+relatedServices:
+  - "publicite-meta-ads"
+  - "email-marketing"
+caseStudyPlaceholder: "{{PLACEHOLDER_ETUDE_CAS_GENERATION_LEADS}}"
+---

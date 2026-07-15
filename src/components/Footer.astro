@@ -1,0 +1,157 @@
+---
+import Icon from './Icon.astro';
+import Wordmark from './Wordmark.astro';
+import BrandPattern from './BrandPattern.astro';
+import LanguageSwitcher from './LanguageSwitcher.astro';
+import { useTranslations, localizedPath } from '../i18n/utils';
+import { getServices } from '../lib/content';
+import { siteConfig } from '../lib/site-config';
+import type { Locale } from '../i18n/config';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const t = useTranslations(locale);
+const services = await getServices(locale);
+const year = new Date().getFullYear();
+---
+
+<footer class="relative overflow-hidden border-t border-border bg-bg-secondary">
+  <BrandPattern opacity={0.035} tile={520} />
+  <div class="relative mx-auto max-w-7xl px-5 py-16 sm:px-8">
+    <div class="grid grid-cols-2 gap-10 md:grid-cols-4">
+      <div class="col-span-2 md:col-span-1">
+        <a href={localizedPath(locale, '')} aria-label="DESORA">
+          <Wordmark class="h-6 text-2xl" />
+        </a>
+        <p class="mt-4 max-w-xs font-display text-lg italic text-text-secondary">{t('footer.tagline')}</p>
+        <div class="mt-5 flex items-center gap-2">
+          <a
+            href={siteConfig.social.instagram}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="flex h-11 w-11 items-center justify-center rounded-full border border-border text-text-primary transition-colors hover:border-accent hover:text-accent"
+            aria-label="Instagram"
+          >
+            <Icon name="instagram" class="h-4.5 w-4.5" />
+          </a>
+          <a
+            href={siteConfig.social.linkedin}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="flex h-11 w-11 items-center justify-center rounded-full border border-border text-text-primary transition-colors hover:border-accent hover:text-accent"
+            aria-label="LinkedIn"
+          >
+            <Icon name="linkedin" class="h-4.5 w-4.5" />
+          </a>
+          <a
+            href={siteConfig.social.facebook}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="flex h-11 w-11 items-center justify-center rounded-full border border-border text-text-primary transition-colors hover:border-accent hover:text-accent"
+            aria-label="Facebook"
+          >
+            <Icon name="facebook" class="h-4.5 w-4.5" />
+          </a>
+        </div>
+      </div>
+
+      <div>
+        <h3 class="font-display text-sm font-semibold text-text-primary">{t('footer.sitemap')}</h3>
+        <ul class="mt-4 space-y-2.5 text-sm">
+          <li><a href={localizedPath(locale, '')} class="text-text-secondary hover:text-accent">{t('nav.home')}</a></li>
+          <li><a href={localizedPath(locale, 'a-propos')} class="text-text-secondary hover:text-accent">{t('nav.about')}</a></li>
+          <li><a href={localizedPath(locale, 'blog')} class="text-text-secondary hover:text-accent">{t('nav.blog')}</a></li>
+          <li><a href={localizedPath(locale, 'contact')} class="text-text-secondary hover:text-accent">{t('nav.contact')}</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h3 class="font-display text-sm font-semibold text-text-primary">{t('nav.services')}</h3>
+        <ul class="mt-4 space-y-2.5 text-sm">
+          {
+            services.map((service) => (
+              <li>
+                <a href={localizedPath(locale, `services/${service.slug}`)} class="text-text-secondary hover:text-accent">
+                  {service.title}
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+
+      <div>
+        <h3 class="font-display text-sm font-semibold text-text-primary">{t('footer.contact')}</h3>
+        <ul class="mt-4 space-y-2.5 text-sm">
+          <li>
+            <a href={`mailto:${siteConfig.email}`} class="text-text-secondary hover:text-accent">{siteConfig.email}</a>
+          </li>
+          <li>
+            <a href={siteConfig.whatsappUrl} target="_blank" rel="noopener noreferrer" class="flex items-center gap-1.5 text-text-secondary hover:text-accent">
+              <Icon name="whatsapp" class="h-4 w-4" />
+              WhatsApp
+            </a>
+          </li>
+          <li class="text-text-secondary">{siteConfig.location}</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="mt-14 border-t border-border pt-10">
+      <div class="grid gap-6 md:grid-cols-2 md:items-center">
+        <div>
+          <h3 class="font-display text-base font-semibold text-text-primary">{t('newsletter.title')}</h3>
+          <p class="mt-1.5 text-sm text-text-secondary">{t('newsletter.description')}</p>
+        </div>
+        <form class="flex flex-col gap-2.5 sm:flex-row" data-newsletter-form>
+          <label for="newsletter-email" class="sr-only">{t('newsletter.placeholder')}</label>
+          <input
+            id="newsletter-email"
+            type="email"
+            required
+            placeholder={t('newsletter.placeholder')}
+            class="h-12 w-full min-w-0 flex-1 rounded-full border border-border bg-surface px-5 text-sm text-text-primary placeholder:text-text-secondary focus:border-accent"
+          />
+          <button
+            type="submit"
+            class="flex h-12 shrink-0 items-center justify-center rounded-full bg-accent px-6 text-sm font-semibold text-accent-foreground transition-colors hover:bg-accent-hover"
+          >
+            {t('newsletter.submit')}
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <div class="mt-10 flex flex-col-reverse items-center justify-between gap-6 border-t border-border pt-8 sm:flex-row">
+      <p class="text-xs text-text-secondary">© {year} DESORA. {t('footer.rights')}</p>
+      <div class="flex items-center gap-6">
+        <a href={localizedPath(locale, 'mentions-legales')} class="text-xs text-text-secondary hover:text-accent">
+          {t('footer.legal')}
+        </a>
+        <a href={localizedPath(locale, 'confidentialite')} class="text-xs text-text-secondary hover:text-accent">
+          {t('footer.privacy')}
+        </a>
+        <LanguageSwitcher locale={locale} />
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+  const form = document.querySelector('[data-newsletter-form]');
+  form?.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const input = form.querySelector('input') as HTMLInputElement;
+    const button = form.querySelector('button') as HTMLButtonElement;
+    if (!input?.value) return;
+    const originalLabel = button.textContent;
+    button.textContent = '✓';
+    input.value = '';
+    setTimeout(() => {
+      if (originalLabel) button.textContent = originalLabel;
+    }, 2000);
+  });
+</script>

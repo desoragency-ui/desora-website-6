@@ -1,0 +1,35 @@
+---
+import Icon from '../Icon.astro';
+import { useTranslations } from '../../i18n/utils';
+import { siteConfig } from '../../lib/site-config';
+import type { Locale } from '../../i18n/config';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const t = useTranslations(locale);
+const whatsappMessage =
+  locale === 'ar' ? 'مرحبًا، أرغب في مناقشة مشروعي' : locale === 'en' ? "Hi, I'd like to discuss my project" : 'Bonjour, je souhaite discuter de mon projet';
+---
+
+<div class="flex h-full flex-col justify-between rounded-3xl bg-accent p-8 text-accent-foreground">
+  <div>
+    <span class="flex h-12 w-12 items-center justify-center rounded-full bg-accent-foreground/15">
+      <Icon name="whatsapp" class="h-6 w-6" />
+    </span>
+    <h3 class="mt-6 font-display text-2xl font-semibold">WhatsApp</h3>
+    <p class="mt-3 text-sm leading-relaxed text-accent-foreground/80">
+      {locale === 'ar' ? 'الطريقة الأسرع للتواصل معنا مباشرة.' : locale === 'en' ? "The fastest way to reach us directly." : 'Le moyen le plus rapide de nous joindre directement.'}
+    </p>
+  </div>
+  <a
+    href={siteConfig.whatsappUrlWithMessage(whatsappMessage)}
+    target="_blank"
+    rel="noopener noreferrer"
+    class="mt-8 flex h-13 items-center justify-center rounded-full bg-accent-foreground px-6 text-base font-semibold text-accent transition-transform hover:scale-[1.02]"
+  >
+    {t('cta.whatsapp')}
+  </a>
+</div>

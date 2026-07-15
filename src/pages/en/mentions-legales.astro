@@ -1,0 +1,42 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { siteConfig } from '../../lib/site-config';
+
+const locale = 'en' as const;
+---
+
+<BaseLayout title="Legal Notice" description="Legal notice for DESORA." locale={locale}>
+  <section class="px-5 pb-24 pt-36 sm:px-8">
+    <div class="prose-content mx-auto max-w-2xl">
+      <h1 class="font-display text-3xl font-semibold text-text-primary">Legal Notice</h1>
+
+      <div class="mt-8 rounded-2xl border border-dashed border-border bg-surface p-6 text-sm text-text-secondary">
+        The registration details below are placeholders to be completed with the company's real information (ICE, RC, legal form, registered address) before the site goes live.
+      </div>
+
+      <div class="mt-8 space-y-6 text-sm leading-relaxed text-text-secondary">
+        <div>
+          <h2 class="font-display text-lg font-semibold text-text-primary">Site publisher</h2>
+          <p class="mt-2">
+            DESORA<br />
+            {'{{PLACEHOLDER_LEGAL_FORM}}'}<br />
+            {'{{PLACEHOLDER_REGISTERED_ADDRESS}}'}<br />
+            ICE: {'{{PLACEHOLDER_ICE}}'}<br />
+            RC: {'{{PLACEHOLDER_RC}}'}<br />
+            Contact: <a href={`mailto:${siteConfig.email}`} class="text-accent underline">{siteConfig.email}</a>
+          </p>
+        </div>
+        <div>
+          <h2 class="font-display text-lg font-semibold text-text-primary">Hosting</h2>
+          <p class="mt-2">This site is hosted by Cloudflare, Inc.</p>
+        </div>
+        <div>
+          <h2 class="font-display text-lg font-semibold text-text-primary">Intellectual property</h2>
+          <p class="mt-2">
+            All content on this site (text, visuals, brand identity) is the property of DESORA, unless otherwise stated, and may not be reproduced without prior written authorization.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

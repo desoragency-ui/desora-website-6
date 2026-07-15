@@ -1,0 +1,58 @@
+---
+import Icon from '../Icon.astro';
+import { useTranslations } from '../../i18n/utils';
+import type { Locale } from '../../i18n/config';
+
+interface Props {
+  locale: Locale;
+  items: { question: string; answer: string }[];
+}
+
+const { locale, items } = Astro.props;
+const t = useTranslations(locale);
+---
+
+<section class="bg-bg-secondary py-20">
+  <div class="mx-auto max-w-3xl px-5 sm:px-8">
+    <h2 class="font-display text-2xl font-semibold text-text-primary">{t('faq.title')}</h2>
+    <div class="mt-8 divide-y divide-border rounded-2xl border border-border bg-surface" data-faq>
+      {
+        items.map((item) => (
+          <div class="faq-item">
+            <button
+              type="button"
+              class="flex w-full items-center justify-between gap-4 px-6 py-5 text-start"
+              aria-expanded="false"
+              data-faq-trigger
+            >
+              <span class="font-medium text-text-primary">{item.question}</span>
+              <Icon name="chevron-down" class="h-4.5 w-4.5 shrink-0 text-text-secondary transition-transform duration-200 [.is-open_&]:rotate-180" />
+            </button>
+            <div class="grid grid-rows-[0fr] transition-all duration-300 [.is-open_&]:grid-rows-[1fr]" data-faq-panel>
+              <div class="overflow-hidden">
+                <p class="px-6 pb-5 text-sm leading-relaxed text-text-secondary">{item.answer}</p>
+              </div>
+            </div>
+          </div>
+        ))
+      }
+    </div>
+  </div>
+</section>
+
+<script>
+  document.querySelectorAll('[data-faq]').forEach((group) => {
+    group.querySelectorAll('[data-faq-trigger]').forEach((trigger) => {
+      trigger.addEventListener('click', () => {
+        const item = trigger.closest('.faq-item');
+        const isOpen = item?.classList.contains('is-open');
+        group.querySelectorAll('.faq-item').forEach((el) => el.classList.remove('is-open'));
+        trigger.setAttribute('aria-expanded', 'false');
+        if (!isOpen) {
+          item?.classList.add('is-open');
+          trigger.setAttribute('aria-expanded', 'true');
+        }
+      });
+    });
+  });
+</script>

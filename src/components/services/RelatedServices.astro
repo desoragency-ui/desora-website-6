@@ -1,0 +1,43 @@
+---
+import Icon from '../Icon.astro';
+import { useTranslations, localizedPath } from '../../i18n/utils';
+import { getServices } from '../../lib/content';
+import type { Locale } from '../../i18n/config';
+
+interface Props {
+  locale: Locale;
+  slugs: string[];
+}
+
+const { locale, slugs } = Astro.props;
+const t = useTranslations(locale);
+const allServices = await getServices(locale);
+const related = allServices.filter((s) => slugs.includes(s.slug));
+---
+
+{
+  related.length > 0 && (
+    <section class="mx-auto max-w-7xl px-5 py-20 sm:px-8">
+      <h2 class="font-display text-2xl font-semibold text-text-primary">{t('related.title')}</h2>
+      <div class="mt-8 grid grid-cols-1 gap-5 sm:grid-cols-2">
+        {related.map((service) => (
+          <a
+            href={localizedPath(locale, `services/${service.slug}`)}
+            class="group flex items-center justify-between gap-4 rounded-2xl border border-border bg-surface p-6 transition-colors hover:border-accent"
+          >
+            <div class="flex items-center gap-4">
+              <span class="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-bg-secondary text-accent">
+                <Icon name={service.icon as any} class="h-5 w-5" />
+              </span>
+              <div>
+                <h3 class="font-display text-base font-semibold text-text-primary">{service.title}</h3>
+                <p class="text-sm text-text-secondary">{service.tagline}</p>
+              </div>
+            </div>
+            <Icon name="arrow-right" class="h-4.5 w-4.5 shrink-0 text-text-secondary transition-colors group-hover:text-accent rtl:rotate-180" />
+          </a>
+        ))}
+      </div>
+    </section>
+  )
+}

@@ -1,0 +1,35 @@
+---
+import BaseLayout from './BaseLayout.astro';
+import ServiceHero from '../components/services/ServiceHero.astro';
+import IncludedGrid from '../components/services/IncludedGrid.astro';
+import SubServicesList from '../components/services/SubServicesList.astro';
+import ProcessSteps from '../components/ProcessSteps.astro';
+import PricingTiers from '../components/services/PricingTiers.astro';
+import FAQAccordion from '../components/services/FAQAccordion.astro';
+import ServiceCaseStudy from '../components/services/ServiceCaseStudy.astro';
+import RelatedServices from '../components/services/RelatedServices.astro';
+import FinalCta from '../components/home/FinalCta.astro';
+import { useTranslations } from '../i18n/utils';
+import type { Locale } from '../i18n/config';
+import type { getServiceBySlug } from '../lib/content';
+
+interface Props {
+  locale: Locale;
+  service: NonNullable<Awaited<ReturnType<typeof getServiceBySlug>>>;
+}
+
+const { locale, service } = Astro.props;
+const t = useTranslations(locale);
+---
+
+<BaseLayout title={service.seoTitle} description={service.seoDescription} locale={locale}>
+  <ServiceHero locale={locale} icon={service.icon} title={service.title} h1={service.h1} />
+  <IncludedGrid locale={locale} items={service.includedItems} />
+  <SubServicesList items={service.subServices} />
+  <ProcessSteps heading={t('process.title')} description={service.tagline} steps={service.process} />
+  <PricingTiers locale={locale} pricing={service.pricing} />
+  <FAQAccordion locale={locale} items={service.faq} />
+  <ServiceCaseStudy text={service.caseStudyPlaceholder} />
+  <RelatedServices locale={locale} slugs={service.relatedServices} />
+  <FinalCta locale={locale} heading={t('service.finalCtaHeading', { service: service.title })} description={service.tagline} />
+</BaseLayout>

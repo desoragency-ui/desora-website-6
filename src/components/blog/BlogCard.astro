@@ -1,0 +1,37 @@
+---
+import Icon from '../Icon.astro';
+import { useTranslations, localizedPath } from '../../i18n/utils';
+import { estimateReadingMinutes, getCategoryMeta } from '../../lib/content';
+import type { Locale } from '../../i18n/config';
+import type { BlogEntry } from '../../lib/content';
+
+interface Props {
+  locale: Locale;
+  slug: string;
+  entry: BlogEntry;
+}
+
+const { locale, slug, entry } = Astro.props;
+const t = useTranslations(locale);
+const category = await getCategoryMeta(locale, entry.data.category);
+const categoryLabel = category.slug === 'marketing-general' ? t('blog.category.marketingGeneral') : category.label;
+const readingMinutes = estimateReadingMinutes(entry.body ?? '');
+---
+
+<a
+  href={localizedPath(locale, `blog/${slug}`)}
+  class="group flex flex-col overflow-hidden rounded-2xl border border-border bg-surface transition-all duration-300 hover:-translate-y-1 hover:border-accent hover:shadow-lg"
+  data-category={entry.data.category}
+>
+  <div class="flex aspect-[16/9] items-center justify-center bg-gradient-to-br from-accent/15 via-bg-secondary to-[color:var(--sand-400)]/15">
+    <Icon name={category.icon as any} class="h-10 w-10 text-accent/70" />
+  </div>
+  <div class="flex flex-1 flex-col p-6">
+    <span class="w-fit rounded-full bg-bg-secondary px-3 py-1 text-xs font-semibold uppercase tracking-wide text-accent">
+      {categoryLabel}
+    </span>
+    <h3 class="mt-4 font-display text-lg font-semibold leading-snug text-text-primary">{entry.data.title}</h3>
+    <p class="mt-2 flex-1 text-sm leading-relaxed text-text-secondary">{entry.data.excerpt}</p>
+    <span class="mt-5 text-xs font-medium text-text-secondary">{t('blog.readingTime', { min: String(readingMinutes) })}</span>
+  </div>
+</a>

@@ -1,0 +1,76 @@
+---
+import Icon from '../Icon.astro';
+
+interface Props {
+  heading: string;
+  items: { quote: string; author: string; role: string }[];
+}
+
+const { heading, items } = Astro.props;
+---
+
+<section class="mx-auto max-w-7xl px-5 py-24 sm:px-8">
+  <div class="flex flex-wrap items-end justify-between gap-6" data-reveal>
+    <h2 class="font-display text-[clamp(1.75rem,3.5vw,2.75rem)] font-semibold leading-tight text-text-primary">
+      {heading}
+    </h2>
+    <div class="flex items-center gap-2">
+      <button
+        type="button"
+        id="testimonials-prev"
+        class="flex h-11 w-11 items-center justify-center rounded-full border border-border text-text-primary transition-colors hover:border-accent hover:text-accent"
+        aria-label="Précédent"
+      >
+        <Icon name="arrow-right" class="h-4 w-4 rotate-180 rtl:rotate-0" />
+      </button>
+      <button
+        type="button"
+        id="testimonials-next"
+        class="flex h-11 w-11 items-center justify-center rounded-full border border-border text-text-primary transition-colors hover:border-accent hover:text-accent"
+        aria-label="Suivant"
+      >
+        <Icon name="arrow-right" class="h-4 w-4 rtl:rotate-180" />
+      </button>
+    </div>
+  </div>
+
+  <div
+    id="testimonials-track"
+    class="mt-10 flex snap-x snap-mandatory gap-5 overflow-x-auto scroll-smooth pb-4"
+    style="scrollbar-width: none;"
+  >
+    {
+      items.map((item) => (
+        <blockquote class="flex w-[min(420px,85vw)] shrink-0 snap-start flex-col justify-between rounded-2xl border border-border bg-surface p-8">
+          <p class="font-display text-lg leading-snug text-text-primary">"{item.quote}"</p>
+          <footer class="mt-6 text-sm">
+            <p class="font-semibold text-text-primary">{item.author}</p>
+            <p class="text-text-secondary">{item.role}</p>
+          </footer>
+        </blockquote>
+      ))
+    }
+  </div>
+</section>
+
+<script>
+  const track = document.getElementById('testimonials-track');
+  const prev = document.getElementById('testimonials-prev');
+  const next = document.getElementById('testimonials-next');
+  const isRtl = document.documentElement.dir === 'rtl';
+
+  const scrollByCard = (dir: 1 | -1) => {
+    const card = track?.querySelector('blockquote');
+    const amount = (card?.clientWidth ?? 320) + 20;
+    track?.scrollBy({ left: (isRtl ? -1 : 1) * dir * amount, behavior: 'smooth' });
+  };
+
+  prev?.addEventListener('click', () => scrollByCard(-1));
+  next?.addEventListener('click', () => scrollByCard(1));
+</script>
+
+<style>
+  #testimonials-track::-webkit-scrollbar {
+    display: none;
+  }
+</style>

@@ -1,0 +1,80 @@
+---
+order: 2
+icon: "ads"
+title: "Meta Ads"
+h1: "Every dirham spent should bring back a customer, not just an impression."
+tagline: "Meta campaigns run on results, not on how much budget gets spent."
+seoTitle: "Meta Ads (Facebook & Instagram) in Morocco | DESORA"
+seoDescription: "Performance-driven Meta Ads: audit, targeting, ad creative, A/B testing, and scaling. Transparent reporting, no jargon."
+includedItems:
+  - icon: "target"
+    label: "Audit & strategy"
+  - icon: "leads"
+    label: "Business Manager & Pixel"
+  - icon: "brand"
+    label: "Ad creative"
+  - icon: "seo"
+    label: "Systematic A/B testing"
+  - icon: "ads"
+    label: "Optimization & scaling"
+  - icon: "shield"
+    label: "Transparent reporting"
+subServices:
+  - title: "Audit & strategy"
+    description: "We start by understanding who actually buys from you, not by launching a campaign at random. The audit shapes the budget, targeting, and realistic objectives."
+  - title: "Business Manager & Pixel setup"
+    description: "The technical foundation that lets Meta measure your results and optimize your campaigns. Set up wrong, it skews every decision that follows."
+  - title: "Ad creative (copywriting + visuals)"
+    description: "Ads designed to stop the scroll and convince in seconds, not recycled catalog visuals."
+  - title: "Systematic A/B testing"
+    description: "Every hypothesis is tested before budget is committed to it. We don't guess what works, we measure it."
+  - title: "Ongoing optimization & budget scaling"
+    description: "Campaigns that work get more budget, campaigns that don't get cut fast. No budget that keeps running out of habit."
+  - title: "Transparent reporting"
+    description: "A clear report on what was spent and what it brought back, without advertising jargon to obscure the picture."
+process:
+  - title: "Audit & targeting"
+    description: "Analysis of your market, your advertising competitors, and the priority audiences to reach."
+  - title: "Technical setup"
+    description: "Setting up Business Manager, Pixel, and conversion tracking to measure every result precisely."
+  - title: "Launch & testing"
+    description: "Launching the first campaigns with several variants tested in parallel."
+  - title: "Scaling & optimization"
+    description: "Once the best combinations are identified, budget is concentrated on them to maximize return."
+pricing:
+  essentiel:
+    features:
+      - "One active campaign"
+      - "Full setup (Business Manager, Pixel, audiences)"
+      - "Monthly ad creative"
+      - "Monthly reporting"
+  croissance:
+    features:
+      - "Multiple campaigns (prospecting and retargeting)"
+      - "Weekly A/B testing"
+      - "Unlimited ad creative"
+      - "Click-to-WhatsApp built into ads"
+      - "Bi-monthly reporting"
+  signature:
+    features:
+      - "Full-funnel, cross-channel strategy"
+      - "CRM retargeting"
+      - "Advanced lookalike audiences"
+      - "Video/UGC production included"
+      - "Weekly strategy check-in"
+faq:
+  - question: "What's the minimum ad budget needed to get started?"
+    answer: "It depends on your industry and objectives. We determine it together during the initial audit rather than imposing a generic number that doesn't reflect your actual market."
+  - question: "How long before we see results?"
+    answer: "The first data comes in within one to two weeks. Campaigns need that time to get past Meta's algorithm learning phase before they're truly optimized."
+  - question: "Is the ad budget included in your fees?"
+    answer: "No. Ad budget is paid directly to Meta and stays separate from our management fees. You keep full control and visibility over that spend."
+  - question: "What makes DESORA different from a freelancer running Meta ads?"
+    answer: "A systemic approach with documented A/B tests, structured reporting, and direct access to the founder, not improvised management as you go."
+  - question: "Is there a minimum commitment?"
+    answer: "Ad campaigns need time to be properly optimized. We recommend a minimum of three months to judge results fairly."
+relatedServices:
+  - "generation-de-leads"
+  - "email-marketing"
+caseStudyPlaceholder: "{{PLACEHOLDER_CASE_STUDY_META_ADS}}"
+---

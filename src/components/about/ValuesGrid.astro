@@ -1,0 +1,25 @@
+---
+import Icon from '../Icon.astro';
+
+interface Props {
+  values: { icon: string; title: string; description: string }[];
+}
+
+const { values } = Astro.props;
+---
+
+<section class="mx-auto max-w-7xl px-5 py-20 sm:px-8">
+  <div class="grid grid-cols-1 gap-6 sm:grid-cols-2" data-reveal-group>
+    {
+      values.map((value) => (
+        <div class="min-w-0 rounded-2xl border border-border bg-surface p-7">
+          <span class="flex h-11 w-11 items-center justify-center rounded-full bg-accent/10 text-accent">
+            <Icon name={value.icon as any} class="h-5 w-5" />
+          </span>
+          <h3 class="mt-5 font-display text-lg font-semibold text-text-primary">{value.title}</h3>
+          <p class="mt-2 text-sm leading-relaxed text-text-secondary">{value.description}</p>
+        </div>
+      ))
+    }
+  </div>
+</section>

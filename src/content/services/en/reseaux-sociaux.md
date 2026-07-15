@@ -1,0 +1,78 @@
+---
+order: 7
+icon: "social"
+title: "Social Media & Content"
+h1: "Content that builds a brand. Not just posts that fill a calendar."
+tagline: "A consistent social presence that makes people want to follow and recommend you."
+seoTitle: "Social Media Management & Content Creation in Morocco | DESORA"
+seoDescription: "Editorial strategy, content creation, and community management built to grow a recognizable brand, not just fill a posting calendar."
+includedItems:
+  - icon: "target"
+    label: "Editorial strategy"
+  - icon: "seo"
+    label: "Trend research & monitoring"
+  - icon: "brand"
+    label: "Content creation"
+  - icon: "web"
+    label: "Custom post design"
+  - icon: "social"
+    label: "Community management"
+  - icon: "leads"
+    label: "Engagement reporting"
+subServices:
+  - title: "Editorial strategy"
+    description: "A calendar built around clear objectives (awareness, engagement, conversion), not a list of topics picked as we go."
+  - title: "Trend research & monitoring"
+    description: "We track what's genuinely working in your industry to stay relevant, without copying what every competitor is doing."
+  - title: "Content creation (photo/video/motion)"
+    description: "Content produced specifically for your brand, not stock visuals everyone else is using too."
+  - title: "Custom post design"
+    description: "A visual identity recognizable at a glance in a feed, without needing to see your name."
+  - title: "Community management"
+    description: "Replies to comments and messages that feel like a real, attentive brand, not an account left unattended between posts."
+  - title: "Engagement reporting"
+    description: "Clear numbers on what's working (reach, engagement, growth) to adjust strategy month over month."
+process:
+  - title: "Audit & positioning"
+    description: "Analysis of your current presence and your competitors' to define a distinct editorial line."
+  - title: "Editorial calendar"
+    description: "Content planning built around your objectives and your business's key moments."
+  - title: "Production"
+    description: "Creating visuals, videos, and copy, with your approval before publishing."
+  - title: "Publishing & community"
+    description: "Going live, managing the community, and continuously adjusting based on performance."
+pricing:
+  essentiel:
+    features:
+      - "One platform"
+      - "Monthly custom-designed posts"
+      - "Monthly editorial calendar"
+  croissance:
+    features:
+      - "Two platforms"
+      - "Regular posts and stories"
+      - "Community management included"
+      - "Monthly reporting"
+  signature:
+    features:
+      - "Complete multi-platform strategy"
+      - "Video/motion production included"
+      - "Daily community management"
+      - "Competitive monitoring"
+      - "Detailed reporting"
+faq:
+  - question: "Which platforms do you work on?"
+    answer: "Mainly Instagram, Facebook, LinkedIn, and TikTok depending on your industry and audience. We recommend the platforms that matter rather than being present everywhere without a strategy."
+  - question: "Do I need to provide the raw content (photos, videos), or do you handle it?"
+    answer: "It depends on the package. Starting with the Signature package, video and motion production is included. On other packages, we can work from your existing content or organize a shoot."
+  - question: "How many posts per week are included?"
+    answer: "The exact pace depends on the package and platform. We prioritize consistency and quality over a volume that dilutes attention without real impact."
+  - question: "Who responds to my community's messages and comments?"
+    answer: "Depending on the package, DESORA handles this with clear guidelines agreed together on tone and how to respond to sensitive questions."
+  - question: "How do you measure the success of a content strategy?"
+    answer: "Beyond likes, we look at reach, real engagement rate, and, where relevant, contribution to generated leads. Numbers that reflect real impact, not just vanity metrics."
+relatedServices:
+  - "identite-de-marque"
+  - "email-marketing"
+caseStudyPlaceholder: "{{PLACEHOLDER_CASE_STUDY_SOCIAL_MEDIA}}"
+---

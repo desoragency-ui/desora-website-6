@@ -1,0 +1,79 @@
+---
+order: 1
+icon: "web"
+title: "Website Design"
+h1: "A website isn't a business card. It's your best salesperson, available 24/7."
+tagline: "A website that convinces your visitors before you ever pick up the phone."
+seoTitle: "Custom Website Design in Morocco | DESORA"
+seoDescription: "Showcase and full-featured websites designed from scratch, no templates, with technical SEO built in from day one. Design, development, and animation by DESORA."
+includedItems:
+  - icon: "target"
+    label: "Strategy & architecture"
+  - icon: "brand"
+    label: "Custom UI/UX design"
+  - icon: "web"
+    label: "Development & animation"
+  - icon: "seo"
+    label: "Built-in technical SEO"
+  - icon: "handshake"
+    label: "Hands-on training"
+  - icon: "shield"
+    label: "Hosting & security"
+subServices:
+  - title: "Strategy & architecture"
+    description: "Before the first design screen, we define what each page needs to accomplish. A site without a clear structure loses visitors, no matter how good the design looks."
+  - title: "Custom UI/UX design"
+    description: "No templates, no generic kits. Every page is designed for your brand and for how your customers actually decide to buy."
+  - title: "Development & animation"
+    description: "Clean, fast code, and animations that serve the reading experience instead of slowing it down. Load speed is part of the design, not a technical afterthought."
+  - title: "Technical SEO built in from the start"
+    description: "Heading structure, speed, markup, internal linking: SEO is built during development, not patched on after launch."
+  - title: "Hands-on training"
+    description: "At delivery, you receive full access and a complete walkthrough. Your website belongs to you. DESORA keeps no keys you don't have."
+process:
+  - title: "Audit & architecture"
+    description: "Analysis of your competitors, your offer, and the ideal user journey. We come out of this step with a clear sitemap."
+  - title: "Wireframing"
+    description: "Design of every page, validated with you before development to avoid costly back-and-forth at the end of the project."
+  - title: "Development"
+    description: "Integration, animation, testing across every browser and screen, from mobile to desktop."
+  - title: "Launch & training"
+    description: "Deployment, final checks, and a session so your team can update content without depending on us."
+pricing:
+  essentiel:
+    features:
+      - "Custom showcase website, multiple pages"
+      - "Fully responsive, mobile to desktop"
+      - "Contact form"
+      - "Basic SEO (titles, meta descriptions, structure)"
+  croissance:
+    features:
+      - "Complete multi-page website"
+      - "Custom animations"
+      - "Integrated blog"
+      - "WhatsApp and CRM integration"
+      - "Advanced SEO"
+      - "Analytics dashboard"
+  signature:
+    features:
+      - "Advanced animations"
+      - "Multilingual architecture (FR/EN/AR)"
+      - "Custom integrations (payment, booking)"
+      - "Content strategy included"
+      - "Priority support"
+faq:
+  - question: "How long does it take to build a website with DESORA?"
+    answer: "A showcase website usually takes 3 to 4 weeks. A complete site with a blog and integrations takes 5 to 8 weeks. The exact timeline depends on how quickly content and approvals come from your side."
+  - question: "Will I own the website once it's delivered?"
+    answer: "Yes, entirely. You receive all access (hosting, domain name, code) at delivery. No forced dependency on DESORA to keep your site running."
+  - question: "What happens if I want to change content after launch?"
+    answer: "You're trained to handle the common changes yourself: text, images, blog posts. For structural changes, DESORA remains available."
+  - question: "How is a DESORA website different from one built on a standard website builder?"
+    answer: "No modified template, no plugin slowing down load times. The site is built custom with modern technology, faster and easier to evolve over the long run."
+  - question: "Is SEO really included, or is it a hidden extra?"
+    answer: "The technical foundation of SEO (speed, structure, markup) is included in every package. Long-term content-driven SEO is a separate service, described on the SEO page."
+relatedServices:
+  - "identite-de-marque"
+  - "seo"
+caseStudyPlaceholder: "{{PLACEHOLDER_CASE_STUDY_WEBSITE_DESIGN}}"
+---

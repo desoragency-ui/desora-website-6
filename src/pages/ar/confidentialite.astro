@@ -1,0 +1,41 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { siteConfig } from '../../lib/site-config';
+
+const locale = 'ar' as const;
+---
+
+<BaseLayout title="سياسة الخصوصية" description="سياسة الخصوصية لديزورا." locale={locale}>
+  <section class="px-5 pb-24 pt-36 sm:px-8">
+    <div class="prose-content mx-auto max-w-2xl">
+      <h1 class="font-display text-3xl font-semibold text-text-primary">سياسة الخصوصية</h1>
+
+      <div class="mt-8 space-y-6 text-sm leading-relaxed text-text-secondary">
+        <div>
+          <h2 class="font-display text-lg font-semibold text-text-primary">البيانات المُجمَّعة</h2>
+          <p class="mt-2">
+            يجمع هذا الموقع فقط المعلومات التي تقدمونها طوعًا عبر استمارة التواصل (الاسم، الشركة، الخدمة المعنية، الرسالة) أو الاشتراك في النشرة الإخبارية (البريد الإلكتروني). لا تُجمع أي بيانات دون علمكم.
+          </p>
+        </div>
+        <div>
+          <h2 class="font-display text-lg font-semibold text-text-primary">استخدام البيانات</h2>
+          <p class="mt-2">
+            تُستخدم البيانات المُرسَلة عبر استمارة التواصل حصريًا للرد على طلبكم. تُستخدم عناوين البريد الإلكتروني المشتركة في النشرة الإخبارية لإرسال محتوى تسويقي، مع إمكانية إلغاء الاشتراك في أي وقت.
+          </p>
+        </div>
+        <div>
+          <h2 class="font-display text-lg font-semibold text-text-primary">الاحتفاظ بالبيانات وحقوقكم</h2>
+          <p class="mt-2">
+            تُحفظ بياناتكم للمدة اللازمة لمعالجة طلبكم. وفقًا للقانون 09-08 المتعلق بحماية المعطيات ذات الطابع الشخصي، يحق لكم الوصول إلى بياناتكم وتصحيحها وحذفها، عبر مراسلتنا على <a href={`mailto:${siteConfig.email}`} class="text-accent underline">{siteConfig.email}</a>.
+          </p>
+        </div>
+        <div>
+          <h2 class="font-display text-lg font-semibold text-text-primary">ملفات تعريف الارتباط</h2>
+          <p class="mt-2">
+            يستخدم هذا الموقع التخزين المحلي (localStorage) لحفظ تفضيل العرض لديكم (الوضع الفاتح أو الداكن) ولغتكم. لا يُستخدم أي ملف تعريف ارتباط لتتبع إعلاني تابع لجهات خارجية بشكل افتراضي.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

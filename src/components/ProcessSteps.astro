@@ -1,0 +1,31 @@
+---
+interface Props {
+  heading: string;
+  description: string;
+  steps: { title: string; description: string }[];
+}
+
+const { heading, description, steps } = Astro.props;
+---
+
+<section class="mx-auto max-w-7xl px-5 py-24 sm:px-8">
+  <div class="max-w-2xl" data-reveal>
+    <h2 class="font-display text-[clamp(2rem,4vw,3.25rem)] font-semibold leading-[1.08] text-text-primary">
+      {heading}
+    </h2>
+    <p class="mt-4 text-lg leading-relaxed text-text-secondary">{description}</p>
+  </div>
+
+  <ol class="mt-14 grid grid-cols-1 gap-px overflow-hidden rounded-2xl border border-border bg-border sm:grid-cols-5" data-reveal-group>
+    {
+      steps.map((step, i) => (
+        <li class="flex flex-col gap-3 bg-surface p-7">
+          <span class="numeral text-5xl leading-none text-gold">{String(i + 1).padStart(2, '0')}</span>
+          <div class="hairline w-6"></div>
+          <h3 class="font-body text-base font-semibold text-text-primary">{step.title}</h3>
+          <p class="text-sm leading-relaxed text-text-secondary">{step.description}</p>
+        </li>
+      ))
+    }
+  </ol>
+</section>

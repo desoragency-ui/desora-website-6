@@ -1,0 +1,3 @@
+# Cloudflare Pages redirects. Astro emits /index.html that redirects to /fr,
+# but this guarantees the root also lands on the default locale.
+/  /fr  302

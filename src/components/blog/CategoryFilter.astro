@@ -1,0 +1,58 @@
+---
+import { useTranslations } from '../../i18n/utils';
+import type { Locale } from '../../i18n/config';
+
+interface Props {
+  locale: Locale;
+  categories: { slug: string; label: string }[];
+}
+
+const { locale, categories } = Astro.props;
+const t = useTranslations(locale);
+---
+
+<div id="blog-filter" class="flex flex-wrap gap-2" role="group" aria-label={t('nav.blog')}>
+  <button
+    type="button"
+    data-filter="all"
+    class="is-active rounded-full border border-border px-4 py-2 text-sm font-medium text-text-primary transition-colors data-[active=true]:border-accent data-[active=true]:bg-accent data-[active=true]:text-accent-foreground"
+    data-active="true"
+  >
+    {t('blog.category.all')}
+  </button>
+  {
+    categories.map((cat) => (
+      <button
+        type="button"
+        data-filter={cat.slug}
+        class="rounded-full border border-border px-4 py-2 text-sm font-medium text-text-primary transition-colors data-[active=true]:border-accent data-[active=true]:bg-accent data-[active=true]:text-accent-foreground"
+        data-active="false"
+      >
+        {cat.slug === 'marketing-general' ? t('blog.category.marketingGeneral') : cat.label}
+      </button>
+    ))
+  }
+</div>
+
+<script>
+  const filterBar = document.getElementById('blog-filter');
+  const cards = document.querySelectorAll<HTMLElement>('[data-category]');
+  const emptyState = document.getElementById('blog-empty-state');
+
+  filterBar?.addEventListener('click', (e) => {
+    const btn = (e.target as HTMLElement).closest<HTMLButtonElement>('[data-filter]');
+    if (!btn) return;
+
+    filterBar.querySelectorAll('[data-filter]').forEach((b) => b.setAttribute('data-active', 'false'));
+    btn.setAttribute('data-active', 'true');
+
+    const filter = btn.dataset.filter;
+    let visibleCount = 0;
+    cards.forEach((card) => {
+      const show = filter === 'all' || card.dataset.category === filter;
+      card.classList.toggle('hidden', !show);
+      if (show) visibleCount++;
+    });
+    emptyState?.classList.toggle('hidden', visibleCount > 0);
+  });
+</script>

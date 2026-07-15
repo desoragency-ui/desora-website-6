@@ -1,0 +1,41 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { siteConfig } from '../../lib/site-config';
+
+const locale = 'en' as const;
+---
+
+<BaseLayout title="Privacy Policy" description="Privacy policy for DESORA." locale={locale}>
+  <section class="px-5 pb-24 pt-36 sm:px-8">
+    <div class="prose-content mx-auto max-w-2xl">
+      <h1 class="font-display text-3xl font-semibold text-text-primary">Privacy Policy</h1>
+
+      <div class="mt-8 space-y-6 text-sm leading-relaxed text-text-secondary">
+        <div>
+          <h2 class="font-display text-lg font-semibold text-text-primary">Data collected</h2>
+          <p class="mt-2">
+            This site only collects the information you voluntarily provide through the contact form (name, company, service of interest, message) or the newsletter sign-up (email address). No data is collected without your knowledge.
+          </p>
+        </div>
+        <div>
+          <h2 class="font-display text-lg font-semibold text-text-primary">Use of data</h2>
+          <p class="mt-2">
+            Data submitted through the contact form is used exclusively to respond to your request. Email addresses subscribed to the newsletter are used to send marketing content, with the option to unsubscribe at any time.
+          </p>
+        </div>
+        <div>
+          <h2 class="font-display text-lg font-semibold text-text-primary">Retention and your rights</h2>
+          <p class="mt-2">
+            Your data is kept for as long as needed to process your request. In accordance with Law 09-08 on the protection of personal data, you have the right to access, correct, and delete your data by writing to <a href={`mailto:${siteConfig.email}`} class="text-accent underline">{siteConfig.email}</a>.
+          </p>
+        </div>
+        <div>
+          <h2 class="font-display text-lg font-semibold text-text-primary">Cookies</h2>
+          <p class="mt-2">
+            This site uses local storage (localStorage) to remember your display preference (light or dark mode) and your language. No third-party advertising tracking cookies are used by default.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

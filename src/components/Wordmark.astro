@@ -1,0 +1,48 @@
+---
+import { brandWordmark, brandWordmarkDark } from '../lib/brand-assets';
+
+/**
+ * DESORA wordmark.
+ * - If `public/brand/wordmark.svg|png` exists, that exact artwork is rendered.
+ *   A transparent single-colour asset is tinted per-theme via CSS mask
+ *   (crimson in light, pearl in dark) so one file works in both modes.
+ *   Provide `wordmark-dark.*` too if the artwork is multi-colour / not tintable.
+ * - Otherwise a faithful Cormorant serif recreation is used.
+ *
+ * `class` should carry BOTH a height (for the image, e.g. `h-6`) and a matching
+ * text size (for the serif fallback, e.g. `text-2xl`). `ratio` is the wordmark
+ * width:height; `contain` letterboxes gracefully if it's slightly off.
+ */
+interface Props {
+  class?: string;
+  ratio?: number;
+}
+
+const { class: className = '', ratio = 3.6 } = Astro.props;
+---
+
+{
+  brandWordmark ? (
+    brandWordmarkDark ? (
+      <span class:list={['inline-flex items-center', className]} role="img" aria-label="DESORA">
+        <img src={brandWordmark} alt="DESORA" class="h-full w-auto dark:hidden" />
+        <img src={brandWordmarkDark} alt="" class="hidden h-full w-auto dark:block" />
+      </span>
+    ) : (
+      <span
+        role="img"
+        aria-label="DESORA"
+        class:list={['inline-block bg-accent align-middle dark:bg-text-primary', className]}
+        style={`aspect-ratio:${ratio};-webkit-mask:url('${brandWordmark}') center/contain no-repeat;mask:url('${brandWordmark}') center/contain no-repeat;`}
+      />
+    )
+  ) : (
+    <span
+      class:list={['font-display font-semibold uppercase leading-none text-accent', className]}
+      style="letter-spacing: 0.14em;"
+      dir="ltr"
+    >
+      DESORA
+    </span>
+  )
+}

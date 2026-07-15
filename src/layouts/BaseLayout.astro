@@ -1,0 +1,101 @@
+---
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import Preloader from '../components/Preloader.astro';
+import FloatingCTA from '../components/FloatingCTA.astro';
+import { locales, dirFor, hreflangTags, type Locale } from '../i18n/config';
+import { brandFavicon } from '../lib/brand-assets';
+import '../styles/global.css';
+
+// Use the real brand icon if present, else the generated monogram favicon.
+const faviconHref = brandFavicon ?? '/favicon.svg';
+const faviconType = faviconHref.endsWith('.svg') ? 'image/svg+xml' : faviconHref.endsWith('.png') ? 'image/png' : undefined;
+
+interface Props {
+  title: string;
+  description: string;
+  locale: Locale;
+}
+
+const { title, description, locale } = Astro.props;
+const dir = dirFor(locale);
+
+const url = Astro.url;
+const segments = url.pathname.split('/').filter(Boolean);
+const restPath = segments.slice(1).join('/');
+
+const canonical = new URL(url.pathname, Astro.site);
+const alternates = locales.map((l) => ({
+  hreflang: hreflangTags[l],
+  href: new URL(`/${l}${restPath ? `/${restPath}` : ''}`, Astro.site).toString(),
+}));
+const xDefaultHref = new URL(`/fr${restPath ? `/${restPath}` : ''}`, Astro.site).toString();
+---
+
+<!doctype html>
+<html lang={locale} dir={dir}>
+  <head>
+    <meta charset="UTF-8" />
+    <script is:inline>
+      (function () {
+        try {
+          var stored = localStorage.getItem('desora-theme');
+          var theme = stored || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+          document.documentElement.setAttribute('data-theme', theme);
+        } catch (e) {}
+        try {
+          if (sessionStorage.getItem('desora-preloader-shown')) {
+            document.documentElement.classList.add('preloader-skip');
+          }
+        } catch (e) {}
+      })();
+    </script>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" type={faviconType} href={faviconHref} />
+    <link rel="apple-touch-icon" href={faviconHref} />
+    <meta name="generator" content={Astro.generator} />
+
+    <title>{title} · DESORA</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical.toString()} />
+    {alternates.map((alt) => <link rel="alternate" hreflang={alt.hreflang} href={alt.href} />)}
+    <link rel="alternate" hreflang="x-default" href={xDefaultHref} />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={`${title} · DESORA`} />
+    <meta property="og:description" content={description} />
+    <meta property="og:locale" content={locale} />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <link rel="preconnect" href="https://api.fontshare.com" />
+    <link rel="preconnect" href="https://cdn.fontshare.com" crossorigin />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://api.fontshare.com/v2/css?f[]=general-sans@400,500,600&display=swap"
+    />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Cormorant:ital,wght@0,500;0,600;0,700;1,500;1,600&family=Cairo:wght@400;500;600;700;800&family=Amiri:ital,wght@0,400;0,700;1,400&display=swap"
+    />
+  </head>
+  <body class="overflow-x-hidden bg-bg-primary text-text-primary">
+    <a
+      href="#main-content"
+      class="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-[100] focus:rounded-md focus:bg-accent focus:px-4 focus:py-2 focus:text-accent-foreground"
+    >
+      Aller au contenu
+    </a>
+    <Preloader />
+    <Header locale={locale} />
+    <main id="main-content">
+      <slot />
+    </main>
+    <Footer locale={locale} />
+    <FloatingCTA locale={locale} />
+    <script>
+      import '../scripts/motion.ts';
+    </script>
+  </body>
+</html>

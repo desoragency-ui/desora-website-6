@@ -1,0 +1,18 @@
+---
+interface Props {
+  heading: string;
+  paragraphs: string[];
+  tinted?: boolean;
+}
+
+const { heading, paragraphs, tinted = false } = Astro.props;
+---
+
+<section class:list={['py-20', tinted && 'bg-bg-secondary']}>
+  <div class="mx-auto max-w-3xl px-5 sm:px-8" data-reveal>
+    <h2 class="font-display text-2xl font-semibold text-text-primary sm:text-3xl">{heading}</h2>
+    <div class="mt-6 space-y-5">
+      {paragraphs.map((p) => <p class="text-base leading-relaxed text-text-secondary">{p}</p>)}
+    </div>
+  </div>
+</section>

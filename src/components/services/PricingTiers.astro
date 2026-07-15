@@ -1,0 +1,89 @@
+---
+import Icon from '../Icon.astro';
+import { useTranslations, localizedPath } from '../../i18n/utils';
+import type { Locale } from '../../i18n/config';
+
+interface Props {
+  locale: Locale;
+  pricing: {
+    essentiel: { features: string[] };
+    croissance: { features: string[] };
+    signature: { features: string[] };
+  };
+}
+
+const { locale, pricing } = Astro.props;
+const t = useTranslations(locale);
+
+const tiers = [
+  {
+    key: 'essentiel',
+    name: t('pricing.essential'),
+    features: pricing.essentiel.features,
+    previousTierName: null,
+    recommended: false,
+  },
+  {
+    key: 'croissance',
+    name: t('pricing.growth'),
+    features: pricing.croissance.features,
+    previousTierName: t('pricing.essential'),
+    recommended: true,
+  },
+  {
+    key: 'signature',
+    name: t('pricing.signature'),
+    features: pricing.signature.features,
+    previousTierName: t('pricing.growth'),
+    recommended: false,
+  },
+];
+---
+
+<section class="mx-auto max-w-7xl px-5 py-20 sm:px-8">
+  <div class="grid grid-cols-1 items-start gap-6 lg:grid-cols-3" data-reveal-group>
+    {
+      tiers.map((tier) => (
+        <div
+          class:list={[
+            'flex h-full flex-col rounded-3xl border p-8',
+            tier.recommended ? 'border-accent bg-surface shadow-xl lg:-translate-y-3' : 'border-border bg-surface',
+          ]}
+        >
+          {tier.recommended && (
+            <span class="mb-4 w-fit rounded-full bg-accent px-3 py-1 text-xs font-semibold text-accent-foreground">
+              {t('pricing.recommended')}
+            </span>
+          )}
+          <h3 class="font-display text-xl font-semibold text-text-primary">{tier.name}</h3>
+
+          <ul class="mt-6 flex-1 space-y-3">
+            {tier.previousTierName && (
+              <li class="pb-1 text-sm font-medium text-text-secondary">
+                {t('pricing.everythingIn', { tier: tier.previousTierName })}
+              </li>
+            )}
+            {tier.features.map((feature) => (
+              <li class="flex items-start gap-2.5 text-sm text-text-primary">
+                <Icon name="check" class="mt-0.5 h-4 w-4 shrink-0 text-accent" />
+                <span>{feature}</span>
+              </li>
+            ))}
+          </ul>
+
+          <a
+            href={localizedPath(locale, 'contact')}
+            class:list={[
+              'mt-8 flex h-12 items-center justify-center rounded-full px-6 text-sm font-semibold transition-transform hover:scale-[1.02]',
+              tier.recommended
+                ? 'bg-accent text-accent-foreground'
+                : 'border border-border text-text-primary hover:border-accent hover:text-accent',
+            ]}
+          >
+            {t('cta.discussPack')}
+          </a>
+        </div>
+      ))
+    }
+  </div>
+</section>

@@ -1,0 +1,41 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { siteConfig } from '../../lib/site-config';
+
+const locale = 'fr' as const;
+---
+
+<BaseLayout title="Politique de confidentialité" description="Politique de confidentialité de DESORA." locale={locale}>
+  <section class="px-5 pb-24 pt-36 sm:px-8">
+    <div class="prose-content mx-auto max-w-2xl">
+      <h1 class="font-display text-3xl font-semibold text-text-primary">Politique de confidentialité</h1>
+
+      <div class="mt-8 space-y-6 text-sm leading-relaxed text-text-secondary">
+        <div>
+          <h2 class="font-display text-lg font-semibold text-text-primary">Données collectées</h2>
+          <p class="mt-2">
+            Ce site collecte uniquement les informations que vous fournissez volontairement via le formulaire de contact (nom, entreprise, service concerné, message) ou l'inscription à la newsletter (adresse email). Aucune donnée n'est collectée à votre insu.
+          </p>
+        </div>
+        <div>
+          <h2 class="font-display text-lg font-semibold text-text-primary">Utilisation des données</h2>
+          <p class="mt-2">
+            Les données transmises via le formulaire de contact sont utilisées exclusivement pour répondre à votre demande. Les adresses email inscrites à la newsletter sont utilisées pour l'envoi de contenus marketing, avec possibilité de désinscription à tout moment.
+          </p>
+        </div>
+        <div>
+          <h2 class="font-display text-lg font-semibold text-text-primary">Conservation et droits</h2>
+          <p class="mt-2">
+            Vos données sont conservées le temps nécessaire au traitement de votre demande. Conformément à la loi 09-08 relative à la protection des données à caractère personnel, vous disposez d'un droit d'accès, de rectification et de suppression de vos données, exerçable en écrivant à <a href={`mailto:${siteConfig.email}`} class="text-accent underline">{siteConfig.email}</a>.
+          </p>
+        </div>
+        <div>
+          <h2 class="font-display text-lg font-semibold text-text-primary">Cookies</h2>
+          <p class="mt-2">
+            Ce site utilise un stockage local (localStorage) pour mémoriser votre préférence d'affichage (mode clair ou sombre) et votre langue. Aucun cookie de suivi publicitaire tiers n'est utilisé par défaut.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

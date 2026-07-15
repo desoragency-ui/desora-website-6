@@ -1,0 +1,40 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Hero from '../../components/home/Hero.astro';
+import TrustMarquee from '../../components/home/TrustMarquee.astro';
+import ServicesGrid from '../../components/home/ServicesGrid.astro';
+import Differentiation from '../../components/home/Differentiation.astro';
+import ProcessSteps from '../../components/ProcessSteps.astro';
+import CaseStudies from '../../components/home/CaseStudies.astro';
+import Testimonials from '../../components/home/Testimonials.astro';
+import StatsBand from '../../components/home/StatsBand.astro';
+import FinalCta from '../../components/home/FinalCta.astro';
+import { getHome, getServices } from '../../lib/content';
+
+const locale = 'en' as const;
+const home = await getHome(locale);
+const services = await getServices(locale);
+
+if (!home) throw new Error(`Missing home content for locale: ${locale}`);
+---
+
+<BaseLayout title={home.seoTitle} description={home.seoDescription} locale={locale}>
+  <Hero locale={locale} title={home.hero.title} subtitle={home.hero.subtitle} />
+  <TrustMarquee heading={home.trust.heading} items={home.trust.items} />
+  <ServicesGrid
+    locale={locale}
+    heading={home.servicesIntro.heading}
+    description={home.servicesIntro.description}
+    services={services}
+  />
+  <Differentiation
+    heading={home.differentiation.heading}
+    description={home.differentiation.description}
+    points={home.differentiation.points}
+  />
+  <ProcessSteps heading={home.process.heading} description={home.process.description} steps={home.process.steps} />
+  <CaseStudies heading={home.caseStudies.heading} description={home.caseStudies.description} items={home.caseStudies.items} />
+  <Testimonials heading={home.testimonials.heading} items={home.testimonials.items} />
+  <StatsBand heading={home.stats.heading} items={home.stats.items} />
+  <FinalCta locale={locale} heading={home.finalCta.heading} description={home.finalCta.description} />
+</BaseLayout>

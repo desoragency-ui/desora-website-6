@@ -1,0 +1,27 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PageHero from '../../components/PageHero.astro';
+import ProseSection from '../../components/about/ProseSection.astro';
+import ValuesGrid from '../../components/about/ValuesGrid.astro';
+import MultilingualSection from '../../components/about/MultilingualSection.astro';
+import FinalCta from '../../components/home/FinalCta.astro';
+import { getAbout } from '../../lib/content';
+
+const locale = 'en' as const;
+const about = await getAbout(locale);
+
+if (!about) throw new Error(`Missing about content for locale: ${locale}`);
+---
+
+<BaseLayout title={about.seoTitle} description={about.seoDescription} locale={locale}>
+  <PageHero title={about.hero.title} subtitle={about.hero.subtitle} />
+  <ProseSection heading={about.mission.heading} paragraphs={about.mission.paragraphs} />
+  <ProseSection heading={about.beyondOrdinary.heading} paragraphs={about.beyondOrdinary.paragraphs} tinted />
+  <ValuesGrid values={about.values} />
+  <MultilingualSection
+    heading={about.multilingual.heading}
+    description={about.multilingual.description}
+    languages={about.multilingual.languages}
+  />
+  <FinalCta locale={locale} heading={about.finalCta.heading} description={about.finalCta.description} />
+</BaseLayout>

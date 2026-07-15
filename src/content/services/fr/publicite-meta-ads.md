@@ -1,0 +1,80 @@
+---
+order: 2
+icon: "ads"
+title: "Publicité Meta Ads"
+h1: "Chaque dirham investi doit ramener un client, pas juste une impression."
+tagline: "Des campagnes Meta pilotées par les résultats, pas par le budget dépensé."
+seoTitle: "Publicité Meta Ads (Facebook & Instagram) au Maroc | DESORA"
+seoDescription: "Campagnes Meta Ads pilotées par la performance : audit, ciblage, création publicitaire, tests A/B et scaling. Reporting transparent, sans jargon."
+includedItems:
+  - icon: "target"
+    label: "Audit & stratégie"
+  - icon: "leads"
+    label: "Business Manager & Pixel"
+  - icon: "brand"
+    label: "Création publicitaire"
+  - icon: "seo"
+    label: "Tests A/B systématiques"
+  - icon: "ads"
+    label: "Optimisation & scaling"
+  - icon: "shield"
+    label: "Reporting transparent"
+subServices:
+  - title: "Audit & stratégie"
+    description: "On commence par comprendre qui achète réellement chez vous, pas par lancer une campagne au hasard. L'audit détermine le budget, le ciblage et les objectifs réalistes."
+  - title: "Configuration Business Manager & Pixel"
+    description: "La base technique qui permet à Meta de mesurer vos résultats et d'optimiser vos campagnes. Mal configurée, elle fausse toutes les décisions qui suivent."
+  - title: "Création publicitaire (copywriting + visuels)"
+    description: "Des annonces pensées pour arrêter le scroll et convaincre en quelques secondes, pas des visuels de catalogue recyclés."
+  - title: "Tests A/B systématiques"
+    description: "Chaque hypothèse est testée avant d'engager le budget dessus. On ne devine pas ce qui fonctionne, on le mesure."
+  - title: "Optimisation continue & scaling des budgets"
+    description: "Les campagnes qui marchent reçoivent plus de budget, celles qui ne marchent pas sont coupées vite. Pas de budget qui continue de tourner par habitude."
+  - title: "Reporting transparent"
+    description: "Un rapport clair sur ce qui a été dépensé et ce que ça a rapporté, sans jargon publicitaire pour noyer le poisson."
+process:
+  - title: "Audit & ciblage"
+    description: "Analyse de votre marché, de vos concurrents publicitaires et définition des audiences à atteindre en priorité."
+  - title: "Configuration technique"
+    description: "Mise en place du Business Manager, du Pixel et du suivi des conversions pour mesurer chaque résultat avec précision."
+  - title: "Lancement & tests"
+    description: "Mise en ligne des premières campagnes avec plusieurs variantes testées en parallèle."
+  - title: "Scaling & optimisation"
+    description: "Une fois les meilleures combinaisons identifiées, le budget est concentré dessus pour maximiser le retour."
+pricing:
+  essentiel:
+    features:
+      - "Une campagne active"
+      - "Configuration complète (Business Manager, Pixel, audiences)"
+      - "Créations publicitaires mensuelles"
+      - "Reporting mensuel"
+  croissance:
+    features:
+      - "Campagnes multiples (prospection et retargeting)"
+      - "Tests A/B hebdomadaires"
+      - "Création publicitaire illimitée"
+      - "Click-to-WhatsApp intégré aux annonces"
+      - "Reporting bimensuel"
+  signature:
+    features:
+      - "Stratégie full-funnel cross-canal"
+      - "CRM retargeting"
+      - "Audiences lookalike avancées"
+      - "Production vidéo/UGC incluse"
+      - "Point stratégique hebdomadaire"
+faq:
+  - question: "Quel budget publicitaire minimum faut-il pour commencer ?"
+    answer: "Cela dépend de votre secteur et de vos objectifs. On le détermine ensemble lors de l'audit initial plutôt que d'imposer un chiffre générique qui ne correspond à rien de réel pour votre marché."
+  - question: "En combien de temps voit-on des résultats ?"
+    answer: "Les premières données arrivent en une à deux semaines. Les campagnes ont besoin de ce délai pour sortir de la phase d'apprentissage de l'algorithme Meta avant d'être vraiment optimisées."
+  - question: "Le budget publicitaire est-il inclus dans vos honoraires ?"
+    answer: "Non. Le budget publicitaire est versé directement à Meta et reste séparé de nos honoraires de gestion. Vous gardez un contrôle total et une visibilité complète sur cette dépense."
+  - question: "Qu'est-ce qui différencie DESORA d'un freelance qui gère des publicités Meta ?"
+    answer: "Une approche systémique avec tests A/B documentés, reporting structuré et un accès direct au fondateur, pas une gestion improvisée au fil de l'eau."
+  - question: "Y a-t-il un engagement minimum ?"
+    answer: "Les campagnes publicitaires ont besoin de temps pour être optimisées correctement. On recommande un minimum de trois mois pour juger des résultats de manière honnête."
+relatedServices:
+  - "generation-de-leads"
+  - "email-marketing"
+caseStudyPlaceholder: "{{PLACEHOLDER_ETUDE_CAS_META_ADS}}"
+---

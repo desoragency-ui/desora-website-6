@@ -1,0 +1,86 @@
+---
+import { useTranslations, getLangFromUrl } from '../i18n/utils';
+import Wordmark from './Wordmark.astro';
+import BrandPattern from './BrandPattern.astro';
+
+const locale = getLangFromUrl(Astro.url);
+const t = useTranslations(locale);
+---
+
+<div
+  id="preloader"
+  class="fixed inset-0 z-100 flex flex-col items-center justify-center overflow-hidden bg-bg-primary"
+  role="status"
+  aria-live="polite"
+  aria-label={t('preloader.loading')}
+>
+  <BrandPattern opacity={0.045} />
+  <div id="preloader-inner" class="relative flex flex-col items-center gap-8">
+    <Wordmark class="h-8 text-3xl" />
+    <div class="hairline w-16 opacity-60"></div>
+    <span
+      id="preloader-count"
+      class="numeral text-[clamp(4rem,13vw,8rem)] leading-none text-text-primary"
+    >
+      0
+    </span>
+  </div>
+</div>
+
+<script>
+  import { gsap } from 'gsap';
+
+  const preloader = document.getElementById('preloader');
+  const counter = document.getElementById('preloader-count');
+  const skip = document.documentElement.classList.contains('preloader-skip');
+
+  function finish() {
+    try {
+      sessionStorage.setItem('desora-preloader-shown', '1');
+    } catch (e) {
+      /* ignore */
+    }
+    // Set a synchronous flag in addition to the event: scripts further down
+    // the page (e.g. Hero) may still be loading/importing modules (like
+    // gsap) when this fires, and would otherwise miss a one-shot event
+    // dispatched before they've registered their listener.
+    (window as any).__desoraPreloaderDone = true;
+    window.dispatchEvent(new CustomEvent('desora:preloader-done'));
+  }
+
+  if (!preloader || skip) {
+    finish();
+  } else {
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    if (reduceMotion) {
+      preloader.style.display = 'none';
+      finish();
+    } else {
+      document.body.classList.add('overflow-hidden');
+      const counterState = { value: 0 };
+
+      gsap.to(counterState, {
+        value: 100,
+        duration: 1.6,
+        ease: 'power2.inOut',
+        onUpdate: () => {
+          if (counter) counter.textContent = String(Math.round(counterState.value));
+        },
+        onComplete: () => {
+          gsap.to(preloader, {
+            opacity: 0,
+            duration: 0.6,
+            delay: 0.15,
+            ease: 'power1.out',
+            onComplete: () => {
+              preloader.style.display = 'none';
+              document.body.classList.remove('overflow-hidden');
+              finish();
+            },
+          });
+        },
+      });
+    }
+  }
+</script>

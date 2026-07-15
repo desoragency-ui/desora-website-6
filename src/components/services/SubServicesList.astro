@@ -1,0 +1,29 @@
+---
+import Icon from '../Icon.astro';
+
+interface Props {
+  items: { title: string; description: string }[];
+}
+
+const { items } = Astro.props;
+---
+
+<section class="bg-bg-secondary py-20">
+  <div class="mx-auto max-w-4xl px-5 sm:px-8">
+    <div class="divide-y divide-border" data-reveal-group>
+      {
+        items.map((item) => (
+          <div class="flex gap-5 py-7 first:pt-0 last:pb-0">
+            <span class="mt-1 flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-accent/10 text-accent">
+              <Icon name="check" class="h-4 w-4" />
+            </span>
+            <div>
+              <h3 class="font-display text-lg font-semibold text-text-primary">{item.title}</h3>
+              <p class="mt-2 text-sm leading-relaxed text-text-secondary">{item.description}</p>
+            </div>
+          </div>
+        ))
+      }
+    </div>
+  </div>
+</section>

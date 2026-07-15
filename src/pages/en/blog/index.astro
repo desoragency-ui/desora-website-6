@@ -1,0 +1,40 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import PageHero from '../../../components/PageHero.astro';
+import BlogCard from '../../../components/blog/BlogCard.astro';
+import CategoryFilter from '../../../components/blog/CategoryFilter.astro';
+import { useTranslations } from '../../../i18n/utils';
+import { getBlogPosts, getAllCategories } from '../../../lib/content';
+
+const locale = 'en' as const;
+const t = useTranslations(locale);
+const posts = await getBlogPosts(locale);
+const categories = await getAllCategories(locale);
+
+const seoTitle = 'Blog | DESORA';
+const seoDescription = 'Practical marketing advice on SEO, digital advertising, lead generation, and brand identity in Morocco.';
+---
+
+<BaseLayout title={seoTitle} description={seoDescription} locale={locale}>
+  <PageHero
+    title="The DESORA blog"
+    subtitle="Practical marketing advice, no filler. This blog applies internally exactly what DESORA sells as an SEO service."
+  />
+
+  <section class="mx-auto max-w-7xl px-5 pb-24 sm:px-8">
+    <CategoryFilter locale={locale} categories={categories} />
+
+    {
+      posts.length === 0 ? (
+        <p class="mt-16 text-center text-text-secondary">{t('blog.empty')}</p>
+      ) : (
+        <div class="mt-10 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3" data-reveal-group>
+          {posts.map((post) => (
+            <BlogCard locale={locale} slug={post.slug} entry={post.entry} />
+          ))}
+        </div>
+      )
+    }
+    <p id="blog-empty-state" class="mt-16 hidden text-center text-text-secondary">{t('blog.empty')}</p>
+  </section>
+</BaseLayout>

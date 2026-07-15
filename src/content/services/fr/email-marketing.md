@@ -1,0 +1,76 @@
+---
+order: 4
+icon: "email"
+title: "Email Marketing"
+h1: "Votre liste email est votre actif le plus rentable. Encore faut-il savoir l'utiliser."
+tagline: "Des emails que vos clients ouvrent, lisent, et suivent."
+seoTitle: "Email marketing & newsletters au Maroc | DESORA"
+seoDescription: "Stratégie email, copywriting, templates sur-mesure et séquences automatisées pour transformer votre liste de contacts en revenu récurrent."
+includedItems:
+  - icon: "target"
+    label: "Stratégie & segmentation"
+  - icon: "email"
+    label: "Copywriting"
+  - icon: "brand"
+    label: "Templates sur-mesure"
+  - icon: "clock"
+    label: "Séquences automatisées"
+  - icon: "seo"
+    label: "Tests A/B"
+  - icon: "leads"
+    label: "Analyse de performance"
+subServices:
+  - title: "Stratégie & segmentation"
+    description: "Tous vos contacts ne doivent pas recevoir le même email. On segmente votre liste pour que chaque message arrive à la bonne personne, au bon moment."
+  - title: "Copywriting (newsletters, emails de vente, cold emails)"
+    description: "Des mots qui donnent envie d'ouvrir, de lire jusqu'au bout et de cliquer, pas un email qui ressemble à une brochure envoyée par erreur."
+  - title: "Design de templates sur-mesure"
+    description: "Des emails qui portent votre identité visuelle et qui s'affichent correctement sur tous les écrans, du bureau au smartphone."
+  - title: "Séquences de relance automatisées"
+    description: "Bienvenue, abandon de panier, réactivation : des emails qui partent automatiquement au bon moment, sans que vous ayez à y penser."
+  - title: "Tests A/B objets et contenus"
+    description: "On teste ce qui fait vraiment ouvrir et cliquer, plutôt que de deviner ce qui devrait fonctionner."
+  - title: "Analyse de performance"
+    description: "Taux d'ouverture, de clic, de conversion : des chiffres clairs pour savoir ce que votre liste email vous rapporte réellement."
+process:
+  - title: "Audit de la liste"
+    description: "Analyse de vos contacts existants, de leur engagement et de la segmentation à mettre en place."
+  - title: "Stratégie & calendrier"
+    description: "Définition du rythme d'envoi, des types de contenus et des séquences automatisées prioritaires."
+  - title: "Création"
+    description: "Rédaction et design des emails, dans le ton de votre marque, adaptés à chaque segment."
+  - title: "Envoi & optimisation"
+    description: "Suivi des performances et ajustements continus sur les objets, le contenu et le rythme d'envoi."
+pricing:
+  essentiel:
+    features:
+      - "Newsletter mensuelle (design et rédaction)"
+      - "Une séquence de bienvenue automatisée"
+  croissance:
+    features:
+      - "Newsletters bimensuelles"
+      - "Séquences de vente et de relance"
+      - "Prospection par cold email"
+      - "Segmentation avancée de la liste"
+  signature:
+    features:
+      - "Stratégie email complète (newsletters, vente, cold email, relance)"
+      - "Automatisations multi-déclencheurs"
+      - "Tests A/B systématiques"
+      - "Rapport de performance mensuel détaillé"
+faq:
+  - question: "Je n'ai pas encore de liste email, DESORA peut-elle m'aider à en construire une ?"
+    answer: "Oui. C'est souvent la première étape : mettre en place les formulaires et les lead magnets nécessaires pour commencer à collecter des contacts qualifiés, en lien avec le service de génération de leads."
+  - question: "Quelle est la différence entre une newsletter et une séquence automatisée ?"
+    answer: "La newsletter est envoyée à tous vos contacts à un rythme régulier. Une séquence automatisée se déclenche pour une personne précise selon son action : inscription, achat, panier abandonné."
+  - question: "Est-ce que l'email marketing fonctionne encore aujourd'hui ?"
+    answer: "C'est l'un des canaux avec le meilleur retour sur investissement, justement parce que la plupart des entreprises marocaines ne l'exploitent pas correctement. Une liste bien segmentée reste plus rentable qu'une publicité payante."
+  - question: "Quel outil d'envoi utilisez-vous ?"
+    answer: "On s'adapte à votre outil existant ou on vous recommande une solution adaptée à la taille de votre liste et à votre budget, sans vous enfermer dans un choix imposé."
+  - question: "Comment évitez-vous que mes emails finissent en spam ?"
+    answer: "Configuration technique correcte (authentification du domaine), segmentation propre et contenu pensé pour l'engagement : ce sont les trois facteurs qui déterminent la délivrabilité, et les trois sont pris en charge."
+relatedServices:
+  - "generation-de-leads"
+  - "reseaux-sociaux"
+caseStudyPlaceholder: "{{PLACEHOLDER_ETUDE_CAS_EMAIL_MARKETING}}"
+---
