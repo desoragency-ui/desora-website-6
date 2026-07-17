@@ -16,7 +16,7 @@ const t = useTranslations(locale);
 ---
 
 <section class="mx-auto max-w-7xl px-5 py-24 sm:px-8">
-  <div class="relative overflow-hidden rounded-[2rem] bg-accent px-8 py-20 text-center sm:px-16" data-reveal>
+  <div class="relative overflow-hidden rounded-[2rem] bg-accent-strong px-8 py-20 text-center sm:px-16" data-reveal>
     <BrandPattern tone="contrast" opacity={0.06} />
     <div class="relative">
     <h2 class="font-display text-[clamp(2.25rem,4.5vw,3.5rem)] font-semibold leading-[1.05] text-accent-foreground">
@@ -26,7 +26,7 @@ const t = useTranslations(locale);
     <div class="mt-9 flex flex-wrap items-center justify-center gap-4">
       <a
         href={localizedPath(locale, 'contact')}
-        class="flex h-13 items-center rounded-full bg-accent-foreground px-7 text-base font-semibold text-accent transition-transform hover:scale-[1.03]"
+        class="press flex h-13 items-center rounded-full bg-accent-foreground px-7 text-base font-semibold text-accent transition-transform duration-500 [transition-timing-function:cubic-bezier(0.16,1,0.3,1)] hover:scale-[1.03]"
       >
         {t('cta.discussProject')}
       </a>
@@ -34,7 +34,7 @@ const t = useTranslations(locale);
         href={siteConfig.whatsappUrl}
         target="_blank"
         rel="noopener noreferrer"
-        class="flex h-13 items-center gap-2 rounded-full border border-accent-foreground/40 px-7 text-base font-semibold text-accent-foreground transition-colors hover:border-accent-foreground"
+        class="press flex h-13 items-center gap-2 rounded-full border border-accent-foreground/40 px-7 text-base font-semibold text-accent-foreground transition-all duration-500 [transition-timing-function:cubic-bezier(0.16,1,0.3,1)] hover:border-accent-foreground hover:bg-accent-foreground/10"
       >
         <Icon name="whatsapp" class="h-5 w-5" />
         {t('cta.whatsapp')}

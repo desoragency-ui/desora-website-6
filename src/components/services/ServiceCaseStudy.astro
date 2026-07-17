@@ -1,13 +1,99 @@
 ---
-interface Props {
-  text: string;
+import { useTranslations } from '../../i18n/utils';
+import type { Locale } from '../../i18n/config';
+
+interface CaseStudy {
+  client: string;
+  sector: string;
+  author: string;
+  role: string;
+  challenge: string;
+  action: string;
+  metrics: { label: string; before: string; after: string; shift: string }[];
+  quote?: string;
 }
 
-const { text } = Astro.props;
+interface Props {
+  locale: Locale;
+  caseStudy?: CaseStudy;
+  placeholder?: string;
+}
+
+const { locale, caseStudy, placeholder } = Astro.props;
+const t = useTranslations(locale);
 ---
 
-<section class="mx-auto max-w-4xl px-5 py-16 sm:px-8">
-  <div class="rounded-2xl border border-dashed border-border bg-surface p-8 text-center" data-reveal>
-    <p class="text-base leading-relaxed text-text-secondary">{text}</p>
-  </div>
-</section>
+{
+  caseStudy ? (
+    <section class="bg-bg-secondary py-24">
+      <div class="mx-auto max-w-5xl px-5 sm:px-8">
+        <div data-reveal>
+          <p class="overline">{t('caseStudy.label')}</p>
+          <h2 class="mt-4 font-display text-[clamp(1.9rem,3.5vw,2.75rem)] font-semibold leading-[1.1] text-text-primary">
+            {caseStudy.client}
+          </h2>
+          <p class="mt-2 text-sm text-text-secondary">{caseStudy.sector}</p>
+        </div>
+
+        <div class="mt-10 grid gap-8 md:grid-cols-2" data-reveal>
+          <div>
+            <h3 class="font-display text-base font-semibold text-text-primary">{t('caseStudy.challenge')}</h3>
+            <p class="mt-3 text-sm leading-relaxed text-text-secondary">{caseStudy.challenge}</p>
+          </div>
+          <div>
+            <h3 class="font-display text-base font-semibold text-text-primary">{t('caseStudy.action')}</h3>
+            <p class="mt-3 text-sm leading-relaxed text-text-secondary">{caseStudy.action}</p>
+          </div>
+        </div>
+
+        <div class="mt-12" data-reveal>
+          <h3 class="font-display text-base font-semibold text-text-primary">{t('caseStudy.results')}</h3>
+          <div class="mt-5 overflow-x-auto">
+            <table class="w-full min-w-[34rem] border-collapse text-start text-sm">
+              <thead>
+                <tr class="border-b border-border">
+                  <th scope="col" class="py-3 pe-4 text-start font-medium text-text-secondary">
+                    {t('caseStudy.metric')}
+                  </th>
+                  <th scope="col" class="py-3 pe-4 text-start font-medium text-text-secondary">
+                    {t('caseStudy.before')}
+                  </th>
+                  <th scope="col" class="py-3 pe-4 text-start font-medium text-text-secondary">
+                    {t('caseStudy.after')}
+                  </th>
+                  <th scope="col" class="py-3 text-start font-medium text-text-secondary">{t('caseStudy.shift')}</th>
+                </tr>
+              </thead>
+              <tbody>
+                {caseStudy.metrics.map((m) => (
+                  <tr class="border-b border-hairline">
+                    <td class="py-4 pe-4 font-medium text-text-primary">{m.label}</td>
+                    <td class="numeral py-4 pe-4 text-text-secondary">{m.before}</td>
+                    <td class="numeral py-4 pe-4 text-text-primary">{m.after}</td>
+                    <td class="numeral py-4 font-semibold text-accent">{m.shift}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        {caseStudy.quote && (
+          <blockquote class="mt-12 rounded-2xl border border-border bg-surface p-8" data-reveal>
+            <p class="font-display text-lg leading-snug text-text-primary">"{caseStudy.quote}"</p>
+            <footer class="mt-5 text-sm">
+              <p class="font-semibold text-text-primary">{caseStudy.author}</p>
+              <p class="text-text-secondary">{caseStudy.role}</p>
+            </footer>
+          </blockquote>
+        )}
+      </div>
+    </section>
+  ) : placeholder ? (
+    <section class="mx-auto max-w-4xl px-5 py-16 sm:px-8">
+      <div class="rounded-2xl border border-dashed border-border bg-surface p-8 text-center" data-reveal>
+        <p class="text-base leading-relaxed text-text-secondary">{placeholder}</p>
+      </div>
+    </section>
+  ) : null
+}

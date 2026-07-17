@@ -18,21 +18,36 @@ Site web de l'agence DESORA (marketing digital premium, Maroc). Astro + TypeScri
 
 - Crimson = accent seulement (boutons, liens actifs, détails), jamais fond dominant.
 - Tokens définis dans `src/styles/global.css` : `--color-bg-primary`, `--color-text-primary`, `--color-accent`, `--color-surface`, `--color-border`, etc. Ils basculent entre clair/sombre via `[data-theme]`.
-- Tailwind utilise ces tokens via `@theme inline`. Utiliser `bg-bg-primary`, `text-text-primary`, `bg-accent`, `border-border`, etc. Variante `dark:` disponible (basée sur `[data-theme="dark"]`).
+- Tailwind utilise ces tokens via `@theme inline`. Utiliser `bg-bg-primary`, `text-text-primary`, `bg-accent-strong`, `border-border`, etc. Variante `dark:` disponible (basée sur `[data-theme="dark"]`).
+
+**L'accent est dédoublé (important).** Le crimson profond ne peut pas passer AA en petit texte sur du near-black : c'est de la physique, pas un choix. D'où deux tokens :
+- `--color-accent` → **texte/icônes/liens**. Crimson exact `#710014` en clair ; bois-de-rose atténué `hsl(352 58% 70%)` en sombre (AA sur toutes les surfaces).
+- `--color-accent-strong` → **aplats** (boutons, bande CTA, badges), toujours avec `--color-accent-foreground` (pearl) par-dessus. Crimson exact en clair ; crimson joaillier profond `hsl(349 88% 38%)` en sombre.
+
+Règle : `bg-accent-strong` pour tout aplat, `text-accent` pour tout texte. Ne jamais remettre `bg-accent` sur un bouton (l'ancien accent sombre virait au rose bonbon, hors marque).
+En sombre, les surfaces sont teintées espresso (`hsl(24 6% 14%)`), pas ardoise : une carte surélevée doit évoquer le cuir. Ombres via `--shadow-tint` (jamais du noir pur sur Pearl).
 
 ### Typographie (direction luxe, alignée sur le vrai logo)
 - Titres/wordmark FR/EN : **Cormorant** (serif éditorial haut contraste, Google Fonts) — choisi pour matcher le logo DESORA réel (serif Didone élégant). Remplace Clash Display.
 - Corps FR/EN : **General Sans** (Fontshare).
 - Arabe : titres en **Amiri** (naskh serif élégant), corps en **Cairo**. `--font-arabic-display` = Amiri.
-- Le wordmark est rendu en texte vivant (composant `Wordmark.astro`, Cormorant, majuscules, tracking 0.14em) — crisp, thémable. Pour l'artwork exact, déposer `logo-wordmark.svg` dans `/public` et l'échanger.
+- **Le vrai wordmark est en place** : `public/brand/wordmark.png` (artwork fourni par le client, ratio 3.871). Rendu par `Wordmark.astro` via `mask-image`, donc un seul fichier se teinte par thème (crimson en clair, pearl en sombre). Le recréé en Cormorant ne sert plus que de secours si le fichier disparaît.
+- Pour remplacer : déposer le nouveau fichier au même chemin (`brand-assets.ts` le détecte au build). Si l'artwork devient multicolore, ajouter `wordmark-dark.*` : le composant bascule alors sur deux `<img>` au lieu du masque.
 - Note : le brief initial déconseillait un serif crème générique. Cette direction serif est justifiée : elle matche le **vrai logo** fourni (serif éditorial distinctif, pas un défaut générique).
 
 ### Accents luxe
 - **Or antique** (`--color-gold`, ~4.9:1 sur Pearl en clair / champagne en sombre) : réservé aux hairlines, overlines (petites capitales tracking large, classe `.overline`), numéros. Jamais pour du texte courant.
 - **Hairlines** (`--color-hairline`, `.hairline`) : filets très fins pour séparateurs éditoriaux.
 - **Numéros serif** (`.numeral`, tabular) : stats, étapes de process, numérotation des cartes.
-- **Pattern de marque** (`BrandPattern.astro`) : lettres serif dispersées, opacité très basse (0.04-0.06), en fond de hero / CTA / préchargement. `tone="contrast"` pour surfaces crimson.
-- **Favicon** : monogramme serif "D" crimson/pearl (`public/favicon.svg`). Déposer le vrai logomark `ds` pour l'exact.
+- **Pattern de marque** (`BrandPattern.astro`) : **le vrai artwork est en place** (`public/brand/pattern.png`), extrait de `brand identity/pattern 1.png`. Opacité 0.035-0.06 en fond de hero / CTA / footer / préchargement.
+  - C'est un **masque alpha** (blanc + alpha), donc il se teinte au thème comme le wordmark. Le fond crème de l'artwork d'origine a été retiré : il ne touche jamais la surface de la page, et aucun blend mode n'est nécessaire. `tone="contrast"` (pearl sur crimson) fonctionne enfin, ce qui était impossible avec `mix-blend-multiply`.
+  - `fit="cover"` par **défaut, et c'est voulu** : l'artwork n'est pas une tuile sans couture (ses bords ne correspondent pas, écart mesuré 172/213), donc le répéter afficherait une grille de coutures. Un seul grand lavis se lit aussi plus « direction artistique » que du papier peint. `fit="tile"` n'est valable que pour le fallback SVG, lui seul étant sans couture.
+- **Logomark `ds`** : le vrai monogramme est en place, extrait de `brand identity/prf.png` (dont le fond échantillonne exactement `#710014`, ce qui confirme la source).
+  - `public/brand/favicon.png` : pixels d'origine (glyphe pearl sur tuile crimson), recadré serré. Sert de favicon **et** d'apple-touch-icon.
+  - `public/brand/icon.png` : masque alpha du glyphe seul, teintable, disponible si on veut le monogramme dans l'UI.
+
+### ⚠️ Ajouter un asset dans `public/brand/` ? Redémarrer `npm run dev`
+`brand-assets.ts` détecte les fichiers via `fs.existsSync` **à l'évaluation du module**. Vite met ce module en cache : déposer un fichier pendant que le serveur tourne ne change rien, et le HMR ne suffit pas (le site continue d'afficher le fallback). Le build de production, lui, part d'un process neuf et détecte tout correctement. Symptôme typique : `dist/` a le bon asset mais le dev sert encore le fallback.
 
 ## Règles non négociables
 - **Aucun tiret cadratin (—) nulle part.** Virgules, points, deux-points.
@@ -42,7 +57,17 @@ Site web de l'agence DESORA (marketing digital premium, Maroc). Astro + TypeScri
 - WhatsApp = CTA de première classe partout (canal de conversion préféré au Maroc), pas juste une icône de footer.
 
 ## Politique de contenu de confiance (IMPORTANT)
-Logos clients, témoignages, études de cas chiffrées, statistiques d'impact : **jamais inventés.** Structure visuelle réelle mais contenu marqué `{{PLACEHOLDER_...}}` jusqu'à fourniture de vrai contenu. La barre de confiance de l'accueil utilise "Secteurs que nous accompagnons" (option honnête sans prétendre à des relations client).
+Logos clients, témoignages, études de cas chiffrées, statistiques d'impact : **jamais inventés.** Structure visuelle réelle mais contenu marqué `{{PLACEHOLDER_...}}` jusqu'à fourniture de vrai contenu.
+
+**État actuel :** le client a fourni `reviews and case studies.docx` (9 clients réels) et a confirmé explicitement que les noms, les chiffres et les citations sont réels et approuvés par chaque personne citée. Ce contenu est donc publié :
+- Barre de confiance accueil : "Ils nous font confiance" + les 9 noms clients (texte, pas de logos, aucun logo n'ayant été fourni).
+- Accueil : 3 études de cas en vedette (MoteurZone, Desora Beauty, Riad Dar Souiri), 3 témoignages nominatifs, bande de chiffres attribuée client par client.
+- 6 des 7 pages services ont une `caseStudy` réelle (client, blocage, action, tableau de métriques avant/après sur 12 mois, citation).
+
+**Toujours en attente (ne pas inventer) :**
+- `identite-de-marque` : aucune étude de cas identité fournie dans le document, placeholder conservé.
+- Mentions légales : ICE, RC, forme juridique, adresse du siège.
+- Logos clients réels, numéro WhatsApp, domaine de production, réseaux sociaux (voir `src/lib/site-config.ts`).
 
 ## Architecture
 
@@ -50,7 +75,13 @@ Logos clients, témoignages, études de cas chiffrées, statistiques d'impact : 
 - **Contenu :** content collections dans `src/content/` (`services`, `blog`, `home`, `about`), un fichier markdown par langue (`fr/`, `en/`, `ar/`). Helpers dans `src/lib/content.ts`. Note : le glob loader retire `/index` des ids → `home/fr/index.md` a l'id `fr`.
 - **Packs services :** 3 niveaux cohérents = **Essentiel / Croissance / Signature**, sans prix. Colonne du milieu badge "Recommandé". Chaque niveau supérieur : "Tout ce qui est inclus dans [précédent], plus :".
 - **Préchargement :** premier chargement de session uniquement (`sessionStorage`), compteur 0→100 (`src/components/Preloader.astro`). Le hero attend `window.__desoraPreloaderDone` (flag synchrone) OU l'event `desora:preloader-done`.
-- **Animations :** init partagée dans `src/scripts/motion.ts` (GSAP + ScrollTrigger + SplitText + Lenis sur le ticker GSAP). Reveals génériques via `data-reveal` / `data-reveal-group`.
+- **Animations :** init partagée dans `src/scripts/motion.ts` (GSAP + ScrollTrigger + SplitText + Lenis sur le ticker GSAP).
+  - **Une seule courbe partout : `cubic-bezier(0.16, 1, 0.3, 1)`** (départ franc, arrivée qui se pose). Jamais de rebond : le rebond fait joueur, pas cher.
+  - Attributs génériques : `data-reveal` (montée douce), `data-reveal="lines"` (cascade ligne par ligne via SplitText), `data-reveal-group` (stagger des enfants), `data-hairline-draw` (filet qui se trace, RTL-aware), `data-countup` (chiffres qui défilent, parse `+217,6%` / `180 000 درهم` et garde préfixe/suffixe/séparateur).
+  - Classes utilitaires : `.cta-shine` (reflet lent sur aplat au survol), `.press` (enfoncement 1px), `.link-underline` (+ variante `--gold`).
+  - Tout est derrière `prefers-reduced-motion` ; en reduced-motion les compteurs gardent la valeur finale écrite dans le contenu (jamais 0).
+  - Pas de `window.addEventListener('scroll')` : l'état scrollé du header passe par ScrollTrigger pour rester sur le rAF de Lenis.
+  - `ScrollTrigger.refresh()` est rappelé sur `document.fonts.ready` (les webfonts changent les métriques donc les points de déclenchement).
 - **Config à finaliser :** valeurs placeholder dans `src/lib/site-config.ts` (numéro WhatsApp, domaine, réseaux sociaux, ICE/RC légaux). Chercher `PLACEHOLDER` dans le repo.
 
 ## Commandes

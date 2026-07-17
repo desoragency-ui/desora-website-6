@@ -71,5 +71,8 @@ faq:
 relatedServices:
   - "creation-site-web"
   - "reseaux-sociaux"
+# لم تتضمن وثيقة العميل أي دراسة حالة خاصة بالهوية البصرية.
+# استبدل هذا الحقل بمفتاح `caseStudy` (بنفس بنية الخدمات الأخرى)
+# بمجرد اعتماد مشروع هوية بصرية من طرف العميل المعني.
 caseStudyPlaceholder: "{{PLACEHOLDER_CASE_STUDY_BRAND_IDENTITY}}"
 ---

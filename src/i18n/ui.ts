@@ -47,6 +47,15 @@ export const ui = {
     'related.title': 'Services complémentaires',
     'service.finalCtaHeading': 'Prêt à discuter de {service} ?',
 
+    'caseStudy.label': 'Étude de cas',
+    'caseStudy.challenge': 'Le blocage',
+    'caseStudy.action': "Ce que nous avons fait",
+    'caseStudy.results': 'Résultats sur 12 mois',
+    'caseStudy.metric': 'Indicateur',
+    'caseStudy.before': 'Avant',
+    'caseStudy.after': 'Après',
+    'caseStudy.shift': 'Évolution',
+
     'form.name': 'Nom complet',
     'form.company': 'Entreprise',
     'form.service': 'Service qui vous intéresse',
@@ -128,6 +137,15 @@ export const ui = {
     'related.title': 'Related services',
     'service.finalCtaHeading': 'Ready to discuss {service}?',
 
+    'caseStudy.label': 'Case study',
+    'caseStudy.challenge': 'The problem',
+    'caseStudy.action': 'What we did',
+    'caseStudy.results': 'Results over 12 months',
+    'caseStudy.metric': 'Metric',
+    'caseStudy.before': 'Before',
+    'caseStudy.after': 'After',
+    'caseStudy.shift': 'Shift',
+
     'form.name': 'Full name',
     'form.company': 'Company',
     'form.service': 'Service you are interested in',
@@ -208,6 +226,15 @@ export const ui = {
 
     'related.title': 'خدمات مكملة',
     'service.finalCtaHeading': 'هل أنت مستعد لمناقشة {service}؟',
+
+    'caseStudy.label': 'دراسة حالة',
+    'caseStudy.challenge': 'المشكلة',
+    'caseStudy.action': 'ما قمنا به',
+    'caseStudy.results': 'النتائج خلال 12 شهرًا',
+    'caseStudy.metric': 'المؤشر',
+    'caseStudy.before': 'قبل',
+    'caseStudy.after': 'بعد',
+    'caseStudy.shift': 'التطور',
 
     'form.name': 'الاسم الكامل',
     'form.company': 'الشركة',

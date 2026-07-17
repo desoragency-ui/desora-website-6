@@ -71,5 +71,8 @@ faq:
 relatedServices:
   - "creation-site-web"
   - "reseaux-sociaux"
+# Aucune étude de cas identité de marque n'était fournie dans le document client.
+# Remplacer ce bloc par une clé `caseStudy` (même structure que les autres services)
+# dès qu'un projet d'identité est validé par le client concerné.
 caseStudyPlaceholder: "{{PLACEHOLDER_ETUDE_CAS_IDENTITE_MARQUE}}"
 ---

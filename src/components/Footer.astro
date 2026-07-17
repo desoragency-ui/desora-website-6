@@ -19,7 +19,7 @@ const year = new Date().getFullYear();
 ---
 
 <footer class="relative overflow-hidden border-t border-border bg-bg-secondary">
-  <BrandPattern opacity={0.035} tile={520} />
+  <BrandPattern opacity={0.035} />
   <div class="relative mx-auto max-w-7xl px-5 py-16 sm:px-8">
     <div class="grid grid-cols-2 gap-10 md:grid-cols-4">
       <div class="col-span-2 md:col-span-1">
@@ -117,7 +117,7 @@ const year = new Date().getFullYear();
           />
           <button
             type="submit"
-            class="flex h-12 shrink-0 items-center justify-center rounded-full bg-accent px-6 text-sm font-semibold text-accent-foreground transition-colors hover:bg-accent-hover"
+            class="cta-shine press flex h-12 shrink-0 items-center justify-center rounded-full bg-accent-strong px-6 text-sm font-semibold text-accent-foreground transition-colors duration-500 hover:bg-accent-strong-hover"
           >
             {t('newsletter.submit')}
           </button>

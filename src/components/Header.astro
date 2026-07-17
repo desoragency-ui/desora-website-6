@@ -25,43 +25,53 @@ const navLinks = [
 
 <header
   id="site-header"
-  class="fixed inset-x-0 top-0 z-50 w-full border-b border-transparent transition-colors duration-300 data-[scrolled=true]:border-border data-[scrolled=true]:bg-bg-primary/90 data-[scrolled=true]:backdrop-blur-md"
+  class="fixed inset-x-0 top-0 z-50 w-full border-b border-transparent transition-[background-color,border-color,backdrop-filter,height] duration-500 [transition-timing-function:cubic-bezier(0.16,1,0.3,1)] data-[scrolled=true]:border-hairline data-[scrolled=true]:bg-bg-primary/80 data-[scrolled=true]:backdrop-blur-xl"
   data-scrolled="false"
 >
-  <div class="mx-auto flex h-20 w-full max-w-7xl items-center justify-between px-5 sm:px-8">
-    <a href={localizedPath(locale, '')} aria-label="DESORA" class="transition-opacity hover:opacity-80">
+  <div
+    id="header-inner"
+    class="mx-auto flex h-20 w-full max-w-7xl items-center justify-between px-5 transition-[height] duration-500 [transition-timing-function:cubic-bezier(0.16,1,0.3,1)] sm:px-8 [header[data-scrolled=true]_&]:h-[68px]"
+  >
+    <a
+      href={localizedPath(locale, '')}
+      aria-label="DESORA"
+      class="transition-opacity duration-500 [transition-timing-function:cubic-bezier(0.16,1,0.3,1)] hover:opacity-70"
+    >
       <Wordmark class="h-6 text-2xl" />
     </a>
 
     <nav class="hidden items-center gap-1 lg:flex" aria-label="Navigation principale">
-      <a href={navLinks[0].href} class="rounded-full px-4 py-2 text-sm font-medium text-text-primary transition-colors hover:bg-bg-secondary">
+      <a href={navLinks[0].href} class="group relative px-4 py-2 text-sm font-medium text-text-primary transition-colors duration-500 hover:text-accent">
         {navLinks[0].label}
+        <span class="pointer-events-none absolute inset-x-4 bottom-1 h-px origin-left scale-x-0 bg-gold transition-transform duration-500 [transition-timing-function:cubic-bezier(0.16,1,0.3,1)] group-hover:scale-x-100 rtl:origin-right"></span>
       </a>
-      <a href={navLinks[1].href} class="rounded-full px-4 py-2 text-sm font-medium text-text-primary transition-colors hover:bg-bg-secondary">
+      <a href={navLinks[1].href} class="group relative px-4 py-2 text-sm font-medium text-text-primary transition-colors duration-500 hover:text-accent">
         {navLinks[1].label}
+        <span class="pointer-events-none absolute inset-x-4 bottom-1 h-px origin-left scale-x-0 bg-gold transition-transform duration-500 [transition-timing-function:cubic-bezier(0.16,1,0.3,1)] group-hover:scale-x-100 rtl:origin-right"></span>
       </a>
 
       <div class="group relative">
         <button
           type="button"
-          class="flex items-center gap-1 rounded-full px-4 py-2 text-sm font-medium text-text-primary transition-colors hover:bg-bg-secondary"
+          class="group relative flex items-center gap-1 px-4 py-2 text-sm font-medium text-text-primary transition-colors duration-500 hover:text-accent"
           aria-haspopup="true"
           id="services-menu-trigger"
         >
           {t('nav.services')}
-          <Icon name="chevron-down" class="h-3.5 w-3.5 transition-transform group-[&.is-open]:rotate-180" />
+          <Icon name="chevron-down" class="h-3.5 w-3.5 transition-transform duration-500 group-[&.is-open]:rotate-180" />
+          <span class="pointer-events-none absolute inset-x-4 bottom-1 h-px origin-left scale-x-0 bg-gold transition-transform duration-500 [transition-timing-function:cubic-bezier(0.16,1,0.3,1)] group-hover:scale-x-100 rtl:origin-right"></span>
         </button>
         <div
           id="services-menu"
-          class="invisible absolute start-0 top-full z-50 mt-2 w-80 -translate-y-1 rounded-2xl border border-border bg-surface p-2 opacity-0 shadow-xl transition-all duration-150 [&.is-open]:visible [&.is-open]:translate-y-0 [&.is-open]:opacity-100"
+          class="invisible absolute start-0 top-full z-50 mt-3 w-80 -translate-y-2 scale-[0.98] rounded-2xl border border-hairline bg-surface p-2 opacity-0 shadow-[0_24px_60px_-18px_var(--shadow-tint)] transition-all duration-400 [transition-timing-function:cubic-bezier(0.16,1,0.3,1)] [&.is-open]:visible [&.is-open]:translate-y-0 [&.is-open]:scale-100 [&.is-open]:opacity-100"
         >
           {
             services.map((service) => (
               <a
                 href={localizedPath(locale, `services/${service.slug}`)}
-                class="flex items-start gap-3 rounded-xl p-3 transition-colors hover:bg-bg-secondary"
+                class="group/item flex items-start gap-3 rounded-xl p-3 transition-colors duration-300 hover:bg-bg-secondary"
               >
-                <span class="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-bg-secondary text-accent">
+                <span class="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-bg-secondary text-accent transition-colors duration-300 group-hover/item:bg-accent-strong group-hover/item:text-accent-foreground">
                   <Icon name={service.icon as any} class="h-4.5 w-4.5" />
                 </span>
                 <span>
@@ -74,11 +84,13 @@ const navLinks = [
         </div>
       </div>
 
-      <a href={navLinks[2].href} class="rounded-full px-4 py-2 text-sm font-medium text-text-primary transition-colors hover:bg-bg-secondary">
+      <a href={navLinks[2].href} class="group relative px-4 py-2 text-sm font-medium text-text-primary transition-colors duration-500 hover:text-accent">
         {navLinks[2].label}
+        <span class="pointer-events-none absolute inset-x-4 bottom-1 h-px origin-left scale-x-0 bg-gold transition-transform duration-500 [transition-timing-function:cubic-bezier(0.16,1,0.3,1)] group-hover:scale-x-100 rtl:origin-right"></span>
       </a>
-      <a href={navLinks[3].href} class="rounded-full px-4 py-2 text-sm font-medium text-text-primary transition-colors hover:bg-bg-secondary">
+      <a href={navLinks[3].href} class="group relative px-4 py-2 text-sm font-medium text-text-primary transition-colors duration-500 hover:text-accent">
         {navLinks[3].label}
+        <span class="pointer-events-none absolute inset-x-4 bottom-1 h-px origin-left scale-x-0 bg-gold transition-transform duration-500 [transition-timing-function:cubic-bezier(0.16,1,0.3,1)] group-hover:scale-x-100 rtl:origin-right"></span>
       </a>
     </nav>
 
@@ -87,7 +99,7 @@ const navLinks = [
       <ThemeToggle locale={locale} />
       <a
         href={localizedPath(locale, 'contact')}
-        class="ms-2 flex h-11 items-center rounded-full bg-accent px-5 text-sm font-semibold text-accent-foreground transition-colors hover:bg-accent-hover"
+        class="cta-shine press ms-2 flex h-11 items-center rounded-full bg-accent-strong px-5 text-sm font-semibold text-accent-foreground transition-colors duration-500 hover:bg-accent-strong-hover"
       >
         {t('nav.cta')}
       </a>
@@ -110,7 +122,7 @@ const navLinks = [
 
   <div
     id="mobile-menu"
-    class="fixed inset-0 top-20 z-40 hidden overflow-y-auto bg-bg-primary px-5 pb-10 pt-4 lg:hidden"
+    class="invisible fixed inset-0 top-20 z-40 translate-y-[-8px] overflow-y-auto bg-bg-primary/98 px-5 pb-10 pt-4 opacity-0 backdrop-blur-xl transition-all duration-400 [transition-timing-function:cubic-bezier(0.16,1,0.3,1)] [&.is-open]:visible [&.is-open]:translate-y-0 [&.is-open]:opacity-100 lg:hidden"
   >
     <nav class="flex flex-col gap-1" aria-label="Navigation mobile">
       {
@@ -133,7 +145,7 @@ const navLinks = [
           </a>
         ))
       }
-      <div class="my-2 h-px bg-border" />
+      <div class="hairline my-3" />
       {
         navLinks.slice(2).map((link) => (
           <a href={link.href} class="rounded-xl px-4 py-3 text-base font-medium text-text-primary hover:bg-bg-secondary">
@@ -146,7 +158,7 @@ const navLinks = [
       </div>
       <a
         href={localizedPath(locale, 'contact')}
-        class="mt-4 flex h-12 items-center justify-center rounded-full bg-accent px-5 text-base font-semibold text-accent-foreground"
+        class="cta-shine press mt-4 flex h-12 items-center justify-center rounded-full bg-accent-strong px-5 text-base font-semibold text-accent-foreground"
       >
         {t('nav.cta')}
       </a>
@@ -155,12 +167,43 @@ const navLinks = [
 </header>
 
 <script>
+  import { gsap } from 'gsap';
+  import { ScrollTrigger } from 'gsap/ScrollTrigger';
+  import { reduceMotion } from '../scripts/motion';
+
+  gsap.registerPlugin(ScrollTrigger);
+
   const header = document.getElementById('site-header');
-  const onScroll = () => {
-    header?.setAttribute('data-scrolled', String(window.scrollY > 8));
-  };
-  onScroll();
-  window.addEventListener('scroll', onScroll, { passive: true });
+
+  // Scrolled state via ScrollTrigger rather than a raw scroll listener, so it
+  // rides the same rAF loop as Lenis instead of firing on every scroll event.
+  if (header) {
+    ScrollTrigger.create({
+      start: 'top -8',
+      end: 99999,
+      onUpdate: (self) => header.setAttribute('data-scrolled', String(self.scroll() > 8)),
+      onToggle: (self) => header.setAttribute('data-scrolled', String(self.isActive)),
+    });
+    header.setAttribute('data-scrolled', String(window.scrollY > 8));
+  }
+
+  // Header settles in after the preloader clears, so the wordmark isn't
+  // already sitting there when the curtain lifts.
+  function playHeaderEntrance() {
+    if (reduceMotion || !header) return;
+    const items = header.querySelectorAll('#header-inner > *');
+    gsap.fromTo(
+      items,
+      { opacity: 0, y: -14 },
+      { opacity: 1, y: 0, duration: 0.9, stagger: 0.08, ease: 'power3.out', clearProps: 'transform' }
+    );
+  }
+
+  if ((window as any).__desoraPreloaderDone || document.documentElement.classList.contains('preloader-skip')) {
+    playHeaderEntrance();
+  } else {
+    window.addEventListener('desora:preloader-done', playHeaderEntrance, { once: true });
+  }
 
   const servicesTrigger = document.getElementById('services-menu-trigger');
   const servicesMenu = document.getElementById('services-menu');
@@ -178,17 +221,28 @@ const navLinks = [
 
   const mobileTrigger = document.getElementById('mobile-menu-trigger');
   const mobileMenu = document.getElementById('mobile-menu');
+
+  function setMobileMenu(open: boolean) {
+    if (!mobileMenu) return;
+    mobileMenu.classList.toggle('is-open', open);
+    document.body.classList.toggle('overflow-hidden', open);
+    mobileTrigger?.setAttribute('aria-expanded', String(open));
+
+    if (open && !reduceMotion) {
+      // Links cascade in behind the panel fade.
+      gsap.fromTo(
+        mobileMenu.querySelectorAll('nav > *'),
+        { opacity: 0, y: 12 },
+        { opacity: 1, y: 0, duration: 0.5, stagger: 0.035, ease: 'power3.out', delay: 0.12, clearProps: 'all' }
+      );
+    }
+  }
+
   mobileTrigger?.addEventListener('click', () => {
-    const isHidden = mobileMenu?.classList.contains('hidden');
-    mobileMenu?.classList.toggle('hidden');
-    document.body.classList.toggle('overflow-hidden', Boolean(isHidden));
-    mobileTrigger.setAttribute('aria-expanded', String(Boolean(isHidden)));
+    setMobileMenu(!mobileMenu?.classList.contains('is-open'));
   });
-  mobileMenu?.querySelectorAll('a').forEach((a) =>
-    a.addEventListener('click', () => {
-      mobileMenu.classList.add('hidden');
-      document.body.classList.remove('overflow-hidden');
-      mobileTrigger?.setAttribute('aria-expanded', 'false');
-    })
-  );
+  mobileMenu?.querySelectorAll('a').forEach((a) => a.addEventListener('click', () => setMobileMenu(false)));
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && mobileMenu?.classList.contains('is-open')) setMobileMenu(false);
+  });
 </script>

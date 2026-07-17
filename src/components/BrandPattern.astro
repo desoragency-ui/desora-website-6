@@ -2,25 +2,45 @@
 import { brandPattern } from '../lib/brand-assets';
 
 /**
- * Scattered-letterform brand texture, echoing the DESORA monogram pattern.
- * Uses the real `public/brand/pattern.*` tile when present; otherwise renders
- * an inline tiling SVG of serif glyphs. Kept at a whisper opacity for editorial
- * restraint (never competes with content).
+ * Scattered-letterform brand texture, built from the real DESORA pattern
+ * artwork (`public/brand/pattern.png`) when present, else an inline SVG
+ * recreation so the design never looks broken.
+ *
+ * The real artwork is a white+alpha MASK, so it takes the theme's colour via
+ * `mask-image` (crimson in light, pearl in dark) exactly like the wordmark.
+ * That also means the artwork's cream ground never touches the page surface,
+ * and no blend mode is needed.
+ *
+ * `fit`:
+ *  - 'cover'  (default) one large uncut wash of letterforms. The source art is
+ *    not a seamless tile (its edges do not match), so repeating it would show
+ *    a grid of seams. A single wash also reads more art-directed than wallpaper.
+ *  - 'tile'   repeat at `tile` px. Only for the SVG fallback, which IS seamless.
  */
 interface Props {
   class?: string;
   opacity?: number;
-  /** 'accent' = crimson glyphs (default). 'contrast' = cream glyphs, for use on crimson surfaces. */
+  /** 'accent' = crimson glyphs (default). 'contrast' = cream glyphs, for crimson surfaces. */
   tone?: 'accent' | 'contrast';
-  /** Tile size in px for the real pattern image. */
+  /** Tile size in px, used only when fit="tile". */
   tile?: number;
+  fit?: 'cover' | 'tile';
 }
 
-const { class: className = '', opacity = 0.05, tone = 'accent', tile = 460 } = Astro.props;
+const { class: className = '', opacity = 0.05, tone = 'accent', tile = 460, fit = 'cover' } = Astro.props;
+
 const fill = tone === 'contrast' ? 'var(--color-accent-foreground)' : 'var(--color-accent)';
-// A crimson-on-white pattern export blends cleanly via multiply (white drops out)
-// on light surfaces; on the crimson CTA we use the SVG recreation in cream instead.
-const useRealImage = Boolean(brandPattern) && tone === 'accent';
+const useRealImage = Boolean(brandPattern);
+
+const maskSize = fit === 'tile' ? `${tile}px auto` : 'cover';
+const maskRepeat = fit === 'tile' ? 'repeat' : 'no-repeat';
+const maskStyle = useRealImage
+  ? [
+      `background-color:${fill}`,
+      `-webkit-mask:url('${brandPattern}') center / ${maskSize} ${maskRepeat}`,
+      `mask:url('${brandPattern}') center / ${maskSize} ${maskRepeat}`,
+    ].join(';')
+  : '';
 
 // A single tile of rotated serif glyphs; the <pattern> repeats it seamlessly.
 const glyphs = [
@@ -42,33 +62,28 @@ const glyphs = [
 >
   {
     useRealImage ? (
-      <div
-        class="absolute inset-0 mix-blend-multiply dark:mix-blend-screen"
-        style={`background-image:url('${brandPattern}');background-size:${tile}px auto;background-repeat:repeat;`}
-      />
+      <div class="absolute inset-0" style={maskStyle} />
     ) : (
-  <svg width="100%" height="100%" preserveAspectRatio="xMidYMid slice">
-    <defs>
-      <pattern id="desora-glyphs" width="280" height="280" patternUnits="userSpaceOnUse">
-        {
-          glyphs.map((g) => (
-            <text
-              x={g.x}
-              y={g.y}
-              font-family="Cormorant, Georgia, serif"
-              font-size={g.s}
-              font-weight="600"
-              fill={fill}
-              transform={`rotate(${g.r} ${g.x} ${g.y})`}
-            >
-              {g.c}
-            </text>
-          ))
-        }
-      </pattern>
-    </defs>
-    <rect width="100%" height="100%" fill="url(#desora-glyphs)"></rect>
-  </svg>
+      <svg width="100%" height="100%" preserveAspectRatio="xMidYMid slice">
+        <defs>
+          <pattern id="desora-glyphs" width="280" height="280" patternUnits="userSpaceOnUse">
+            {glyphs.map((g) => (
+              <text
+                x={g.x}
+                y={g.y}
+                font-family="Cormorant, Georgia, serif"
+                font-size={g.s}
+                font-weight="600"
+                fill={fill}
+                transform={`rotate(${g.r} ${g.x} ${g.y})`}
+              >
+                {g.c}
+              </text>
+            ))}
+          </pattern>
+        </defs>
+        <rect width="100%" height="100%" fill="url(#desora-glyphs)"></rect>
+      </svg>
     )
   }
 </div>

@@ -56,7 +56,7 @@ const t = useTranslations(locale);
   </div>
   <button
     type="submit"
-    class="flex h-13 w-full items-center justify-center rounded-full bg-accent text-base font-semibold text-accent-foreground transition-transform hover:scale-[1.01]"
+    class="cta-shine press flex h-13 w-full items-center justify-center rounded-full bg-accent-strong text-base font-semibold text-accent-foreground transition-colors duration-500 hover:bg-accent-strong-hover"
   >
     {t('form.submit')}
   </button>
@@ -75,7 +75,7 @@ const t = useTranslations(locale);
     const service = String(data.get('service') || '');
     const message = String(data.get('message') || '');
 
-    const subject = `Nouveau projet : ${service} — ${name}`;
+    const subject = `Nouveau projet : ${service}, ${name}`;
     const body = [`Nom : ${name}`, company && `Entreprise : ${company}`, `Service : ${service}`, '', message]
       .filter(Boolean)
       .join('\n');

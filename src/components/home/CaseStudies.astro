@@ -1,31 +1,63 @@
 ---
+import Icon from '../Icon.astro';
+import { useTranslations, localizedPath } from '../../i18n/utils';
+import type { Locale } from '../../i18n/config';
+
 interface Props {
+  locale: Locale;
   heading: string;
   description: string;
-  items: { sector: string; challenge: string; result: string }[];
+  items: {
+    client: string;
+    sector: string;
+    challenge: string;
+    result: string;
+    metric: { value: string; label: string };
+    serviceSlug: string;
+  }[];
 }
 
-const { heading, description, items } = Astro.props;
+const { locale, heading, description, items } = Astro.props;
+const t = useTranslations(locale);
 ---
 
 <section class="bg-bg-secondary py-24">
   <div class="mx-auto max-w-7xl px-5 sm:px-8">
     <div class="max-w-2xl" data-reveal>
-      <h2 class="font-display text-[clamp(1.75rem,3.5vw,2.75rem)] font-semibold leading-tight text-text-primary">
+      <h2 class="font-display text-[clamp(2rem,4vw,3.25rem)] font-semibold leading-[1.08] text-text-primary">
         {heading}
       </h2>
-      <p class="mt-4 text-lg text-text-secondary">{description}</p>
+      <p class="mt-4 text-lg leading-relaxed text-text-secondary">{description}</p>
     </div>
 
-    <div class="mt-12 grid grid-cols-1 gap-6 lg:grid-cols-3" data-reveal-group>
+    <div class="mt-14 grid grid-cols-1 gap-6 lg:grid-cols-3" data-reveal-group>
       {
         items.map((item) => (
-          <article class="flex flex-col rounded-2xl border border-dashed border-border bg-surface p-7">
-            <span class="w-fit rounded-full bg-bg-secondary px-3 py-1 text-xs font-semibold uppercase tracking-wide text-text-secondary">
-              {item.sector}
-            </span>
-            <p class="mt-5 text-sm font-medium text-text-primary">{item.challenge}</p>
+          <article class="group relative flex min-w-0 flex-col overflow-hidden rounded-2xl border border-border bg-surface p-8 transition-all duration-500 [transition-timing-function:cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-1.5 hover:border-accent hover:shadow-[0_20px_50px_-24px_rgba(0,0,0,0.35)]">
+            <span class="absolute inset-x-0 top-0 h-px origin-left scale-x-0 bg-gold transition-transform duration-500 group-hover:scale-x-100" />
+
+            <h3 class="font-display text-xl font-semibold text-text-primary">{item.client}</h3>
+            <p class="overline mt-1.5">{item.sector}</p>
+
+            <p class="mt-6 text-sm leading-relaxed text-text-secondary">{item.challenge}</p>
             <p class="mt-3 flex-1 text-sm leading-relaxed text-text-secondary">{item.result}</p>
+
+            <div class="mt-7 border-t border-hairline pt-6">
+              <p class="numeral text-[clamp(2rem,3vw,2.5rem)] font-semibold leading-none text-accent">
+                {item.metric.value}
+              </p>
+              <p class="mt-2 text-sm text-text-secondary">{item.metric.label}</p>
+            </div>
+
+            <a
+              href={localizedPath(locale, `services/${item.serviceSlug}`)}
+              class="mt-6 flex items-center gap-2 text-sm font-medium text-accent"
+            >
+              {t('cta.viewService')}
+              <span class="transition-transform duration-500 group-hover:translate-x-1 rtl:group-hover:-translate-x-1">
+                <Icon name="arrow-right" class="h-4 w-4 rtl:rotate-180" />
+              </span>
+            </a>
           </article>
         ))
       }

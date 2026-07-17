@@ -71,5 +71,8 @@ faq:
 relatedServices:
   - "creation-site-web"
   - "reseaux-sociaux"
+# No brand identity case study was provided in the client document.
+# Replace this with a `caseStudy` key (same shape as the other services)
+# once a brand identity engagement is approved by the client involved.
 caseStudyPlaceholder: "{{PLACEHOLDER_CASE_STUDY_BRAND_IDENTITY}}"
 ---

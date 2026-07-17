@@ -45,7 +45,28 @@ const services = defineCollection({
       })
     ),
     relatedServices: z.array(z.string()),
-    caseStudyPlaceholder: z.string(),
+    /** Real client engagement. Omit when no case study exists for this service yet. */
+    caseStudy: z
+      .object({
+        client: z.string(),
+        sector: z.string(),
+        author: z.string(),
+        role: z.string(),
+        challenge: z.string(),
+        action: z.string(),
+        metrics: z.array(
+          z.object({
+            label: z.string(),
+            before: z.string(),
+            after: z.string(),
+            shift: z.string(),
+          })
+        ),
+        quote: z.string().optional(),
+      })
+      .optional(),
+    /** Shown only while a service has no real case study to publish. */
+    caseStudyPlaceholder: z.string().optional(),
   }),
 });
 
@@ -110,9 +131,12 @@ const home = defineCollection({
       description: z.string(),
       items: z.array(
         z.object({
+          client: z.string(),
           sector: z.string(),
           challenge: z.string(),
           result: z.string(),
+          metric: z.object({ value: z.string(), label: z.string() }),
+          serviceSlug: z.string(),
         })
       ),
     }),

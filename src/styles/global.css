@@ -73,8 +73,15 @@
   --color-text-secondary: var(--sand-700);
   --color-accent: var(--crimson-700);
   --color-accent-hover: var(--crimson-800);
+  /* Fills (buttons, CTA bands, badges). Same as accent in light mode; dark mode
+     splits them so filled surfaces stay deep jewel crimson while text-accent
+     lightens just enough for AA contrast without drifting into pink. */
+  --color-accent-strong: var(--crimson-700);
+  --color-accent-strong-hover: var(--crimson-800);
   --color-accent-foreground: var(--pearl-50);
   --color-border: var(--sand-300);
+  /* Shadow tint: warmed toward the palette, never pure black on pearl. */
+  --shadow-tint: hsl(20 30% 12% / 0.24);
   /* Antique gold — luxury metal accent for hairlines, overlines, details.
      Used sparingly; never for body text. Deep enough to clear AA 4.5:1 on Pearl
      for small overline labels (~4.9:1). Champagne variant in dark mode below. */
@@ -83,19 +90,29 @@
   --color-hairline: hsl(36 30% 44% / 0.28);
 }
 
-/* Semantic tokens — dark mode */
+/* Semantic tokens — dark mode.
+   Correction pass: the old dark accent (crimson-400) read as hot pink, far off
+   the #710014 brand. Physics won't allow deep crimson to pass AA as small text
+   on near-black, so the accent is split:
+   - accent        → muted rosewood for text, icons, links (AA on every surface)
+   - accent-strong → deep jewel crimson for filled CTAs, with pearl text on top
+   Surfaces get a barely-warm espresso tint (elevated cards should feel like
+   leather, not slate); borders drop to a whisper. */
 [data-theme="dark"] {
   --color-bg-primary: var(--obsidian-900);
-  --color-bg-secondary: var(--obsidian-800);
-  --color-surface: var(--obsidian-700);
+  --color-bg-secondary: hsl(20 6% 11.5%);
+  --color-surface: hsl(24 6% 14%);
   --color-text-primary: var(--pearl-50);
   --color-text-secondary: var(--sand-300);
-  --color-accent: var(--crimson-400);
-  --color-accent-hover: var(--crimson-300);
-  --color-accent-foreground: var(--obsidian-900);
-  --color-border: var(--sand-700);
+  --color-accent: hsl(352 58% 70%);
+  --color-accent-hover: hsl(352 66% 78%);
+  --color-accent-strong: hsl(349 88% 38%);
+  --color-accent-strong-hover: hsl(349 82% 45%);
+  --color-accent-foreground: var(--pearl-50);
+  --color-border: hsl(26 12% 25%);
   --color-gold: hsl(40 52% 66%);
   --color-hairline: hsl(40 40% 66% / 0.24);
+  --shadow-tint: hsl(0 0% 0% / 0.55);
 }
 
 /* Expose the semantic layer to Tailwind utilities (bg-*, text-*, border-*).
@@ -109,6 +126,8 @@
   --color-text-secondary: var(--color-text-secondary);
   --color-accent: var(--color-accent);
   --color-accent-hover: var(--color-accent-hover);
+  --color-accent-strong: var(--color-accent-strong);
+  --color-accent-strong-hover: var(--color-accent-strong-hover);
   --color-accent-foreground: var(--color-accent-foreground);
   --color-border: var(--color-border);
   --color-gold: var(--color-gold);
@@ -174,7 +193,7 @@
   }
 
   ::selection {
-    background-color: var(--color-accent);
+    background-color: var(--color-accent-strong);
     color: var(--color-accent-foreground);
   }
 }
@@ -215,10 +234,59 @@
     background-position: 0 100%;
     background-repeat: no-repeat;
     background-size: 0% 1px;
-    transition: background-size 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+    transition: background-size 0.4s cubic-bezier(0.16, 1, 0.3, 1);
   }
-  .link-underline:hover {
+  .link-underline:hover,
+  a:hover > .link-underline,
+  a:focus-visible > .link-underline,
+  button:hover > .link-underline {
     background-size: 100% 1px;
+  }
+
+  /* Gold variant: underline draws in antique gold while the label keeps its
+     own color. Used for the header navigation. */
+  .link-underline--gold {
+    background-image: linear-gradient(var(--color-gold), var(--color-gold));
+  }
+
+  /* Tactile press feedback for CTAs: a 1px sink, nothing bouncy. */
+  .press:active {
+    transform: translateY(1px) scale(0.98);
+  }
+
+  /* One slow light sweep across a filled CTA on hover. Sits above the fill,
+     below the label. Deliberately faint: jewelry, not chrome. */
+  .cta-shine {
+    position: relative;
+    overflow: hidden;
+    isolation: isolate;
+  }
+  .cta-shine > * {
+    position: relative;
+    z-index: 1;
+  }
+  .cta-shine::after {
+    content: "";
+    position: absolute;
+    inset: -40% auto;
+    width: 45%;
+    left: 0;
+    background: linear-gradient(105deg, transparent 20%, hsl(45 80% 92% / 0.28) 50%, transparent 80%);
+    transform: translateX(-160%) skewX(-14deg);
+    transition: transform 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+    pointer-events: none;
+    z-index: 0;
+  }
+  .cta-shine:hover::after {
+    transform: translateX(320%) skewX(-14deg);
+  }
+
+  /* Theme toggle: the sun/moon takes a slow quarter-turn on hover. */
+  #theme-toggle svg {
+    transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  #theme-toggle:hover svg {
+    transform: rotate(35deg);
   }
 }
 

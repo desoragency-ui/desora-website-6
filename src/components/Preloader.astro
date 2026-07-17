@@ -17,7 +17,7 @@ const t = useTranslations(locale);
   <BrandPattern opacity={0.045} />
   <div id="preloader-inner" class="relative flex flex-col items-center gap-8">
     <Wordmark class="h-8 text-3xl" />
-    <div class="hairline w-16 opacity-60"></div>
+    <div id="preloader-rule" class="hairline w-16 origin-left opacity-60"></div>
     <span
       id="preloader-count"
       class="numeral text-[clamp(4rem,13vw,8rem)] leading-none text-text-primary"
@@ -25,6 +25,8 @@ const t = useTranslations(locale);
       0
     </span>
   </div>
+  <!-- Curtain: rises to reveal the page, rather than the whole screen fading. -->
+  <div id="preloader-curtain" class="pointer-events-none absolute inset-0 z-10 origin-bottom bg-bg-primary" style="transform: scaleY(0);"></div>
 </div>
 
 <script>
@@ -59,28 +61,43 @@ const t = useTranslations(locale);
     } else {
       document.body.classList.add('overflow-hidden');
       const counterState = { value: 0 };
+      const inner = document.getElementById('preloader-inner');
+      const rule = document.getElementById('preloader-rule');
+      const curtain = document.getElementById('preloader-curtain');
 
-      gsap.to(counterState, {
-        value: 100,
-        duration: 1.6,
-        ease: 'power2.inOut',
-        onUpdate: () => {
-          if (counter) counter.textContent = String(Math.round(counterState.value));
-        },
+      const tl = gsap.timeline({
         onComplete: () => {
-          gsap.to(preloader, {
-            opacity: 0,
-            duration: 0.6,
-            delay: 0.15,
-            ease: 'power1.out',
-            onComplete: () => {
-              preloader.style.display = 'none';
-              document.body.classList.remove('overflow-hidden');
-              finish();
-            },
-          });
+          preloader.style.display = 'none';
+          document.body.classList.remove('overflow-hidden');
+          finish();
         },
       });
+
+      // The rule draws itself out under the wordmark as the count climbs.
+      if (rule) tl.fromTo(rule, { scaleX: 0 }, { scaleX: 1, duration: 1.6, ease: 'power2.inOut' }, 0);
+
+      tl.to(
+        counterState,
+        {
+          value: 100,
+          duration: 1.6,
+          ease: 'power2.inOut',
+          onUpdate: () => {
+            if (counter) counter.textContent = String(Math.round(counterState.value));
+          },
+        },
+        0
+      );
+
+      // Wordmark and count lift away, then the curtain rises off the page.
+      if (inner) tl.to(inner, { opacity: 0, y: -24, duration: 0.6, ease: 'power2.in' }, '+=0.2');
+      if (curtain) {
+        tl.set(curtain, { scaleY: 1, transformOrigin: 'bottom center' })
+          .set(preloader, { backgroundColor: 'transparent' })
+          .to(curtain, { scaleY: 0, duration: 1, ease: 'power3.inOut', transformOrigin: 'top center' });
+      } else {
+        tl.to(preloader, { opacity: 0, duration: 0.6, ease: 'power1.out' });
+      }
     }
   }
 </script>

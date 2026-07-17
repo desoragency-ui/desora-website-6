@@ -18,7 +18,8 @@ interface Props {
   ratio?: number;
 }
 
-const { class: className = '', ratio = 3.6 } = Astro.props;
+// 3.871 = exact width:height of public/brand/wordmark.png (the real artwork).
+const { class: className = '', ratio = 3.871 } = Astro.props;
 ---
 
 {

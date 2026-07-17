@@ -14,7 +14,9 @@ const track = [...items, ...items, ...items];
   <p class="overline mx-auto mb-8 max-w-7xl px-5 text-center sm:px-8">
     {heading}
   </p>
-  <div class="group relative overflow-hidden">
+  <div
+    class="group relative overflow-hidden [-webkit-mask-image:linear-gradient(to_right,transparent,black_8%,black_92%,transparent)] [mask-image:linear-gradient(to_right,transparent,black_8%,black_92%,transparent)]"
+  >
     <div class="marquee-track flex w-max items-center gap-4">
       {
         track.map((item) => (
@@ -30,7 +32,7 @@ const track = [...items, ...items, ...items];
 
 <style>
   .marquee-track {
-    animation: marquee-move 42s linear infinite;
+    animation: marquee-move 64s linear infinite;
   }
 
   .group:hover .marquee-track {

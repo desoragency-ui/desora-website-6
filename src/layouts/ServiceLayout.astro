@@ -29,7 +29,7 @@ const t = useTranslations(locale);
   <ProcessSteps heading={t('process.title')} description={service.tagline} steps={service.process} />
   <PricingTiers locale={locale} pricing={service.pricing} />
   <FAQAccordion locale={locale} items={service.faq} />
-  <ServiceCaseStudy text={service.caseStudyPlaceholder} />
+  <ServiceCaseStudy locale={locale} caseStudy={service.caseStudy} placeholder={service.caseStudyPlaceholder} />
   <RelatedServices locale={locale} slugs={service.relatedServices} />
   <FinalCta locale={locale} heading={t('service.finalCtaHeading', { service: service.title })} description={service.tagline} />
 </BaseLayout>
