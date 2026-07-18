@@ -10,8 +10,8 @@ export const siteConfig = {
 
   email: 'desoragency@gmail.com',
 
-  // PLACEHOLDER: replace with the real WhatsApp Business number (E.164, no spaces).
-  whatsappNumber: '212600000000',
+  // WhatsApp Business number in E.164 (local 0687554060 → +212 687554060).
+  whatsappNumber: '212687554060',
   get whatsappUrl() {
     return `https://wa.me/${this.whatsappNumber}`;
   },
@@ -20,10 +20,10 @@ export const siteConfig = {
   },
 
   social: {
-    // PLACEHOLDER: confirm real handles/URLs.
-    instagram: 'https://instagram.com/desora.agency',
+    instagram: 'https://www.instagram.com/desoragency/',
+    // PLACEHOLDER: confirm real LinkedIn company page.
     linkedin: 'https://linkedin.com/company/desora-agency',
-    facebook: 'https://facebook.com/desora.agency',
+    facebook: 'https://www.facebook.com/profile.php?id=100082532402499',
   },
 
   // PLACEHOLDER: confirm real city/office presence before publishing on Contact/footer.

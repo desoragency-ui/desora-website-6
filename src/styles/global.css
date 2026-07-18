@@ -290,6 +290,267 @@
   }
 }
 
+/* --------------------------------------------------------------------------
+   Photography treatment ("Warm shadow, single light"). See design-system/
+   imagery.md. Every photo is graded to one warm Moroccan light source: an
+   obsidian floor, a warm sand lift, and a single crimson raking wash on the
+   shadow side (echoes the hero blobs). A shared film grain unifies mixed
+   sources so stock reads as one art-directed set. Images stay in the
+   obsidian/sand register so crimson TYPE remains the only saturated red.
+   -------------------------------------------------------------------------- */
+:root {
+  --img-grade-shadow: hsl(349 100% 16% / 0.34);   /* crimson raking light */
+  --img-grade-highlight: hsl(28 40% 80% / 0.14);  /* warm sand lift */
+  --img-grade-floor: hsl(20 30% 8% / 0.32);       /* obsidian crush */
+  --img-frame: var(--color-hairline);
+  --img-grain-opacity: 0.06;
+  /* Self-contained fractal-noise grain (no asset request). */
+  --img-grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+html[data-theme="dark"] {
+  --img-grade-shadow: hsl(349 88% 30% / 0.42);
+  --img-grade-highlight: hsl(40 40% 70% / 0.10);
+  --img-grade-floor: hsl(0 0% 0% / 0.46);
+  --img-grain-opacity: 0.08;
+}
+
+@layer components {
+  .figure {
+    position: relative;
+    display: block;
+    overflow: hidden;
+    isolation: isolate;
+    margin: 0;
+    background-color: var(--color-bg-secondary);
+  }
+  .figure--frame {
+    border: 1px solid var(--img-frame);
+  }
+  .figure-media {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  /* Grade: crimson raking wash from the inline-start shadow side, a warm
+     highlight opposite it, and an obsidian floor. Multiplied into the image. */
+  .figure::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    background:
+      linear-gradient(105deg, var(--img-grade-shadow) 0%, transparent 55%),
+      linear-gradient(300deg, var(--img-grade-highlight) 0%, transparent 60%),
+      linear-gradient(0deg, var(--img-grade-floor) 0%, transparent 72%);
+    mix-blend-mode: multiply;
+  }
+  /* The raking light comes from the reading-start edge; mirror it for RTL. */
+  html[dir="rtl"] .figure::before {
+    transform: scaleX(-1);
+  }
+
+  /* Shared film grain over everything. */
+  .figure::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    pointer-events: none;
+    background-image: var(--img-grain);
+    background-size: 140px 140px;
+    opacity: var(--img-grain-opacity);
+    mix-blend-mode: overlay;
+  }
+
+  /* Atmospheric images sit cool + desaturated at rest and warm to full grade
+     once in view. Transform/opacity-free, so it stays cheap. */
+  .figure--atmos .figure-media {
+    filter: grayscale(0.55) contrast(1.04) brightness(0.9);
+    transition: filter 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .figure--atmos.is-warm .figure-media {
+    filter: none;
+  }
+
+  /* Already-graded source art (the commissioned photography): the crimson wash
+     would double-cook it, so only the shared grain survives to bind the set. */
+  .figure--graded::before {
+    display: none;
+  }
+  .figure--graded::after {
+    opacity: calc(var(--img-grain-opacity) * 0.6);
+  }
+
+  /* Slow cinematic drift for hero-scale imagery. Transform-only. */
+  .figure--kenburns .figure-media {
+    animation: figure-kenburns 24s ease-in-out infinite alternate;
+    transform-origin: 50% 45%;
+    will-change: transform;
+  }
+  @keyframes figure-kenburns {
+    from { transform: scale(1); }
+    to   { transform: scale(1.07); }
+  }
+
+  /* Cards: the image lifts and warms under the cursor, nothing jumps. */
+  .figure--hover .figure-media {
+    transition:
+      transform 0.9s cubic-bezier(0.16, 1, 0.3, 1),
+      filter 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .figure--hover:hover .figure-media,
+  a:hover .figure--hover .figure-media,
+  .group:hover .figure--hover .figure-media {
+    transform: scale(1.045);
+    filter: saturate(1.06) brightness(1.03);
+  }
+
+  /* Caption: editorial overline pinned to the shadow corner. */
+  .figure-caption {
+    position: absolute;
+    z-index: 3;
+    inset-inline-start: clamp(0.75rem, 3%, 1.25rem);
+    inset-block-end: clamp(0.75rem, 3%, 1.25rem);
+    margin: 0;
+    color: var(--pearl-50);
+    text-shadow: 0 1px 10px hsl(20 30% 6% / 0.6);
+  }
+
+  /* --------------------------------------------------------------------
+     Full-bleed photographic hero. Shared by the homepage hero and every
+     service hero so the treatment can't drift between them.
+
+     The plates are bright travertine interiors, so a theme-aware scrim sits
+     over the image: the page background fades in from the reading edge,
+     holding the headline at AA contrast in BOTH themes without ever
+     recolouring the type.
+     -------------------------------------------------------------------- */
+  .bleed-hero {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .bleed-media {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    overflow: hidden;
+    pointer-events: none;
+  }
+
+  .bleed-media img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: 68% center;
+    transform-origin: 60% 50%;
+    will-change: transform;
+  }
+
+  @media (min-width: 1024px) {
+    .bleed-media img {
+      object-position: center 42%;
+    }
+  }
+
+  .bleed-scrim {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    background:
+      linear-gradient(
+        to right,
+        var(--color-bg-primary) 0%,
+        color-mix(in oklab, var(--color-bg-primary) 88%, transparent) 38%,
+        color-mix(in oklab, var(--color-bg-primary) 45%, transparent) 62%,
+        color-mix(in oklab, var(--color-bg-primary) 12%, transparent) 100%
+      ),
+      linear-gradient(
+        to top,
+        var(--color-bg-primary) 0%,
+        color-mix(in oklab, var(--color-bg-primary) 35%, transparent) 22%,
+        transparent 55%
+      );
+  }
+
+  html[dir='rtl'] .bleed-scrim {
+    transform: scaleX(-1);
+  }
+
+  /* Below the two-column breakpoint the copy overlays the plate instead of
+     sitting beside it, so switch to a bottom-anchored scrim. */
+  @media (max-width: 1023px) {
+    .bleed-scrim {
+      background:
+        linear-gradient(
+          to top,
+          var(--color-bg-primary) 20%,
+          color-mix(in oklab, var(--color-bg-primary) 88%, transparent) 52%,
+          color-mix(in oklab, var(--color-bg-primary) 62%, transparent) 78%,
+          color-mix(in oklab, var(--color-bg-primary) 30%, transparent) 100%
+        );
+    }
+    html[dir='rtl'] .bleed-scrim {
+      transform: none;
+    }
+  }
+
+  /* Copy must clear both overlay layers. Positioned siblings without a
+     z-index paint UNDER ones that have it, regardless of DOM order. */
+  .bleed-content {
+    position: relative;
+    z-index: 10;
+  }
+
+  /* Slow cinematic drift, class added by JS after the entrance settles so the
+     two transforms never fight. */
+  .bleed-media img.is-drifting {
+    animation: bleed-drift 28s ease-in-out infinite alternate;
+  }
+
+  @keyframes bleed-drift {
+    from { transform: scale(1.02); }
+    to   { transform: scale(1.09); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .bleed-media img.is-drifting {
+      animation: none;
+    }
+  }
+
+  /* Placeholder state: shows the treatment over a brand-pattern wash so an
+     empty slot previews the direction instead of looking broken. */
+  .figure-placeholder {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    background:
+      radial-gradient(120% 90% at 15% 10%, hsl(349 90% 30% / 0.22), transparent 60%),
+      var(--color-bg-secondary);
+  }
+  .figure-placeholder span {
+    color: var(--color-gold);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .figure--atmos .figure-media {
+    filter: none;
+  }
+  .figure--kenburns .figure-media {
+    animation: none;
+  }
+  .figure--hover:hover .figure-media {
+    transform: none;
+  }
+}
+
 /* First-load-only preloader: hidden instantly (pure CSS, no JS flash) once
    sessionStorage marks it as already shown. See Preloader.astro. */
 html.preloader-skip #preloader {

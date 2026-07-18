@@ -23,7 +23,7 @@ const t = useTranslations(locale);
 ---
 
 <BaseLayout title={service.seoTitle} description={service.seoDescription} locale={locale}>
-  <ServiceHero locale={locale} icon={service.icon} title={service.title} h1={service.h1} />
+  <ServiceHero locale={locale} icon={service.icon} title={service.title} h1={service.h1} slug={service.slug} />
   <IncludedGrid locale={locale} items={service.includedItems} />
   <SubServicesList items={service.subServices} />
   <ProcessSteps heading={t('process.title')} description={service.tagline} steps={service.process} />

@@ -1,0 +1,101 @@
+---
+import { Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+import BrandPattern from './BrandPattern.astro';
+
+/**
+ * Art-directed image. Runs every photo through Astro's image pipeline (WebP +
+ * responsive srcset + intrinsic dimensions, so no layout shift) and applies the
+ * DESORA treatment from one place. See design-system/imagery.md.
+ *
+ * tone:
+ *  - 'graded'    (default) the source photo is ALREADY art-directed and graded
+ *                (our Nano Banana set): only a whisper of grain to bind the set
+ *                together. No crimson wash, or the image double-cooks.
+ *  - 'editorial' full warm grade for neutral/unGraded source material.
+ *  - 'atmos'     cool + desaturated at rest, warms to full grade in view.
+ *
+ * Motion (reveal, parallax, ken burns) is driven from src/scripts/motion.ts so
+ * everything shares the one Lenis/GSAP ticker and one reduced-motion policy.
+ */
+interface Props {
+  src?: ImageMetadata;
+  alt: string;
+  /** aspect-ratio value, e.g. '16/9' | '4/5' | '3/2'. */
+  ratio?: string;
+  tone?: 'graded' | 'editorial' | 'atmos';
+  frame?: boolean;
+  caption?: string;
+  class?: string;
+  /** Above-the-fold images should be eager + high priority. */
+  priority?: boolean;
+  sizes?: string;
+  /** CSS object-position, e.g. 'center 40%' when a square crop needs steering. */
+  position?: string;
+  /** Slow cinematic drift. Hero / large bands only. */
+  kenburns?: boolean;
+  /** Scroll parallax depth in percent. Omit for none. */
+  parallax?: number;
+  /** Lift + warm on hover. For cards and clickable images. */
+  hover?: boolean;
+}
+
+const {
+  src,
+  alt,
+  ratio = '3/2',
+  tone = 'graded',
+  frame = false,
+  caption,
+  class: className = '',
+  priority = false,
+  sizes = '(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 640px',
+  position,
+  kenburns = false,
+  parallax,
+  hover = false,
+} = Astro.props;
+
+// Source art runs up to 2752px wide. Astro clamps each width to the intrinsic
+// size, so listing the larger steps costs nothing on smaller sources but keeps
+// big frames sharp on retina instead of upscaling a 1024px variant.
+const widths = [400, 640, 768, 1024, 1440, 1920];
+---
+
+<figure
+  class:list={[
+    'figure',
+    `figure--${tone}`,
+    frame && 'figure--frame',
+    kenburns && 'figure--kenburns',
+    hover && 'figure--hover',
+    className,
+  ]}
+  style={`aspect-ratio:${ratio}`}
+  data-figure
+  data-parallax={parallax ?? undefined}
+>
+  {
+    src ? (
+      <Image
+        class="figure-media"
+        src={src}
+        alt={alt}
+        widths={widths}
+        sizes={sizes}
+        format="webp"
+        quality={86}
+        loading={priority ? 'eager' : 'lazy'}
+        decoding={priority ? 'sync' : 'async'}
+        fetchpriority={priority ? 'high' : 'auto'}
+        style={position ? `object-position:${position}` : undefined}
+      />
+    ) : (
+      <div class="figure-placeholder" role="img" aria-label={alt}>
+        <BrandPattern opacity={0.08} />
+        <span class="overline">{'◆'} Photography</span>
+      </div>
+    )
+  }
+  {caption && <figcaption class="figure-caption overline">{caption}</figcaption>}
+</figure>

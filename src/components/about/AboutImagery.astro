@@ -1,0 +1,64 @@
+---
+import Figure from '../Figure.astro';
+import { getMedia } from '../../lib/media';
+import type { Locale } from '../../i18n/config';
+
+/**
+ * The two About-page photographs: the founder (the agency's differentiator is
+ * direct founder access, so the portrait carries real weight) and the atelier
+ * at work. Kept in one component so the three localized About pages stay thin.
+ */
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+
+const founder = getMedia('about-founder');
+const atelier = getMedia('about-atelier');
+
+const copy = {
+  fr: {
+    founderAlt: 'Le fondateur de DESORA dans son bureau',
+    founderCaption: 'Le fondateur',
+    atelierAlt: "L'atelier DESORA au travail sur un livre de marque",
+    atelierCaption: "L'atelier",
+  },
+  en: {
+    founderAlt: 'The DESORA founder in his office',
+    founderCaption: 'The founder',
+    atelierAlt: 'The DESORA studio at work on a brand book',
+    atelierCaption: 'The studio',
+  },
+  ar: {
+    founderAlt: 'مؤسس DESORA في مكتبه',
+    founderCaption: 'المؤسس',
+    atelierAlt: 'استوديو DESORA أثناء العمل على كتاب العلامة',
+    atelierCaption: 'الاستوديو',
+  },
+}[locale];
+---
+
+<section class="overflow-hidden px-5 py-16 sm:px-8">
+  <div class="mx-auto grid max-w-7xl grid-cols-1 items-center gap-8 md:grid-cols-[0.85fr_1.15fr] md:gap-10">
+    <Figure
+      src={founder}
+      alt={copy.founderAlt}
+      caption={copy.founderCaption}
+      ratio="4/5"
+      frame
+      class="rounded-[1.75rem]"
+      sizes="(max-width: 768px) 92vw, 420px"
+    />
+    <Figure
+      src={atelier}
+      alt={copy.atelierAlt}
+      caption={copy.atelierCaption}
+      ratio="3/2"
+      frame
+      parallax={5}
+      class="rounded-[1.75rem]"
+      sizes="(max-width: 768px) 92vw, 640px"
+    />
+  </div>
+</section>

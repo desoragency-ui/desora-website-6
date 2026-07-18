@@ -3,6 +3,8 @@ import { render } from 'astro:content';
 import BaseLayout from '../../../layouts/BaseLayout.astro';
 import TableOfContents from '../../../components/blog/TableOfContents.astro';
 import ShareButtons from '../../../components/blog/ShareButtons.astro';
+import Figure from '../../../components/Figure.astro';
+import { getMedia } from '../../../lib/media';
 import Icon from '../../../components/Icon.astro';
 import { useTranslations, localizedPath } from '../../../i18n/utils';
 import { getBlogPosts, getCategoryMeta, estimateReadingMinutes } from '../../../lib/content';
@@ -47,6 +49,19 @@ const formattedDate = new Intl.DateTimeFormat('en', { dateStyle: 'long' }).forma
         <span aria-hidden="true">·</span>
         <span>{t('blog.readingTime', { min: String(readingMinutes) })}</span>
       </div>
+    </div>
+
+    <div class="mx-auto mt-10 max-w-5xl" data-reveal>
+      <Figure
+        src={getMedia(`blog-${slug}`)}
+        alt={post.entry.data.title}
+        ratio="16/9"
+        tone="atmos"
+        frame
+        priority
+        caption={categoryLabel}
+        class="rounded-2xl"
+      />
     </div>
 
     <div class="mx-auto mt-12 grid max-w-5xl grid-cols-1 gap-10 lg:grid-cols-[1fr_260px]">

@@ -166,6 +166,83 @@ function initCounters() {
   });
 }
 
+/** Art-directed photography (Figure.astro).
+ *
+ * Two moves, both transform/clip only so they stay on the compositor:
+ *  - a curtain wipe: the frame opens from the bottom while the image settles
+ *    out of a slight over-scale. Reads like a print being revealed, not a
+ *    div fading in.
+ *  - optional scrubbed parallax (`data-parallax="8"`), so large bands drift
+ *    slower than the page and the layout gains depth.
+ *
+ * Atmospheric figures also warm from cool to full grade on entry.
+ */
+function initFigures() {
+  const figures = gsap.utils.toArray<HTMLElement>('[data-figure]');
+
+  figures.forEach((fig) => {
+    const media = fig.querySelector<HTMLElement>('.figure-media');
+
+    if (reduceMotion) {
+      fig.classList.add('is-warm');
+      return;
+    }
+
+    gsap.fromTo(
+      fig,
+      { clipPath: 'inset(0% 0% 100% 0%)' },
+      {
+        clipPath: 'inset(0% 0% 0% 0%)',
+        duration: 1.25,
+        ease: 'power3.out',
+        scrollTrigger: { trigger: fig, start: 'top 88%', once: true },
+      }
+    );
+
+    // Ken-burns figures run a CSS transform animation on the media, which would
+    // override (and fight) a GSAP scale tween on the same element. Those get the
+    // clip wipe only; the drift is their entrance.
+    if (media && !fig.classList.contains('figure--kenburns')) {
+      gsap.fromTo(
+        media,
+        { scale: 1.08 },
+        {
+          scale: 1,
+          duration: 1.6,
+          ease: 'power3.out',
+          scrollTrigger: { trigger: fig, start: 'top 88%', once: true },
+        }
+      );
+    }
+
+    // Atmospheric grade warms once the frame is open.
+    ScrollTrigger.create({
+      trigger: fig,
+      start: 'top 85%',
+      once: true,
+      onEnter: () => fig.classList.add('is-warm'),
+    });
+  });
+
+  // Parallax drift. Applied to the frame (not the media) so it never fights
+  // the ken-burns scale animation running on the image itself.
+  if (!reduceMotion) {
+    gsap.utils.toArray<HTMLElement>('[data-parallax]').forEach((el) => {
+      const depth = parseFloat(el.dataset.parallax || '8');
+      if (!isFinite(depth) || depth === 0) return;
+      gsap.fromTo(
+        el,
+        { yPercent: -depth },
+        {
+          yPercent: depth,
+          ease: 'none',
+          scrollTrigger: { trigger: el, start: 'top bottom', end: 'bottom top', scrub: 0.6 },
+        }
+      );
+    });
+  }
+}
+
 /** Smooth-scrolls to in-page anchors (blog TOC, "scroll to services" etc.)
  * through Lenis so it stays consistent with the rest of the page's scroll feel. */
 function initAnchorLinks() {
@@ -188,6 +265,7 @@ function initAnchorLinks() {
 initReveals();
 initHairlines();
 initCounters();
+initFigures();
 initAnchorLinks();
 
 requestAnimationFrame(() => ScrollTrigger.refresh());

@@ -9,6 +9,12 @@ node_modules/
 .env
 .env.production
 
+# local MCP config (may contain API keys, never commit)
+.mcp.json
+
+# local secret drop (deleted after use, never commit)
+cf-token.txt
+
 # macOS
 .DS_Store
 
@@ -22,3 +28,6 @@ npm-debug.log*
 
 # wrangler
 .wrangler/
+
+# graphify knowledge-graph output (local tooling)
+graphify-out/
