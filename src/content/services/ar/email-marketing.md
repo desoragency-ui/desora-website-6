@@ -72,6 +72,10 @@ faq:
 relatedServices:
   - "generation-de-leads"
   - "reseaux-sociaux"
+testimonial:
+  quote: "كنا نرسل نشرات بريدية عامة يتجاهلها جمهورنا. صمّمت ديزورا تسلسلات بريدية مستهدفة ومؤتمتة يفتحها عملاؤنا ويشترون منها فعلًا. تحوّلت قائمتنا الحالية إلى مصدر دخل رئيسي."
+  author: "Yasmine El Fassi"
+  role: "مديرة التجارة الإلكترونية، Pure Scent"
 caseStudy:
   client: "MaisonTec"
   sector: "استيراد أدوات المطبخ، طنجة، 15 موظفًا"

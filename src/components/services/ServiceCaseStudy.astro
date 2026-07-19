@@ -9,7 +9,7 @@ interface CaseStudy {
   role: string;
   challenge: string;
   action: string;
-  metrics: { label: string; before: string; after: string; shift: string }[];
+  metrics: { label: string; before?: string; after?: string; shift: string }[];
   quote?: string;
 }
 
@@ -21,6 +21,11 @@ interface Props {
 
 const { locale, caseStudy, placeholder } = Astro.props;
 const t = useTranslations(locale);
+
+// Some engagements report an outcome with no measured baseline. Rather than
+// print an empty before/after column (or invent a starting number), those fall
+// back to a stat row that leads with the shift.
+const hasBaselines = caseStudy?.metrics.every((m) => m.before && m.after) ?? false;
 ---
 
 {
@@ -48,34 +53,45 @@ const t = useTranslations(locale);
 
         <div class="mt-12" data-reveal>
           <h3 class="font-display text-base font-semibold text-text-primary">{t('caseStudy.results')}</h3>
-          <div class="mt-5 overflow-x-auto">
-            <table class="w-full min-w-[34rem] border-collapse text-start text-sm">
-              <thead>
-                <tr class="border-b border-border">
-                  <th scope="col" class="py-3 pe-4 text-start font-medium text-text-secondary">
-                    {t('caseStudy.metric')}
-                  </th>
-                  <th scope="col" class="py-3 pe-4 text-start font-medium text-text-secondary">
-                    {t('caseStudy.before')}
-                  </th>
-                  <th scope="col" class="py-3 pe-4 text-start font-medium text-text-secondary">
-                    {t('caseStudy.after')}
-                  </th>
-                  <th scope="col" class="py-3 text-start font-medium text-text-secondary">{t('caseStudy.shift')}</th>
-                </tr>
-              </thead>
-              <tbody>
-                {caseStudy.metrics.map((m) => (
-                  <tr class="border-b border-hairline">
-                    <td class="py-4 pe-4 font-medium text-text-primary">{m.label}</td>
-                    <td class="numeral py-4 pe-4 text-text-secondary">{m.before}</td>
-                    <td class="numeral py-4 pe-4 text-text-primary">{m.after}</td>
-                    <td class="numeral py-4 font-semibold text-accent">{m.shift}</td>
+          {hasBaselines ? (
+            <div class="mt-5 overflow-x-auto">
+              <table class="w-full min-w-[34rem] border-collapse text-start text-sm">
+                <thead>
+                  <tr class="border-b border-border">
+                    <th scope="col" class="py-3 pe-4 text-start font-medium text-text-secondary">
+                      {t('caseStudy.metric')}
+                    </th>
+                    <th scope="col" class="py-3 pe-4 text-start font-medium text-text-secondary">
+                      {t('caseStudy.before')}
+                    </th>
+                    <th scope="col" class="py-3 pe-4 text-start font-medium text-text-secondary">
+                      {t('caseStudy.after')}
+                    </th>
+                    <th scope="col" class="py-3 text-start font-medium text-text-secondary">{t('caseStudy.shift')}</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+                </thead>
+                <tbody>
+                  {caseStudy.metrics.map((m) => (
+                    <tr class="border-b border-hairline">
+                      <td class="py-4 pe-4 font-medium text-text-primary">{m.label}</td>
+                      <td class="numeral py-4 pe-4 text-text-secondary">{m.before}</td>
+                      <td class="numeral py-4 pe-4 text-text-primary">{m.after}</td>
+                      <td class="numeral py-4 font-semibold text-accent">{m.shift}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          ) : (
+            <div class="mt-6 grid gap-8 sm:grid-cols-3">
+              {caseStudy.metrics.map((m) => (
+                <div class="min-w-0">
+                  <p class="numeral text-[clamp(2.25rem,4vw,3rem)] leading-none text-accent break-words">{m.shift}</p>
+                  <p class="mt-3 text-sm leading-relaxed text-text-secondary">{m.label}</p>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
 
         {caseStudy.quote && (

@@ -2,30 +2,60 @@
 import Icon from '../Icon.astro';
 import Figure from '../Figure.astro';
 import { getMedia } from '../../lib/media';
+import type { Locale } from '../../i18n/config';
 
 interface Props {
+  locale: Locale;
   heading: string;
   description: string;
   points: { icon: string; title: string; description: string }[];
   imageAlt?: string;
 }
 
-const { heading, description, points, imageAlt = '' } = Astro.props;
+const { locale, heading, description, points, imageAlt = '' } = Astro.props;
 const image = getMedia('home-approach');
+
+const copy = {
+  fr: {
+    alt: "Carnet de marque relié cuir et stylo posés sur un bureau sombre, moucharabieh en arrière-plan",
+    caption: 'La méthode',
+  },
+  en: {
+    alt: 'A leather-bound brand book and pen on a dark desk, mashrabiya screen behind',
+    caption: 'The method',
+  },
+  ar: {
+    alt: 'دفتر علامة مجلّد بالجلد وقلم على مكتب داكن، ومشربية في الخلفية',
+    caption: 'المنهج',
+  },
+}[locale];
 ---
 
 <section class="overflow-hidden bg-bg-secondary py-24">
   <div class="mx-auto max-w-7xl px-5 sm:px-8">
-    <div class="grid grid-cols-1 items-center gap-12 lg:grid-cols-[0.95fr_1.05fr] lg:gap-16">
-      <Figure
-        src={image}
-        alt={imageAlt || heading}
-        ratio="4/5"
-        frame
-        parallax={6}
-        class="rounded-[1.75rem] lg:max-w-lg"
-        sizes="(max-width: 1024px) 92vw, 480px"
-      />
+    <div class="grid grid-cols-1 items-center gap-12 lg:grid-cols-[1.05fr_0.95fr] lg:gap-16">
+      {/*
+        Editorial plate: a gold hairline frame held just off the photograph, the
+        way a print is mounted inside a larger mat. The parallax sits on this
+        wrapper rather than on the Figure so the frame and the image drift as one
+        piece; putting it on the Figure alone lets the border slide out of
+        register on scroll.
+      */}
+      <div class="relative" data-parallax="6">
+        <span
+          aria-hidden="true"
+          class="pointer-events-none absolute -inset-2.5 rounded-[2.15rem] border border-gold/40 sm:-inset-3.5 sm:rounded-[2.35rem]"
+        ></span>
+        <Figure
+          src={image}
+          alt={imageAlt || copy.alt}
+          caption={copy.caption}
+          ratio="3/2"
+          frame
+          class="rounded-[1.75rem]"
+          sizes="(max-width: 1024px) 92vw, 620px"
+        />
+      </div>
 
       <div>
         <div class="max-w-2xl" data-reveal>

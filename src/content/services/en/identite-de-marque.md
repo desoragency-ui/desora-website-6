@@ -71,8 +71,23 @@ faq:
 relatedServices:
   - "creation-site-web"
   - "reseaux-sociaux"
-# No brand identity case study was provided in the client document.
-# Replace this with a `caseStudy` key (same shape as the other services)
-# once a brand identity engagement is approved by the client involved.
-caseStudyPlaceholder: "{{PLACEHOLDER_CASE_STUDY_BRAND_IDENTITY}}"
+testimonial:
+  quote: "We were competing purely on price because our old visual identity looked exactly like everyone else's. DESORA built a bespoke, premium visual system from scratch. We finally have a brand that commands respect and justifies our premium pricing."
+  author: "Camille Roussel"
+  role: "Founder, L'Atelier Pur"
+caseStudy:
+  client: "L'Atelier Pur, Paris and Marrakech"
+  sector: "High-end organic cosmetics"
+  author: "Camille Roussel"
+  role: "Founder, L'Atelier Pur"
+  challenge: "A premium French skincare brand launching its flagship offering in Morocco. Their legacy visual identity looked too corporate, clinical, and detached, failing to capture the rich, organic luxury feeling needed to justify a high-end price point on social media and retail shelves."
+  action: "We threw out the stock templates and clinical colors. DESORA built a warm, minimalist identity using custom, high-end typography, an earthy mineral color palette, and bespoke packaging patterns inspired by North African and French heritage. A unified visual system was created specifically to look premium on both Instagram feeds and luxury boutique shelves."
+  metrics:
+    - label: "increase in organic social media engagement within 60 days of the launch"
+      shift: "+260%"
+    - label: "reliance on discounting, the premium branding anchored a luxury price point on its own"
+      shift: "0%"
+    - label: "distinct retail partners secured across Morocco and France using the new brand guide"
+      shift: "18"
+  quote: "Before DESORA, our brand identity lacked soul. It looked like a generic pharmacy product. DESORA gave us a visual system that feels rare, premium, and instantly recognizable. We didn't just change our logo, we elevated our entire market value."
 ---

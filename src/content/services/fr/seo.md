@@ -74,6 +74,10 @@ faq:
 relatedServices:
   - "creation-site-web"
   - "reseaux-sociaux"
+testimonial:
+  quote: "Nos concurrents captaient tout le trafic de recherche à forte valeur pendant que nous restions invisibles. DESORA a laissé de côté les mots-clés génériques pour optimiser notre site sur les requêtes exactes qui amènent des clients payants. Notre trafic direct n'a jamais été aussi élevé."
+  author: "Tariq Alami"
+  role: "Directeur des opérations, Atlas Corporate"
 caseStudy:
   client: "Riad Dar Souiri"
   sector: "Hôtellerie de luxe, Marrakech, 19 salariés"

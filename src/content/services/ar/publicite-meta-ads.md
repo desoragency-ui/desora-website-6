@@ -76,6 +76,10 @@ faq:
 relatedServices:
   - "generation-de-leads"
   - "email-marketing"
+testimonial:
+  quote: "معظم الوكالات تستهلك الميزانية وتعرض مؤشرات سطحية لا تتحول إلى مبيعات. أعادت ديزورا توجيه استراتيجيتنا على Meta بالكامل نحو القيمة الصافية المسلَّمة. صار محرك الاستقطاب لدينا قابلًا للتنبؤ ومربحًا فعلًا."
+  author: "Sami Benjelloun"
+  role: "المؤسس، VeloMaroc"
 caseStudy:
   client: "MoteurZone"
   sector: "إكسسوارات السيارات، الدار البيضاء، 18 موظفًا"

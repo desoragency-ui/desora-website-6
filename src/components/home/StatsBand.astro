@@ -57,7 +57,9 @@ const copies = [
 
 <style>
   .marquee-track {
-    animation: marquee-move 48s linear infinite;
+    /* One copy per cycle, so duration scales with item count to hold a constant
+       reading speed: 15 items at ~9.6s each. */
+    animation: marquee-move 144s linear infinite;
     will-change: transform;
   }
 

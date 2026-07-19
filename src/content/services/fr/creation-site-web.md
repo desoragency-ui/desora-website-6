@@ -75,6 +75,10 @@ faq:
 relatedServices:
   - "identite-de-marque"
   - "seo"
+testimonial:
+  quote: "Notre ancien site ressemblait à une brochure en ligne générique qui ne convertissait rien. DESORA a construit une boutique sur mesure, partie de zéro, qui traduit exactement notre positionnement premium. Elle convainc littéralement nos prospects de travailler avec nous avant même le premier appel."
+  author: "Marc-Antoine Dubois"
+  role: "Directeur général, Maison & Co."
 caseStudy:
   client: "Desora Beauty"
   sector: "Parfumerie premium, hub régional, 10 salariés"

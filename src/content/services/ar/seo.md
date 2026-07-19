@@ -74,6 +74,10 @@ faq:
 relatedServices:
   - "creation-site-web"
   - "reseaux-sociaux"
+testimonial:
+  quote: "كان منافسونا يستحوذون على كل حركة البحث عالية القيمة بينما كنا غير مرئيين. تجاوزت ديزورا الكلمات المفتاحية العامة وحسّنت موقعنا للاستعلامات الدقيقة التي تجلب عملاء يدفعون. لم تكن حركتنا المباشرة أعلى مما هي عليه الآن."
+  author: "Tariq Alami"
+  role: "مدير العمليات، Atlas Corporate"
 caseStudy:
   client: "Riad Dar Souiri"
   sector: "ضيافة فاخرة، مراكش، 19 موظفًا"

@@ -72,6 +72,10 @@ faq:
 relatedServices:
   - "publicite-meta-ads"
   - "email-marketing"
+testimonial:
+  quote: "Nous perdions un temps fou à trier des leads froids et sans qualité. DESORA a construit un pipeline systémique qui filtre l'intention réelle. Nous sommes passés de la chasse aux prospects à des rendez-vous à forte valeur réservés automatiquement."
+  author: "Anis Mansouri"
+  role: "Directeur de la croissance, Fès Logistics"
 caseStudy:
   client: "MarocLogistics"
   sector: "Logistique sous température dirigée, Casablanca, 32 salariés"

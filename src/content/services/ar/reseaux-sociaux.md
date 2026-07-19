@@ -74,6 +74,10 @@ faq:
 relatedServices:
   - "identite-de-marque"
   - "email-marketing"
+testimonial:
+  quote: "كنا نعاني في الحفاظ على حضور متميز ومتناسق دون الاعتماد على قوالب مكررة ومملة. تتعامل ديزورا مع قنواتنا الاجتماعية كما يفعل مدير فني. النتيجة متناسقة واحترافية، وتدفع الناس إلى ترشيحنا."
+  author: "Sofia Radi"
+  role: "المديرة الإبداعية، Noor Concept"
 caseStudy:
   client: "L'Oversized"
   sector: "أزياء ستريت وير، مراكش، 12 موظفًا"

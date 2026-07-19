@@ -72,6 +72,10 @@ faq:
 relatedServices:
   - "publicite-meta-ads"
   - "email-marketing"
+testimonial:
+  quote: "سئمنا من فرز عملاء محتملين باردين وضعيفي الجودة يهدرون وقت فريق المبيعات. بنت ديزورا مسارًا منهجيًا يصفّي النية الحقيقية. انتقلنا من مطاردة العملاء إلى حجز اجتماعات عالية القيمة تلقائيًا."
+  author: "Anis Mansouri"
+  role: "مدير النمو، Fès Logistics"
 caseStudy:
   client: "MarocLogistics"
   sector: "لوجستيك سلسلة التبريد، الدار البيضاء، 32 موظفًا"

@@ -6,6 +6,7 @@ import SubServicesList from '../components/services/SubServicesList.astro';
 import ProcessSteps from '../components/ProcessSteps.astro';
 import PricingTiers from '../components/services/PricingTiers.astro';
 import FAQAccordion from '../components/services/FAQAccordion.astro';
+import ServiceTestimonial from '../components/services/ServiceTestimonial.astro';
 import ServiceCaseStudy from '../components/services/ServiceCaseStudy.astro';
 import RelatedServices from '../components/services/RelatedServices.astro';
 import FinalCta from '../components/home/FinalCta.astro';
@@ -29,6 +30,7 @@ const t = useTranslations(locale);
   <ProcessSteps heading={t('process.title')} description={service.tagline} steps={service.process} />
   <PricingTiers locale={locale} pricing={service.pricing} />
   <FAQAccordion locale={locale} items={service.faq} />
+  <ServiceTestimonial locale={locale} testimonial={service.testimonial} />
   <ServiceCaseStudy locale={locale} caseStudy={service.caseStudy} placeholder={service.caseStudyPlaceholder} />
   <RelatedServices locale={locale} slugs={service.relatedServices} />
   <FinalCta locale={locale} heading={t('service.finalCtaHeading', { service: service.title })} description={service.tagline} />

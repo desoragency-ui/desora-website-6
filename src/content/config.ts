@@ -45,6 +45,14 @@ const services = defineCollection({
       })
     ),
     relatedServices: z.array(z.string()),
+    /** Real client quote for this service. Omit until the client has signed off. */
+    testimonial: z
+      .object({
+        quote: z.string(),
+        author: z.string(),
+        role: z.string(),
+      })
+      .optional(),
     /** Real client engagement. Omit when no case study exists for this service yet. */
     caseStudy: z
       .object({
@@ -54,11 +62,17 @@ const services = defineCollection({
         role: z.string(),
         challenge: z.string(),
         action: z.string(),
+        /**
+         * `before`/`after` are optional: some engagements report an outcome with
+         * no measured baseline. When any metric lacks them the whole block
+         * renders as a stat row instead of a before/after table, rather than
+         * inventing a baseline.
+         */
         metrics: z.array(
           z.object({
             label: z.string(),
-            before: z.string(),
-            after: z.string(),
+            before: z.string().optional(),
+            after: z.string().optional(),
             shift: z.string(),
           })
         ),

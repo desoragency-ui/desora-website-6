@@ -75,6 +75,10 @@ faq:
 relatedServices:
   - "identite-de-marque"
   - "seo"
+testimonial:
+  quote: "كان موقعنا القديم أشبه بكتيّب إلكتروني عام لا يحوّل الزيارات إلى شيء. بنت ديزورا متجرًا مخصصًا من الصفر يعكس تمامًا موقعنا المتميز. إنه يقنع العملاء المحتملين بالعمل معنا قبل أن نجري أي مكالمة."
+  author: "Marc-Antoine Dubois"
+  role: "المدير العام، Maison & Co."
 caseStudy:
   client: "Desora Beauty"
   sector: "عطور راقية، مركز إقليمي، 10 موظفين"

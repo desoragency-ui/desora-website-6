@@ -72,6 +72,10 @@ faq:
 relatedServices:
   - "publicite-meta-ads"
   - "email-marketing"
+testimonial:
+  quote: "We were tired of sorting through low-quality, cold leads that wasted our sales team's time. DESORA built a systemic pipeline that filters for real intent. We went from chasing prospects to booking high-value meetings automatically."
+  author: "Anis Mansouri"
+  role: "Head of Growth, Fès Logistics"
 caseStudy:
   client: "MarocLogistics"
   sector: "Cold-chain logistics, Casablanca, 32 employees"

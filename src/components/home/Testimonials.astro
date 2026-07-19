@@ -1,12 +1,16 @@
 ---
 import Icon from '../Icon.astro';
+import { useTranslations } from '../../i18n/utils';
+import type { Locale } from '../../i18n/config';
 
 interface Props {
+  locale: Locale;
   heading: string;
   items: { quote: string; author: string; role: string }[];
 }
 
-const { heading, items } = Astro.props;
+const { locale, heading, items } = Astro.props;
+const t = useTranslations(locale);
 ---
 
 <section class="mx-auto max-w-7xl px-5 py-24 sm:px-8">
@@ -19,7 +23,7 @@ const { heading, items } = Astro.props;
         type="button"
         id="testimonials-prev"
         class="flex h-11 w-11 items-center justify-center rounded-full border border-border text-text-primary transition-colors hover:border-accent hover:text-accent"
-        aria-label="Précédent"
+        aria-label={t('testimonials.prev')}
       >
         <Icon name="arrow-right" class="h-4 w-4 rotate-180 rtl:rotate-0" />
       </button>
@@ -27,7 +31,7 @@ const { heading, items } = Astro.props;
         type="button"
         id="testimonials-next"
         class="flex h-11 w-11 items-center justify-center rounded-full border border-border text-text-primary transition-colors hover:border-accent hover:text-accent"
-        aria-label="Suivant"
+        aria-label={t('testimonials.next')}
       >
         <Icon name="arrow-right" class="h-4 w-4 rtl:rotate-180" />
       </button>

@@ -74,6 +74,10 @@ faq:
 relatedServices:
   - "identite-de-marque"
   - "email-marketing"
+testimonial:
+  quote: "Nous n'arrivions pas à tenir une présence premium et cohérente sans tomber dans les templates recyclés. DESORA traite nos réseaux comme le ferait un directeur artistique. C'est constant, professionnel, et les gens nous recommandent spontanément."
+  author: "Sofia Radi"
+  role: "Directrice de création, Noor Concept"
 caseStudy:
   client: "L'Oversized"
   sector: "Mode streetwear, Marrakech, 12 salariés"

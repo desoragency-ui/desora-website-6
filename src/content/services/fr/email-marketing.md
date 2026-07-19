@@ -72,6 +72,10 @@ faq:
 relatedServices:
   - "generation-de-leads"
   - "reseaux-sociaux"
+testimonial:
+  quote: "Nous envoyions des newsletters génériques que notre audience ignorait. DESORA a structuré des séquences email ciblées et automatisées que nos clients ouvrent vraiment, et qui déclenchent des achats. Notre liste existante est devenue un moteur de revenus majeur."
+  author: "Yasmine El Fassi"
+  role: "Directrice e-commerce, Pure Scent"
 caseStudy:
   client: "MaisonTec"
   sector: "Import d'ustensiles de cuisine, Tanger, 15 salariés"

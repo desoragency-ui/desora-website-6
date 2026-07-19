@@ -76,6 +76,10 @@ faq:
 relatedServices:
   - "generation-de-leads"
   - "email-marketing"
+testimonial:
+  quote: "La plupart des agences consomment le budget et présentent des métriques de surface qui ne se traduisent jamais en ventes. DESORA a réorienté toute notre stratégie Meta vers la valeur nette livrée. Notre moteur d'acquisition est aujourd'hui prévisible et réellement rentable."
+  author: "Sami Benjelloun"
+  role: "Fondateur, VeloMaroc"
 caseStudy:
   client: "MoteurZone"
   sector: "Accessoires automobiles, Casablanca, 18 salariés"

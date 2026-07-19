@@ -75,6 +75,10 @@ faq:
 relatedServices:
   - "identite-de-marque"
   - "seo"
+testimonial:
+  quote: "Our legacy site felt like a generic online brochure that did nothing to convert traffic. DESORA built a custom storefront from scratch that perfectly captures our premium positioning. It literally convinces prospects to work with us before we ever pick up the phone."
+  author: "Marc-Antoine Dubois"
+  role: "Managing Director, Maison & Co."
 caseStudy:
   client: "Desora Beauty"
   sector: "Premium fragrance, regional hub, 10 employees"
