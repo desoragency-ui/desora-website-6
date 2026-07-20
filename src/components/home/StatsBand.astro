@@ -78,9 +78,23 @@ const copies = [
     }
   }
 
-  /* Arabic reads the other way, so mirror the direction. */
+  /* Arabic reads the other way, so the track has to travel rightward instead.
+     This mirrors the keyframe rather than reversing playback: under RTL the
+     flex track already sits flush against the right edge at translate 0, so
+     `animation-direction: reverse` would start it a full copy-width to the
+     left and leave the band empty for most of the cycle. Travelling positive
+     from 0 keeps content in the window the whole way round. */
+  @keyframes marquee-move-rtl {
+    from {
+      transform: translateX(0%);
+    }
+    to {
+      transform: translateX(33.3334%);
+    }
+  }
+
   :global(html[dir='rtl']) .marquee-track {
-    animation-direction: reverse;
+    animation-name: marquee-move-rtl;
   }
 
   /* No motion: hold everything still, centered and wrapped so nothing clips. */

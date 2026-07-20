@@ -48,7 +48,19 @@ const track = [...items, ...items, ...items];
     }
   }
 
+  /* Mirrored keyframe rather than reversed playback: under RTL the track sits
+     flush right at translate 0, so any negative offset carries it off-screen.
+     Staying within [0, +33.3334%] keeps the strip populated all cycle. */
+  @keyframes marquee-move-rtl {
+    from {
+      transform: translateX(33.3334%);
+    }
+    to {
+      transform: translateX(0%);
+    }
+  }
+
   :global(html[dir='rtl']) .marquee-track {
-    animation-direction: reverse;
+    animation-name: marquee-move-rtl;
   }
 </style>
