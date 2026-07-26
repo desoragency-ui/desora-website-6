@@ -6,6 +6,55 @@
 @custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
 
 /* ==========================================================================
+   Degular Display, the brand display face.
+
+   WARNING, read before launch: these are OH no Type Co DEMO files. Two hard
+   limits come with them.
+     1. Licence. The embedded licence string reads "Demo fonts may be used for
+        test..." only. A commercial web licence must be bought before this site
+        goes live.
+     2. Charset. Each file maps 66 codepoints: A-Z, a-z, 0-9 and a little
+        punctuation. There are no accented characters and no Arabic. French
+        headings therefore fall back per glyph, so "Resultats" renders in
+        Degular but the "e" of "Resultats" comes from Cormorant. Arabic is
+        unaffected: the html[dir="rtl"] rules below already route every heading
+        to Amiri before Degular is ever consulted.
+   Replacing these four files with the licensed woff2 set is a drop-in swap,
+   no other change required.
+
+   Each demo weight ships under its own family name, so each is re-declared
+   here against one family with an explicit font-weight.
+   ========================================================================== */
+@font-face {
+  font-family: "Degular Display";
+  src: url("/fonts/DegularDisplay-Regular.otf") format("opentype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Degular Display";
+  src: url("/fonts/DegularDisplay-Medium.otf") format("opentype");
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Degular Display";
+  src: url("/fonts/DegularDisplay-Semibold.otf") format("opentype");
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Degular Display";
+  src: url("/fonts/DegularDisplay-Bold.otf") format("opentype");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* ==========================================================================
    DESORA design tokens
    Raw HSL scales (50-900) for the four brand colors, then semantic tokens
    that swap between light/dark via [data-theme]. Components must only ever
@@ -133,9 +182,10 @@
   --color-gold: var(--color-gold);
   --color-hairline: var(--color-hairline);
 
-  /* Editorial serif display (matches the DESORA wordmark) + clean sans body.
-     Amiri gives Arabic headings the same high-contrast serif elegance. */
-  --font-display: "Cormorant", "Amiri", serif;
+  /* Degular Display is the brand display face; Cormorant catches the glyphs the
+     demo cut is missing (accents), Amiri catches Arabic. Body stays General
+     Sans, which has full accent coverage, so running text is never mixed. */
+  --font-display: "Degular Display", "Cormorant", "Amiri", serif;
   --font-body: "General Sans", "Cairo", sans-serif;
   --font-arabic: "Cairo", sans-serif;
   --font-arabic-display: "Amiri", "Cairo", serif;
@@ -548,6 +598,51 @@ html[data-theme="dark"] {
   }
   .figure--hover:hover .figure-media {
     transform: none;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Collapsible overlays: mobile menu, language dropdown, services dropdown.
+   The Tailwind `[&.is-open]:*` arbitrary variants do not compile reliably in
+   this v4 setup (the open-state rules were never emitted, so the panels stayed
+   invisible even with `.is-open` applied). Drive the state from explicit CSS
+   instead — this is what actually makes the mobile menu, language switcher, and
+   services menu open. One shared easing curve, reduced-motion respected.
+   -------------------------------------------------------------------------- */
+#mobile-menu,
+#services-menu,
+[data-lang-menu] {
+  visibility: hidden;
+  opacity: 0;
+  transition:
+    opacity 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+    visibility 0.35s;
+}
+
+#mobile-menu {
+  transform: translateY(-8px);
+}
+#services-menu {
+  transform: translateY(-8px) scale(0.98);
+}
+[data-lang-menu] {
+  transform: translateY(-4px);
+}
+
+#mobile-menu.is-open,
+#services-menu.is-open,
+[data-lang-menu].is-open {
+  visibility: visible;
+  opacity: 1;
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #mobile-menu,
+  #services-menu,
+  [data-lang-menu] {
+    transition-duration: 0.01ms;
   }
 }
 

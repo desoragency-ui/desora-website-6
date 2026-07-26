@@ -12,10 +12,10 @@ const t = useTranslations(locale);
 const currentPath = Astro.url.pathname;
 ---
 
-<div class="relative" id="lang-switcher">
+<div class="relative" data-lang-switcher>
   <button
     type="button"
-    id="lang-switcher-trigger"
+    data-lang-trigger
     class="flex h-11 items-center gap-1.5 rounded-full px-3 text-sm font-medium text-text-primary transition-colors hover:bg-bg-secondary"
     aria-haspopup="true"
     aria-expanded="false"
@@ -26,9 +26,9 @@ const currentPath = Astro.url.pathname;
     <Icon name="chevron-down" class="h-3.5 w-3.5" />
   </button>
   <ul
-    id="lang-switcher-menu"
+    data-lang-menu
     role="menu"
-    class="invisible absolute end-0 top-full z-50 mt-2 min-w-40 -translate-y-1 rounded-xl border border-border bg-surface p-1.5 opacity-0 shadow-lg transition-all duration-150 [&.is-open]:visible [&.is-open]:translate-y-0 [&.is-open]:opacity-100"
+    class="absolute end-0 top-full z-50 mt-2 min-w-40 rounded-xl border border-border bg-surface p-1.5 shadow-lg"
   >
     {
       locales.map((l: Locale) => (
@@ -51,26 +51,30 @@ const currentPath = Astro.url.pathname;
 </div>
 
 <script>
-  const wrapper = document.getElementById('lang-switcher');
-  const trigger = document.getElementById('lang-switcher-trigger');
-  const menu = document.getElementById('lang-switcher-menu');
+  // Rendered in both the desktop bar and the mobile menu, so bind each instance
+  // independently. The old getElementById approach wired only the first (the
+  // desktop one), leaving the mobile switcher inert.
+  document.querySelectorAll<HTMLElement>('[data-lang-switcher]').forEach((wrapper) => {
+    const trigger = wrapper.querySelector<HTMLButtonElement>('[data-lang-trigger]');
+    const menu = wrapper.querySelector<HTMLElement>('[data-lang-menu]');
+    if (!trigger || !menu) return;
 
-  function close() {
-    menu?.classList.remove('is-open');
-    trigger?.setAttribute('aria-expanded', 'false');
-  }
+    const close = () => {
+      menu.classList.remove('is-open');
+      trigger.setAttribute('aria-expanded', 'false');
+    };
 
-  trigger?.addEventListener('click', (e) => {
-    e.stopPropagation();
-    const isOpen = menu?.classList.toggle('is-open');
-    trigger.setAttribute('aria-expanded', String(Boolean(isOpen)));
-  });
+    trigger.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const isOpen = menu.classList.toggle('is-open');
+      trigger.setAttribute('aria-expanded', String(isOpen));
+    });
 
-  document.addEventListener('click', (e) => {
-    if (wrapper && !wrapper.contains(e.target as Node)) close();
-  });
-
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape') close();
+    document.addEventListener('click', (e) => {
+      if (!wrapper.contains(e.target as Node)) close();
+    });
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') close();
+    });
   });
 </script>

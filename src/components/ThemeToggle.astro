@@ -13,7 +13,7 @@ const t = useTranslations(locale);
 
 <button
   type="button"
-  id="theme-toggle"
+  data-theme-toggle
   class="flex h-11 w-11 items-center justify-center rounded-full text-text-primary transition-colors hover:bg-bg-secondary"
   aria-label={t('theme.toggleToDark')}
 >
@@ -23,18 +23,20 @@ const t = useTranslations(locale);
 </button>
 
 <script>
+  // The toggle renders in both the desktop and mobile header bars, so bind
+  // EVERY instance. Using getElementById bound only the first (the desktop one,
+  // display:none on mobile), which is why the mobile toggle did nothing.
   const STORAGE_KEY = 'desora-theme';
-  const toggle = document.getElementById('theme-toggle');
-
-  toggle?.addEventListener('click', () => {
-    const root = document.documentElement;
-    const current = root.getAttribute('data-theme') === 'dark' ? 'dark' : 'light';
-    const next = current === 'dark' ? 'light' : 'dark';
-    root.setAttribute('data-theme', next);
-    try {
-      localStorage.setItem(STORAGE_KEY, next);
-    } catch (e) {
-      /* private browsing / storage disabled: theme just won't persist */
-    }
+  document.querySelectorAll<HTMLButtonElement>('[data-theme-toggle]').forEach((toggle) => {
+    toggle.addEventListener('click', () => {
+      const root = document.documentElement;
+      const next = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+      root.setAttribute('data-theme', next);
+      try {
+        localStorage.setItem(STORAGE_KEY, next);
+      } catch (e) {
+        /* private browsing / storage disabled: theme just won't persist */
+      }
+    });
   });
 </script>
