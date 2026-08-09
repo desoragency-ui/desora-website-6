@@ -13,15 +13,18 @@ const t = useTranslations(locale);
 ---
 
 <section class="mx-auto max-w-7xl px-5 py-16 sm:px-8">
-  <h2 class="font-display text-2xl font-semibold text-text-primary">{t('pricing.included')}</h2>
+  <h2 class="font-display text-[clamp(1.65rem,3vw,2.25rem)] font-semibold text-text-primary">
+    {t('pricing.included')}
+  </h2>
+  <span class="hairline mt-5 block max-w-24"></span>
   <div class="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3" data-reveal-group>
     {
       items.map((item) => (
-        <div class="flex min-w-0 items-center gap-3 rounded-xl border border-border bg-surface p-4">
-          <span class="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-bg-secondary text-accent">
-            <Icon name={item.icon as any} class="h-4.5 w-4.5" />
+        <div class="flex min-w-0 items-center gap-4 rounded-xl border border-border bg-surface p-5 transition-colors duration-300 hover:border-gold/50">
+          <span class="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg bg-bg-secondary text-accent">
+            <Icon name={item.icon as any} class="h-5 w-5" />
           </span>
-          <span class="text-sm font-medium text-text-primary">{item.label}</span>
+          <span class="text-base font-medium leading-snug text-text-primary">{item.label}</span>
         </div>
       ))
     }

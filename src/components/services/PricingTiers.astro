@@ -3,6 +3,15 @@ import Icon from '../Icon.astro';
 import { useTranslations, localizedPath } from '../../i18n/utils';
 import type { Locale } from '../../i18n/config';
 
+/**
+ * The three service packs, as an editorial plate rather than a SaaS pricing
+ * table. Each tier is numbered like a chapter, ruled off with gold hairlines,
+ * and the recommended tier is raised on a tinted surface instead of shouting
+ * with a coloured banner. No prices, by brand policy.
+ *
+ * Everything is written with logical properties (ps/pe, start/end, inset-inline)
+ * so the Arabic RTL build mirrors without a single override.
+ */
 interface Props {
   locale: Locale;
   pricing: {
@@ -18,6 +27,7 @@ const t = useTranslations(locale);
 const tiers = [
   {
     key: 'essentiel',
+    index: '01',
     name: t('pricing.essential'),
     features: pricing.essentiel.features,
     previousTierName: null,
@@ -25,6 +35,7 @@ const tiers = [
   },
   {
     key: 'croissance',
+    index: '02',
     name: t('pricing.growth'),
     features: pricing.croissance.features,
     previousTierName: t('pricing.essential'),
@@ -32,6 +43,7 @@ const tiers = [
   },
   {
     key: 'signature',
+    index: '03',
     name: t('pricing.signature'),
     features: pricing.signature.features,
     previousTierName: t('pricing.growth'),
@@ -40,58 +52,108 @@ const tiers = [
 ];
 ---
 
-<section class="mx-auto max-w-7xl px-5 py-20 sm:px-8">
-  <div class="grid grid-cols-1 items-start gap-6 lg:grid-cols-3" data-reveal-group>
-    {
-      tiers.map((tier) => (
-        <div
-          class:list={[
-            'flex h-full flex-col rounded-3xl border p-8',
-            tier.recommended ? 'border-accent bg-surface shadow-xl lg:-translate-y-3' : 'border-border bg-surface',
-          ]}
-        >
-          {tier.recommended && (
-            <span class="mb-4 w-fit rounded-full bg-accent-strong px-3 py-1 text-xs font-semibold text-accent-foreground">
-              {t('pricing.recommended')}
-            </span>
-          )}
-          <h3
-            class:list={[
-              'font-display text-[clamp(1.75rem,2.6vw,2.35rem)] font-semibold leading-none tracking-[0.02em]',
-              tier.recommended ? 'text-accent' : 'text-text-primary',
-            ]}
-          >
-            {tier.name}
-          </h3>
-          <span class="hairline mt-4 block" />
+<section class="relative overflow-hidden bg-bg-secondary py-24 sm:py-28" data-depth>
+  <div class="mx-auto max-w-7xl px-5 sm:px-8">
+    <div class="max-w-2xl" data-reveal>
+      <p class="overline">{t('pricing.overline')}</p>
+      <h2
+        class="mt-4 font-display text-[clamp(2rem,4vw,3.25rem)] font-semibold leading-[1.08] text-text-primary"
+      >
+        {t('pricing.heading')}
+      </h2>
+      <span class="hairline mt-6 block max-w-24"></span>
+    </div>
 
-          <ul class="mt-7 flex-1 space-y-3">
-            {tier.previousTierName && (
-              <li class="pb-1 text-sm font-medium text-text-secondary">
-                {t('pricing.everythingIn', { tier: tier.previousTierName })}
-              </li>
-            )}
-            {tier.features.map((feature) => (
-              <li class="flex items-start gap-2.5 text-sm text-text-primary">
-                <Icon name="check" class="mt-0.5 h-4 w-4 shrink-0 text-accent" />
-                <span>{feature}</span>
-              </li>
-            ))}
-          </ul>
-
-          <a
-            href={localizedPath(locale, 'contact')}
+    <div class="mt-14 grid grid-cols-1 items-stretch gap-6 lg:grid-cols-3 lg:gap-7" data-reveal-group>
+      {
+        tiers.map((tier) => (
+          <article
             class:list={[
-              'press mt-8 flex h-12 items-center justify-center rounded-full px-6 text-sm font-semibold transition-all duration-500 [transition-timing-function:cubic-bezier(0.16,1,0.3,1)]',
+              'tier group relative flex h-full flex-col rounded-[1.75rem] p-8 sm:p-9',
+              'transition-[transform,border-color,box-shadow] duration-500 [transition-timing-function:cubic-bezier(0.16,1,0.3,1)]',
               tier.recommended
-                ? 'cta-shine bg-accent-strong text-accent-foreground hover:bg-accent-strong-hover'
-                : 'border border-border text-text-primary hover:border-accent hover:text-accent',
+                ? 'tier--featured border border-gold/45 bg-surface shadow-2xl lg:-translate-y-5'
+                : 'border border-border bg-surface hover:-translate-y-1.5 hover:border-gold/40',
             ]}
           >
-            {t('cta.discussPack')}
-          </a>
-        </div>
-      ))
-    }
+            {/* Chapter number, sitting in the corner like a plate mark. */}
+            <div class="flex items-baseline justify-between gap-4">
+              <span class="numeral text-3xl leading-none text-gold/70">{tier.index}</span>
+              {tier.recommended && (
+                <span class="overline rounded-full border border-gold/50 px-3 py-1.5 text-gold">
+                  {t('pricing.recommended')}
+                </span>
+              )}
+            </div>
+
+            <h3
+              class:list={[
+                'mt-6 font-display text-[clamp(2rem,3vw,2.6rem)] font-semibold leading-none tracking-[0.01em]',
+                tier.recommended ? 'text-accent' : 'text-text-primary',
+              ]}
+            >
+              {tier.name}
+            </h3>
+
+            <span class="hairline mt-6 block"></span>
+
+            {tier.previousTierName && (
+              <p class="mt-6 text-base font-medium leading-snug text-text-secondary">
+                {t('pricing.everythingIn', { tier: tier.previousTierName })}
+              </p>
+            )}
+
+            <ul class:list={['flex-1 space-y-4', tier.previousTierName ? 'mt-5' : 'mt-7']}>
+              {tier.features.map((feature) => (
+                <li class="flex items-start gap-3 text-base leading-snug text-text-primary">
+                  <span
+                    class="mt-[0.45em] shrink-0 text-[0.6rem] leading-none text-gold"
+                    aria-hidden="true"
+                  >
+                    &#9670;
+                  </span>
+                  <span>{feature}</span>
+                </li>
+              ))}
+            </ul>
+
+            <a
+              href={localizedPath(locale, 'contact')}
+              class:list={[
+                'press mt-10 flex h-[3.25rem] items-center justify-center rounded-full px-6 text-base font-semibold',
+                'transition-all duration-500 [transition-timing-function:cubic-bezier(0.16,1,0.3,1)]',
+                tier.recommended
+                  ? 'cta-shine bg-accent-strong text-accent-foreground hover:bg-accent-strong-hover'
+                  : 'border border-border text-text-primary hover:border-accent hover:bg-accent hover:text-accent-foreground',
+              ]}
+            >
+              {t('cta.discussPack')}
+              <Icon name="arrow-right" class="ms-2 h-4 w-4 rtl:rotate-180" />
+            </a>
+          </article>
+        ))
+      }
+    </div>
   </div>
 </section>
+
+<style>
+  /* A whisper of warmth behind the recommended tier, so it reads as raised
+     rather than as a different product. Kept as a pseudo-element to avoid
+     paying for an extra DOM node in every card. */
+  .tier--featured::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: radial-gradient(120% 80% at 50% 0%, var(--color-gold), transparent 70%);
+    opacity: 0.07;
+    pointer-events: none;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .tier {
+      transition: none;
+    }
+  }
+</style>

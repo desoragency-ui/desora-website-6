@@ -16,8 +16,17 @@ gsap.registerEase('desora', (p) => gsap.parseEase('power3.out')(p));
 export let lenis: Lenis | undefined;
 
 if (!reduceMotion) {
-  // lerp 0.09 = a touch of weight in the scroll, like a heavy door on good hinges.
-  lenis = new Lenis({ autoRaf: false, lerp: 0.09 });
+  // lerp 0.075 = a touch of weight in the scroll, like a heavy door on good
+  // hinges. wheelMultiplier just under 1 stops a flick of the wheel from
+  // firing the page down a screen and a half. syncTouch carries the same
+  // easing to touch devices instead of handing them the native jerk.
+  lenis = new Lenis({
+    autoRaf: false,
+    lerp: 0.075,
+    wheelMultiplier: 0.92,
+    syncTouch: true,
+    syncTouchLerp: 0.09,
+  });
   lenis.on('scroll', ScrollTrigger.update);
   gsap.ticker.add((time) => {
     lenis?.raf(time * 1000);
@@ -262,11 +271,53 @@ function initAnchorLinks() {
   });
 }
 
+/** A gold hairline across the very top that fills as the page is read. Drawn
+ * with scaleX on a single fixed element, so it costs one composited layer and
+ * never triggers layout. RTL flips the origin so it fills from the right. */
+function initScrollProgress() {
+  if (reduceMotion) return;
+  const bar = document.getElementById('scroll-progress');
+  if (!bar) return;
+
+  gsap.set(bar, {
+    scaleX: 0,
+    transformOrigin: document.documentElement.dir === 'rtl' ? 'right center' : 'left center',
+  });
+
+  gsap.to(bar, {
+    scaleX: 1,
+    ease: 'none',
+    scrollTrigger: { start: 0, end: 'max', scrub: 0.4 },
+  });
+}
+
+/** Sections drift up and settle as they enter, a half-beat behind the content
+ * revealing inside them. Gives the page a sense of depth while scrolling
+ * without any element moving far enough to read as a gimmick. */
+function initSectionDepth() {
+  if (reduceMotion) return;
+
+  gsap.utils.toArray<HTMLElement>('[data-depth]').forEach((el) => {
+    gsap.fromTo(
+      el,
+      { y: 28, scale: 0.994 },
+      {
+        y: 0,
+        scale: 1,
+        ease: 'power2.out',
+        scrollTrigger: { trigger: el, start: 'top 92%', end: 'top 55%', scrub: 0.8 },
+      }
+    );
+  });
+}
+
 initReveals();
 initHairlines();
 initCounters();
 initFigures();
 initAnchorLinks();
+initScrollProgress();
+initSectionDepth();
 
 requestAnimationFrame(() => ScrollTrigger.refresh());
 // Web fonts change text metrics after load, which shifts every trigger point.

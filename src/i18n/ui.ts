@@ -32,6 +32,8 @@ export const ui = {
     'pricing.growth': 'Croissance',
     'pricing.signature': 'Signature',
     'pricing.recommended': 'Recommandé',
+    'pricing.overline': 'Les formules',
+    'pricing.heading': 'Trois façons de travailler ensemble',
     'pricing.everythingIn': 'Tout ce qui est inclus dans {tier}, plus :',
     'pricing.included': 'Ce qui est inclus',
 
@@ -126,6 +128,8 @@ export const ui = {
     'pricing.growth': 'Growth',
     'pricing.signature': 'Signature',
     'pricing.recommended': 'Recommended',
+    'pricing.overline': 'The packs',
+    'pricing.heading': 'Three ways to work together',
     'pricing.everythingIn': 'Everything included in {tier}, plus:',
     'pricing.included': "What's included",
 
@@ -220,6 +224,8 @@ export const ui = {
     'pricing.growth': 'نمو',
     'pricing.signature': 'توقيع',
     'pricing.recommended': 'الأكثر طلبًا',
+    'pricing.overline': 'الباقات',
+    'pricing.heading': 'ثلاث طرق للعمل معًا',
     'pricing.everythingIn': 'كل ما هو مشمول في {tier}، بالإضافة إلى:',
     'pricing.included': 'ما هو مشمول',
 

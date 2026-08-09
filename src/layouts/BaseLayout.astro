@@ -36,6 +36,14 @@ const xDefaultHref = new URL(`/fr${restPath ? `/${restPath}` : ''}`, Astro.site)
 <html lang={locale} dir={dir}>
   <head>
     <meta charset="UTF-8" />
+    <!-- Google tag (gtag.js) -->
+    <script is:inline async src="https://www.googletagmanager.com/gtag/js?id=G-3EK57K0EJB"></script>
+    <script is:inline>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-3EK57K0EJB');
+    </script>
     <script is:inline>
       (function () {
         try {
@@ -88,6 +96,13 @@ const xDefaultHref = new URL(`/fr${restPath ? `/${restPath}` : ''}`, Astro.site)
       Aller au contenu
     </a>
     <Preloader />
+    {/* Reading progress. Purely decorative, so it stays out of the a11y tree. */}
+    <div
+      id="scroll-progress"
+      aria-hidden="true"
+      class="pointer-events-none fixed inset-x-0 top-0 z-[95] h-px origin-left scale-x-0 bg-gold"
+    >
+    </div>
     <Header locale={locale} />
     <main id="main-content">
       <slot />

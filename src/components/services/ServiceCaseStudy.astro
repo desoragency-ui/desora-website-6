@@ -37,25 +37,27 @@ const hasBaselines = caseStudy?.metrics.every((m) => m.before && m.after) ?? fal
           <h2 class="mt-4 font-display text-[clamp(1.9rem,3.5vw,2.75rem)] font-semibold leading-[1.1] text-text-primary">
             {caseStudy.client}
           </h2>
-          <p class="mt-2 text-sm text-text-secondary">{caseStudy.sector}</p>
+          <p class="mt-3 text-base text-text-secondary">{caseStudy.sector}</p>
         </div>
 
         <div class="mt-10 grid gap-8 md:grid-cols-2" data-reveal>
           <div>
-            <h3 class="font-display text-base font-semibold text-text-primary">{t('caseStudy.challenge')}</h3>
-            <p class="mt-3 text-sm leading-relaxed text-text-secondary">{caseStudy.challenge}</p>
+            <h3 class="font-display text-xl font-semibold text-text-primary">{t('caseStudy.challenge')}</h3>
+            <span class="hairline mt-3 block max-w-16"></span>
+            <p class="mt-4 text-base leading-relaxed text-text-secondary">{caseStudy.challenge}</p>
           </div>
           <div>
-            <h3 class="font-display text-base font-semibold text-text-primary">{t('caseStudy.action')}</h3>
-            <p class="mt-3 text-sm leading-relaxed text-text-secondary">{caseStudy.action}</p>
+            <h3 class="font-display text-xl font-semibold text-text-primary">{t('caseStudy.action')}</h3>
+            <span class="hairline mt-3 block max-w-16"></span>
+            <p class="mt-4 text-base leading-relaxed text-text-secondary">{caseStudy.action}</p>
           </div>
         </div>
 
         <div class="mt-12" data-reveal>
-          <h3 class="font-display text-base font-semibold text-text-primary">{t('caseStudy.results')}</h3>
+          <h3 class="font-display text-xl font-semibold text-text-primary">{t('caseStudy.results')}</h3>
           {hasBaselines ? (
             <div class="mt-5 overflow-x-auto">
-              <table class="w-full min-w-[34rem] border-collapse text-start text-sm">
+              <table class="w-full min-w-[34rem] border-collapse text-start text-base">
                 <thead>
                   <tr class="border-b border-border">
                     <th scope="col" class="py-3 pe-4 text-start font-medium text-text-secondary">
@@ -96,8 +98,10 @@ const hasBaselines = caseStudy?.metrics.every((m) => m.before && m.after) ?? fal
 
         {caseStudy.quote && (
           <blockquote class="mt-12 rounded-2xl border border-border bg-surface p-8" data-reveal>
-            <p class="font-display text-lg leading-snug text-text-primary">"{caseStudy.quote}"</p>
-            <footer class="mt-5 text-sm">
+            <p class="font-display text-[clamp(1.15rem,2vw,1.5rem)] leading-snug text-text-primary">
+              "{caseStudy.quote}"
+            </p>
+            <footer class="mt-5 text-base">
               <p class="font-semibold text-text-primary">{caseStudy.author}</p>
               <p class="text-text-secondary">{caseStudy.role}</p>
             </footer>

@@ -30,8 +30,8 @@ const related = allServices.filter((s) => slugs.includes(s.slug));
                 <Icon name={service.icon as any} class="h-5 w-5" />
               </span>
               <div>
-                <h3 class="font-display text-base font-semibold text-text-primary">{service.title}</h3>
-                <p class="text-sm text-text-secondary">{service.tagline}</p>
+                <h3 class="font-display text-lg font-semibold text-text-primary">{service.title}</h3>
+                <p class="mt-1 text-base text-text-secondary">{service.tagline}</p>
               </div>
             </div>
             <Icon name="arrow-right" class="h-4.5 w-4.5 shrink-0 text-text-secondary transition-colors group-hover:text-accent rtl:rotate-180" />

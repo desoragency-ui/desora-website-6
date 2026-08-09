@@ -22,8 +22,8 @@ const { heading, description, steps } = Astro.props;
         <li class="flex flex-col gap-3 bg-surface p-7">
           <span class="numeral text-5xl leading-none text-gold">{String(i + 1).padStart(2, '0')}</span>
           <div class="hairline w-6"></div>
-          <h3 class="font-body text-base font-semibold text-text-primary">{step.title}</h3>
-          <p class="text-sm leading-relaxed text-text-secondary">{step.description}</p>
+          <h3 class="font-display text-lg font-semibold text-text-primary">{step.title}</h3>
+          <p class="mt-2 text-base leading-relaxed text-text-secondary">{step.description}</p>
         </li>
       ))
     }
