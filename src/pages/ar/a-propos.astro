@@ -15,7 +15,11 @@ if (!about) throw new Error(`Missing about content for locale: ${locale}`);
 ---
 
 <BaseLayout title={about.seoTitle} description={about.seoDescription} locale={locale}>
-  <PageHero title={about.hero.title} subtitle={about.hero.subtitle} />
+  <PageHero
+    eyebrow="من نحن"
+    title={about.hero.title}
+    subtitle={about.hero.subtitle}
+  />
   <ProseSection heading={about.mission.heading} paragraphs={about.mission.paragraphs} />
   <AboutImagery locale={locale} />
   <ProseSection heading={about.beyondOrdinary.heading} paragraphs={about.beyondOrdinary.paragraphs} tinted />
