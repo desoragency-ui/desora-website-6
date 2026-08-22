@@ -1,14 +1,20 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import PageHero from '../../components/PageHero.astro';
 import { siteConfig } from '../../lib/site-config';
 
 const locale = 'fr' as const;
 ---
 
 <BaseLayout title="Mentions légales" description="Mentions légales de DESORA." locale={locale}>
-  <section class="px-5 pb-24 pt-36 sm:px-8">
+  <PageHero
+    eyebrow="Informations légales"
+    title={"Mentions légales"}
+    subtitle={"Éditeur, hébergement et conditions d'utilisation du site DESORA."}
+  />
+
+  <section class="px-5 pb-24 sm:px-8">
     <div class="prose-content mx-auto max-w-2xl">
-      <h1 class="font-display text-3xl font-semibold text-text-primary">Mentions légales</h1>
 
       <div class="mt-8 rounded-2xl border border-dashed border-border bg-surface p-6 text-sm text-text-secondary">
         Les informations d'immatriculation ci-dessous sont des espaces réservés à compléter avec les données réelles de l'entreprise (ICE, RC, forme juridique, siège social) avant la mise en ligne définitive du site.
