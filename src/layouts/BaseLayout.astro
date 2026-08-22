@@ -20,6 +20,14 @@ interface Props {
 const { title, description, locale } = Astro.props;
 const dir = dirFor(locale);
 
+// Arabic pages set every glyph in Amiri (display) and Cairo (body); Latin pages
+// never touch either. Splitting the request keeps eight unused font files off
+// the critical path for the two locales that cannot render them anyway.
+const isArabic = locale === 'ar';
+const googleFontsHref = isArabic
+  ? 'https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Cairo:wght@400;500;600;700&display=swap'
+  : 'https://fonts.googleapis.com/css2?family=Cormorant:ital,wght@0,500;0,600;0,700;1,600&display=swap';
+
 const url = Astro.url;
 const segments = url.pathname.split('/').filter(Boolean);
 const restPath = segments.slice(1).join('/');
@@ -75,18 +83,31 @@ const xDefaultHref = new URL(`/fr${restPath ? `/${restPath}` : ''}`, Astro.site)
     <meta property="og:locale" content={locale} />
     <meta name="twitter:card" content="summary_large_image" />
 
-    <link rel="preconnect" href="https://api.fontshare.com" />
-    <link rel="preconnect" href="https://cdn.fontshare.com" crossorigin />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      rel="stylesheet"
-      href="https://api.fontshare.com/v2/css?f[]=general-sans@400,500,600&display=swap"
-    />
-    <link
-      rel="stylesheet"
-      href="https://fonts.googleapis.com/css2?family=Cormorant:ital,wght@0,500;0,600;0,700;1,500;1,600&family=Cairo:wght@400;500;600;700;800&family=Amiri:ital,wght@0,400;0,700;1,400&display=swap"
-    />
+    {
+      !isArabic && (
+        <>
+          <link rel="preconnect" href="https://api.fontshare.com" />
+          <link rel="preconnect" href="https://cdn.fontshare.com" crossorigin />
+        </>
+      )
+    }
+    <!-- Faces are requested PER LOCALE. Loading Cairo's five weights and
+         Amiri's three on every French page meant every visitor downloaded
+         eight Arabic font files they would never see a glyph of, on the
+         critical path. Latin pages now ask for Cormorant + General Sans only,
+         Arabic pages for Amiri + Cairo only. Weights are trimmed to the ones
+         actually set in global.css. -->
+    <link rel="stylesheet" href={googleFontsHref} />
+    {
+      !isArabic && (
+        <link
+          rel="stylesheet"
+          href="https://api.fontshare.com/v2/css?f[]=general-sans@400,500,600&display=swap"
+        />
+      )
+    }
   </head>
   <body class="overflow-x-hidden bg-bg-primary text-text-primary">
     <a

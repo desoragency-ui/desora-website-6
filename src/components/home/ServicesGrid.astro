@@ -1,8 +1,24 @@
 ---
+import { getImage } from 'astro:assets';
 import Icon from '../Icon.astro';
 import { localizedPath } from '../../i18n/utils';
+import { getServiceMedia } from '../../lib/media';
 import type { Locale } from '../../i18n/config';
 
+/**
+ * The services index.
+ *
+ * A card grid gives seven services seven equal boxes and asks the reader to
+ * compare thumbnails. This is a set list instead: full-width rows at display
+ * scale, read top to bottom, with the service's own photograph riding the
+ * cursor (the shared plate from `initPeek`). It puts the type first, which is
+ * the whole point of a house built on a Didone wordmark, and it turns the
+ * hover into the only place the imagery appears, so the section stays quiet
+ * until the reader engages with it.
+ *
+ * Numbering is honest here: the seven services are an ordered menu the studio
+ * actually sells, and the index is how a reader keeps their place in a long list.
+ */
 interface Props {
   locale: Locale;
   heading: string;
@@ -11,39 +27,129 @@ interface Props {
 }
 
 const { locale, heading, description, services } = Astro.props;
+
+// One small optimised plate per service for the cursor preview. Generated at
+// build time so the hover costs a cached image request, not a full-size photo.
+const peeks = await Promise.all(
+  services.map(async (service) => {
+    const media = getServiceMedia(service.slug);
+    if (!media) return undefined;
+    const img = await getImage({ src: media, width: 520, height: 390, format: 'webp', quality: 70 });
+    return img.src;
+  })
+);
 ---
 
-<section id="services-grid" class="mx-auto max-w-7xl px-5 py-24 sm:px-8">
-  <div class="max-w-2xl" data-reveal>
-    <h2 class="font-display text-[clamp(2rem,4vw,3.25rem)] font-semibold leading-[1.08] text-text-primary">
-      {heading}
-    </h2>
-    <p class="mt-4 text-lg leading-relaxed text-text-secondary">{description}</p>
-  </div>
+<section
+  id="services-grid"
+  class="relative overflow-hidden py-24 sm:py-28"
+  data-curtain
+  aria-labelledby="services-heading"
+>
+  <div class="rule-grid" aria-hidden="true"></div>
 
-  <div class="mt-14 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3" data-reveal-group>
-    {
-      services.map((service, i) => (
-        <a
-          href={localizedPath(locale, `services/${service.slug}`)}
-          class="group relative flex flex-col overflow-hidden rounded-2xl border border-border bg-surface p-8 transition-all duration-500 [transition-timing-function:cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-1.5 hover:border-accent hover:shadow-[0_20px_50px_-24px_rgba(0,0,0,0.35)]"
-        >
-          <span class="absolute inset-x-0 top-0 h-px origin-left scale-x-0 bg-gold transition-transform duration-500 group-hover:scale-x-100"></span>
-          <span class="flex items-center justify-between">
-            <span class="flex h-12 w-12 items-center justify-center rounded-xl bg-bg-secondary text-accent transition-colors duration-500 group-hover:bg-accent-strong group-hover:text-accent-foreground">
-              <Icon name={service.icon as any} class="h-5.5 w-5.5" />
-            </span>
-            <span class="numeral text-lg text-gold/50">{String(i + 1).padStart(2, '0')}</span>
-          </span>
-          <h3 class="mt-6 font-display text-xl font-semibold text-text-primary">{service.title}</h3>
-          <p class="mt-2 flex-1 text-sm leading-relaxed text-text-secondary">{service.tagline}</p>
-          <span class="mt-6 flex items-center gap-2 text-sm font-medium text-accent">
-            <span class="transition-transform duration-500 group-hover:translate-x-1 rtl:group-hover:-translate-x-1">
-              <Icon name="arrow-right" class="h-4 w-4 rtl:rotate-180" />
-            </span>
-          </span>
-        </a>
-      ))
-    }
+  <div class="relative mx-auto max-w-7xl px-5 sm:px-8">
+    <div class="flex max-w-6xl flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
+      <h2 id="services-heading" class="display-lg max-w-2xl text-text-primary" data-reveal="lines">
+        {heading}
+      </h2>
+      <p class="max-w-md text-lg leading-relaxed text-text-secondary" data-reveal>{description}</p>
+    </div>
+
+    <ul class="mt-16 border-t border-hairline" data-skew>
+      {
+        services.map((service, i) => (
+          <li>
+            <a
+              href={localizedPath(locale, `services/${service.slug}`)}
+              data-peek={peeks[i]}
+              class="service-row group relative flex items-center gap-5 border-b border-hairline py-7 sm:gap-8 sm:py-9"
+            >
+              {/* The crimson wash sweeps in from the reading edge on hover, so
+                  the row lights up rather than merely changing colour. */}
+              <span class="service-wash" aria-hidden="true" />
+
+              <span class="numeral relative z-10 w-10 shrink-0 text-sm text-gold sm:w-14 sm:text-base">
+                {String(i + 1).padStart(2, '0')}
+              </span>
+
+              <span class="relative z-10 flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-hairline text-accent transition-colors duration-500 group-hover:border-accent sm:h-12 sm:w-12">
+                <Icon name={service.icon as any} class="h-5 w-5" />
+              </span>
+
+              <span class="relative z-10 min-w-0 flex-1">
+                <span class="service-title block font-display text-[clamp(1.5rem,3.4vw,2.6rem)] font-semibold leading-[1.12] text-text-primary rtl:font-arabic-display">
+                  {service.title}
+                </span>
+                <span class="mt-1.5 block max-w-xl text-sm leading-relaxed text-text-secondary sm:text-[0.9375rem]">
+                  {service.tagline}
+                </span>
+              </span>
+
+              <span class="relative z-10 flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-text-secondary transition-all duration-500 [transition-timing-function:cubic-bezier(0.16,1,0.3,1)] group-hover:bg-accent-strong group-hover:text-accent-foreground">
+                <Icon name="arrow-right" class="h-4.5 w-4.5 rtl:rotate-180" />
+              </span>
+            </a>
+          </li>
+        ))
+      }
+    </ul>
   </div>
 </section>
+
+<style>
+  /* The row indents toward the reading edge on hover: the list acknowledges
+     the cursor instead of just recolouring under it. */
+  .service-row {
+    transition: padding-inline-start 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .service-row:hover,
+  .service-row:focus-visible {
+    padding-inline-start: clamp(0.75rem, 2vw, 1.75rem);
+  }
+
+  /* Crimson wash, wiped in from the reading edge. Sits under the content. */
+  .service-wash {
+    position: absolute;
+    inset-block: 0;
+    inset-inline: calc(-1 * clamp(0.75rem, 2vw, 1.75rem));
+    z-index: 0;
+    border-radius: 0.75rem;
+    background: linear-gradient(
+      to var(--wash-dir, right),
+      color-mix(in oklab, var(--color-accent-strong) 12%, transparent),
+      transparent 62%
+    );
+    transform: scaleX(0);
+    transform-origin: left center;
+    transition: transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  :global(html[dir='rtl']) .service-wash {
+    --wash-dir: left;
+    transform-origin: right center;
+  }
+  .service-row:hover .service-wash,
+  .service-row:focus-visible .service-wash {
+    transform: scaleX(1);
+  }
+
+  /* The title shifts to the accent as the wash arrives under it. */
+  .service-title {
+    transition: color 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .service-row:hover .service-title,
+  .service-row:focus-visible .service-title {
+    color: var(--color-accent);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .service-row,
+    .service-wash,
+    .service-title {
+      transition: none;
+    }
+    .service-row:hover {
+      padding-inline-start: 0;
+    }
+  }
+</style>

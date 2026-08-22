@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">
+  <!-- Silhouette of the Centre Dentaire Messnana mark, taken from the logo on
+       the site DESORA built for them. Solid ink so it can be used as a
+       mask-image and take the page's own colour. -->
+  <path d="M23.2 9.6c-2.6-1.7-6.2-2.3-8.2-.4-2.2 2.1-2.3 6-1.4 9.6.8 3 1.2 5.6 1.5 8.4.3 2.6.7 5.2 2.2 5.4 1.6.2 2-2.4 2.4-4.6.3-1.9.7-3.7 1.6-4.5"
+        fill="none" stroke="#000" stroke-width="3.1" stroke-linecap="round"/>
+  <path d="M24.8 9.6c2.6-1.7 6.2-2.3 8.2-.4 2.2 2.1 2.3 6 1.4 9.6-.8 3-1.2 5.6-1.5 8.4-.3 2.6-.7 5.2-2.2 5.4-1.6.2-2-2.4-2.4-4.6-.3-1.9-.7-3.7-1.6-4.5"
+        fill="none" stroke="#000" stroke-width="3.1" stroke-linecap="round"/>
+  <text x="24" y="43.4" text-anchor="middle" font-family="Georgia,serif"
+        font-size="8.4" font-weight="700" letter-spacing=".9" fill="#000">C.D.M</text>
+</svg>

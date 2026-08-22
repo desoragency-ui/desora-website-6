@@ -3,6 +3,18 @@ import Icon from '../Icon.astro';
 import { useTranslations } from '../../i18n/utils';
 import type { Locale } from '../../i18n/config';
 
+/**
+ * Client words.
+ *
+ * Kept as a swipeable rail rather than a pinned rig: the work rail above
+ * already spends the page's one horizontal-pin budget, and doing it twice
+ * turns a signature into a habit. What changes here is the treatment. Each
+ * quote is set at reading scale in the display face with a gold quote mark
+ * behind it, the cards catch the light on hover (`data-tilt`), and the rail
+ * reports progress so a reader can see there are more.
+ *
+ * Every name and quote is real and approved for publication (see CLAUDE.md).
+ */
 interface Props {
   locale: Locale;
   heading: string;
@@ -13,43 +25,72 @@ const { locale, heading, items } = Astro.props;
 const t = useTranslations(locale);
 ---
 
-<section class="mx-auto max-w-7xl px-5 py-24 sm:px-8">
-  <div class="flex flex-wrap items-end justify-between gap-6" data-reveal>
-    <h2 class="font-display text-[clamp(1.75rem,3.5vw,2.75rem)] font-semibold leading-tight text-text-primary">
-      {heading}
-    </h2>
-    <div class="flex items-center gap-2">
-      <button
-        type="button"
-        id="testimonials-prev"
-        class="flex h-11 w-11 items-center justify-center rounded-full border border-border text-text-primary transition-colors hover:border-accent hover:text-accent"
-        aria-label={t('testimonials.prev')}
-      >
-        <Icon name="arrow-right" class="h-4 w-4 rotate-180 rtl:rotate-0" />
-      </button>
-      <button
-        type="button"
-        id="testimonials-next"
-        class="flex h-11 w-11 items-center justify-center rounded-full border border-border text-text-primary transition-colors hover:border-accent hover:text-accent"
-        aria-label={t('testimonials.next')}
-      >
-        <Icon name="arrow-right" class="h-4 w-4 rtl:rotate-180" />
-      </button>
+<section class="relative overflow-hidden py-24 sm:py-28" aria-labelledby="testimonials-heading" data-curtain>
+  <div class="ambient-field" aria-hidden="true">
+    <div class="ambient-plate ambient-plate--crimson -start-[14vw] top-[6vh] h-[40vw] w-[40vw]" data-ambient="8"></div>
+  </div>
+
+  <div class="relative mx-auto max-w-7xl px-5 sm:px-8">
+    <div class="flex flex-wrap items-end justify-between gap-6">
+      <h2 id="testimonials-heading" class="display-lg max-w-xl text-text-primary" data-reveal="lines">
+        {heading}
+      </h2>
+
+      <div class="flex items-center gap-3">
+        <span class="numeral hidden text-sm text-text-secondary sm:block">
+          <span id="testimonials-index">01</span>
+          <span class="mx-1 text-gold">/</span>
+          {String(items.length).padStart(2, '0')}
+        </span>
+        <button
+          type="button"
+          id="testimonials-prev"
+          class="press flex h-12 w-12 items-center justify-center rounded-full border border-border text-text-primary transition-colors duration-500 hover:border-accent hover:bg-accent/5 hover:text-accent"
+          aria-label={t('testimonials.prev')}
+        >
+          <Icon name="arrow-right" class="h-4 w-4 rotate-180 rtl:rotate-0" />
+        </button>
+        <button
+          type="button"
+          id="testimonials-next"
+          class="press flex h-12 w-12 items-center justify-center rounded-full border border-border text-text-primary transition-colors duration-500 hover:border-accent hover:bg-accent/5 hover:text-accent"
+          aria-label={t('testimonials.next')}
+        >
+          <Icon name="arrow-right" class="h-4 w-4 rtl:rotate-180" />
+        </button>
+      </div>
+    </div>
+
+    <!-- Progress hairline. Reflects real scroll position in the rail. -->
+    <div class="mt-8 h-px w-full bg-hairline" aria-hidden="true">
+      <div id="testimonials-progress" class="h-px w-0 origin-left bg-accent transition-[width] duration-300 rtl:origin-right"></div>
     </div>
   </div>
 
   <div
     id="testimonials-track"
-    class="mt-10 flex snap-x snap-mandatory gap-5 overflow-x-auto scroll-smooth pb-4"
+    class="mt-10 flex snap-x snap-mandatory gap-5 overflow-x-auto scroll-smooth px-5 pb-4 sm:px-8"
     style="scrollbar-width: none;"
   >
     {
       items.map((item) => (
-        <blockquote class="flex w-[min(420px,85vw)] shrink-0 snap-start flex-col justify-between rounded-2xl border border-border bg-surface p-8">
-          <p class="font-display text-lg leading-snug text-text-primary">"{item.quote}"</p>
-          <footer class="mt-6 text-sm">
-            <p class="font-semibold text-text-primary">{item.author}</p>
-            <p class="text-text-secondary">{item.role}</p>
+        <blockquote
+          data-tilt="3"
+          class="group relative flex w-[min(30rem,86vw)] shrink-0 snap-start flex-col justify-between overflow-hidden rounded-2xl border border-hairline bg-surface p-8 transition-colors duration-500 hover:border-accent/40 sm:p-10"
+        >
+          <Icon
+            name="quote"
+            class="pointer-events-none absolute end-6 top-6 h-14 w-14 text-gold/15 transition-colors duration-500 group-hover:text-gold/30"
+          />
+          <p class="relative font-display text-[1.3rem] leading-[1.45] text-text-primary rtl:font-arabic-display rtl:text-[1.15rem] rtl:leading-[1.85]">
+            {item.quote}
+          </p>
+          <footer class="relative mt-8 flex items-center gap-4 border-t border-hairline pt-6 text-sm">
+            <span class="h-1.5 w-1.5 shrink-0 rotate-45 bg-gold" aria-hidden="true" />
+            <span>
+              <span class="block font-semibold text-text-primary">{item.author}</span>
+              <span class="block text-text-secondary">{item.role}</span>
+            </span>
           </footer>
         </blockquote>
       ))
@@ -61,16 +102,39 @@ const t = useTranslations(locale);
   const track = document.getElementById('testimonials-track');
   const prev = document.getElementById('testimonials-prev');
   const next = document.getElementById('testimonials-next');
+  const progress = document.getElementById('testimonials-progress');
+  const indexEl = document.getElementById('testimonials-index');
   const isRtl = document.documentElement.dir === 'rtl';
 
+  const cards = track ? Array.from(track.querySelectorAll('blockquote')) : [];
+
+  const step = () => (cards[0]?.clientWidth ?? 320) + 20;
+
   const scrollByCard = (dir: 1 | -1) => {
-    const card = track?.querySelector('blockquote');
-    const amount = (card?.clientWidth ?? 320) + 20;
-    track?.scrollBy({ left: (isRtl ? -1 : 1) * dir * amount, behavior: 'smooth' });
+    // In RTL the scroll axis is inverted, so "next" is a negative offset.
+    track?.scrollBy({ left: (isRtl ? -1 : 1) * dir * step(), behavior: 'smooth' });
   };
 
   prev?.addEventListener('click', () => scrollByCard(-1));
   next?.addEventListener('click', () => scrollByCard(1));
+
+  // Progress and the index counter follow the real scroll position, so they
+  // stay correct when the reader swipes instead of using the buttons.
+  const sync = () => {
+    if (!track) return;
+    const max = track.scrollWidth - track.clientWidth;
+    const pos = Math.abs(track.scrollLeft);
+    const ratio = max > 0 ? Math.min(1, pos / max) : 0;
+    if (progress) progress.style.width = `${Math.max(4, ratio * 100)}%`;
+    if (indexEl) {
+      const i = Math.min(cards.length, Math.round(ratio * (cards.length - 1)) + 1);
+      indexEl.textContent = String(i).padStart(2, '0');
+    }
+  };
+
+  track?.addEventListener('scroll', sync, { passive: true });
+  window.addEventListener('resize', sync);
+  sync();
 </script>
 
 <style>

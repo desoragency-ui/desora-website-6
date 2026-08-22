@@ -6,7 +6,7 @@
 export const siteConfig = {
   name: 'DESORA',
   tagline: 'Beyond Ordinary Brands',
-  domain: 'https://desora.ma', // PLACEHOLDER: confirm real production domain
+  domain: 'https://www.desora.net',
 
   email: 'desoragency@gmail.com',
 

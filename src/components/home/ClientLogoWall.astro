@@ -1,0 +1,124 @@
+---
+import { clients } from '../../lib/clients';
+import type { Locale } from '../../i18n/config';
+
+/**
+ * The client wall.
+ *
+ * Every mark is a real logo taken from that client's own site or profile (see
+ * src/lib/clients.ts). At rest the wall is painted in a single ink through
+ * mask-image, so twelve logos drawn by twelve different designers still read as
+ * one considered set and still respond to the theme. On hover the cell releases
+ * its real colours and its neighbours recede, which is what turns a static
+ * credibility strip into something worth pointing a cursor at.
+ */
+interface Props {
+  locale: Locale;
+  heading: string;
+  note?: string;
+}
+
+const { locale, heading, note } = Astro.props;
+const builtLabel =
+  locale === 'ar' ? 'موقع من إنجازنا' : locale === 'en' ? 'Site built by DESORA' : 'Site signé DESORA';
+---
+
+<section class="relative overflow-hidden border-y border-border bg-bg-secondary py-16 sm:py-20" aria-labelledby="client-wall-heading">
+  <div class="rule-grid" aria-hidden="true"></div>
+
+  <div class="relative mx-auto max-w-7xl px-5 sm:px-8">
+    <div class="flex flex-col gap-3 sm:flex-row sm:items-baseline sm:justify-between">
+      <h2 id="client-wall-heading" class="overline">{heading}</h2>
+      {note && <p class="text-sm text-text-secondary">{note}</p>}
+    </div>
+
+    <ul
+      class="logo-wall mt-10 grid grid-cols-2 border-s border-t border-hairline sm:grid-cols-3 lg:grid-cols-4"
+      data-logo-wall
+    >
+      {
+        clients.map((client) => {
+          const Cell = client.href ? 'a' : 'div';
+          return (
+            <li class="border-b border-e border-hairline">
+              <Cell
+                class:list={['logo-cell group/logo', client.tile && 'logo-cell--tile']}
+                data-logo-cell
+                style={`--logo-src:url('${client.ink}')`}
+                {...(client.href
+                  ? { href: client.href, target: '_blank', rel: 'noopener noreferrer' }
+                  : {})}
+              >
+                <span class="logo-ink" aria-hidden="true" />
+                <img
+                  class="logo-color"
+                  src={client.color}
+                  alt=""
+                  loading="lazy"
+                  decoding="async"
+                  width="460"
+                  height="190"
+                />
+                <span class="sr-only">
+                  {client.name}, {client.sector[locale]}
+                </span>
+                {client.builtByDesora && (
+                  <span
+                    class="pointer-events-none absolute end-3 top-3 h-1.5 w-1.5 rounded-full bg-gold opacity-0 transition-opacity duration-500 group-hover/logo:opacity-100"
+                    title={builtLabel}
+                    aria-hidden="true"
+                  />
+                )}
+              </Cell>
+            </li>
+          );
+        })
+      }
+    </ul>
+
+    <p class="mt-6 flex items-center gap-2 text-xs text-text-secondary">
+      <span class="inline-block h-1.5 w-1.5 rounded-full bg-gold" aria-hidden="true"></span>
+      {builtLabel}
+    </p>
+  </div>
+</section>
+
+<style>
+  /* Attention is a spotlight: hovering one mark dims the rest of the wall so
+     the eye lands where the cursor is. Pure CSS, no JS, no layout. */
+  .logo-wall:hover .logo-cell {
+    opacity: 0.32;
+  }
+  .logo-wall .logo-cell:hover,
+  .logo-wall .logo-cell:focus-visible {
+    opacity: 1;
+  }
+  .logo-cell {
+    transition: opacity 0.45s cubic-bezier(0.16, 1, 0.3, 1), transform 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .logo-wall .logo-cell:hover {
+    transform: translateY(-2px);
+  }
+
+  @media (hover: none) {
+    /* Touch has no hover state to reveal colour with, so every mark simply
+       shows in its own colours and the ink layer stays out of the way. */
+    .logo-wall:hover .logo-cell {
+      opacity: 1;
+    }
+    .logo-ink {
+      opacity: 0;
+    }
+    .logo-color {
+      opacity: 1;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .logo-cell,
+    .logo-wall .logo-cell:hover {
+      transition-duration: 0.01ms;
+      transform: none;
+    }
+  }
+</style>

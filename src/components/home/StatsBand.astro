@@ -1,51 +1,47 @@
 ---
+/**
+ * The numbers band.
+ *
+ * Driven by `initMarquees` in src/scripts/motion.ts rather than a CSS keyframe.
+ * Two wins over the keyframe version it replaces: the strip surges with scroll
+ * velocity, so the band feels physically connected to the page instead of
+ * looping on its own clock, and it works under RTL without a second mirrored
+ * keyframe.
+ *
+ * Two copies, because that is what the script's wrap maths expects. Only the
+ * first is exposed to assistive tech; the second is a visual repeat.
+ */
 interface Props {
   heading: string;
   items: { value: string; label: string }[];
 }
 
 const { heading, items } = Astro.props;
-
-// Three copies so the loop is seamless (animate 0 -> -33.3334%).
-// Only the first copy is exposed to assistive tech; the rest repeat visually.
 const copies = [
   { items, hidden: false },
-  { items, hidden: true },
   { items, hidden: true },
 ];
 ---
 
-<section
-  class="border-y border-border bg-bg-secondary py-14"
-  aria-label={heading}
->
-  <p class="overline mx-auto mb-8 max-w-7xl px-5 text-center sm:px-8">
-    {heading}
-  </p>
+<section class="relative overflow-hidden border-y border-border bg-bg-secondary py-16" aria-label={heading}>
+  <div class="rule-grid" aria-hidden="true"></div>
 
-  <div
-    class="marquee group relative overflow-hidden [-webkit-mask-image:linear-gradient(to_right,transparent,black_8%,black_92%,transparent)] [mask-image:linear-gradient(to_right,transparent,black_8%,black_92%,transparent)]"
-  >
-    <div class="marquee-track flex w-max items-center">
+  <p class="overline relative mx-auto mb-10 max-w-7xl px-5 text-center sm:px-8">{heading}</p>
+
+  <div class="edge-fade relative overflow-hidden" data-marquee="72" data-marquee-copies="2">
+    <div class="flex w-max items-center" data-marquee-track>
       {
         copies.map((copy) => (
-          <div
-            class="flex shrink-0 items-center"
-            aria-hidden={copy.hidden ? 'true' : undefined}
-          >
+          <div class="flex shrink-0 items-center" aria-hidden={copy.hidden ? 'true' : undefined}>
             {copy.items.map((item) => (
               <div class="flex shrink-0 items-center">
                 <div class="flex shrink-0 items-baseline gap-3 px-8 sm:px-10">
                   <span class="numeral text-[clamp(2rem,3.5vw,2.9rem)] leading-none text-accent">
                     {item.value}
                   </span>
-                  <span class="whitespace-nowrap text-sm text-text-secondary">
-                    {item.label}
-                  </span>
+                  <span class="whitespace-nowrap text-sm text-text-secondary">{item.label}</span>
                 </div>
-                <span class="select-none text-xs text-gold/70" aria-hidden="true">
-                  &#9670;
-                </span>
+                <span class="h-1.5 w-1.5 shrink-0 rotate-45 bg-gold/70" aria-hidden="true" />
               </div>
             ))}
           </div>
@@ -54,59 +50,3 @@ const copies = [
     </div>
   </div>
 </section>
-
-<style>
-  .marquee-track {
-    /* One copy per cycle, so duration scales with item count to hold a constant
-       reading speed: 15 items at ~9.6s each. */
-    animation: marquee-move 144s linear infinite;
-    will-change: transform;
-  }
-
-  /* Pause the scroll while the reader hovers to read a value. */
-  .group:hover .marquee-track {
-    animation-play-state: paused;
-  }
-
-  /* Right-to-left flow: the track slides leftward. */
-  @keyframes marquee-move {
-    from {
-      transform: translateX(0%);
-    }
-    to {
-      transform: translateX(-33.3334%);
-    }
-  }
-
-  /* Arabic reads the other way, so the track has to travel rightward instead.
-     This mirrors the keyframe rather than reversing playback: under RTL the
-     flex track already sits flush against the right edge at translate 0, so
-     `animation-direction: reverse` would start it a full copy-width to the
-     left and leave the band empty for most of the cycle. Travelling positive
-     from 0 keeps content in the window the whole way round. */
-  @keyframes marquee-move-rtl {
-    from {
-      transform: translateX(0%);
-    }
-    to {
-      transform: translateX(33.3334%);
-    }
-  }
-
-  :global(html[dir='rtl']) .marquee-track {
-    animation-name: marquee-move-rtl;
-  }
-
-  /* No motion: hold everything still, centered and wrapped so nothing clips. */
-  @media (prefers-reduced-motion: reduce) {
-    .marquee-track {
-      animation: none;
-      width: 100%;
-      flex-wrap: wrap;
-      justify-content: center;
-    }
-    .marquee-track > [aria-hidden='true'] {
-      display: none;
-    }
-  }
-</style>

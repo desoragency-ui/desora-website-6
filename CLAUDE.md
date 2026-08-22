@@ -66,6 +66,11 @@ Logos clients, témoignages, études de cas chiffrées, statistiques d'impact : 
 
 **Toujours en attente (ne pas inventer) :**
 - `identite-de-marque` : aucune étude de cas identité fournie dans le document, placeholder conservé.
+- Résultats business pour Wolcons et Centre Dentaire Messnana : les études de cas ne montrent
+  que du périmètre livré. Dès que le client fournit des chiffres mesurés, les ajouter dans
+  `src/lib/case-studies.ts`.
+- Logos manquants : Clinique Le Jasmin, Maison du TEC, FesDistri. Absents du mur tant qu'aucun
+  fichier vérifiable n'est fourni.
 - Mentions légales : ICE, RC, forme juridique, adresse du siège.
 - Logos clients réels, numéro WhatsApp, domaine de production, réseaux sociaux (voir `src/lib/site-config.ts`).
 
@@ -83,6 +88,69 @@ Logos clients, témoignages, études de cas chiffrées, statistiques d'impact : 
   - Pas de `window.addEventListener('scroll')` : l'état scrollé du header passe par ScrollTrigger pour rester sur le rAF de Lenis.
   - `ScrollTrigger.refresh()` est rappelé sur `document.fonts.ready` (les webfonts changent les métriques donc les points de déclenchement).
 - **Config à finaliser :** valeurs placeholder dans `src/lib/site-config.ts` (numéro WhatsApp, domaine, réseaux sociaux, ICE/RC légaux). Chercher `PLACEHOLDER` dans le repo.
+
+## Preuve client : logos, rail de réalisations, études de cas
+
+**Roster client (`src/lib/clients.ts`).** 12 clients réels. Chaque logo a été récupéré sur le site,
+le profil Instagram ou la page LinkedIn du client lui-même. **Ne jamais ajouter une entrée sans
+source vérifiable pour la marque.** Chaque marque existe en deux fichiers dans
+`public/brand/clients/` :
+- `<slug>.png|svg` : silhouette alpha, peinte via `mask-image`, donc elle prend l'encre de la page
+  et suit le thème. C'est ce qui permet à 12 logos dessinés par 12 studios différents de se lire
+  comme un seul ensemble.
+- `<slug>-color.png|svg` : le vrai logo, révélé au survol.
+
+Les silhouettes sont normalisées **par surface d'encre**, pas par boîte englobante : un logotype
+large et un monogramme compact pèsent alors visuellement pareil sur le mur. Si vous régénérez un
+asset, gardez cette règle, sinon le mur redevient bancal.
+
+`findClient(name)` résout un logo depuis le nom écrit dans la copie (avec `aliases` pour les
+anciennes orthographes publiées). Un logo introuvable n'est **pas** une erreur : le panneau retombe
+sur du texte. Un trou est honnête, une fausse marque ne l'est pas.
+
+**Rail de réalisations (`WorkShowcase.astro`).** Sur desktop la section se fige et les panneaux
+défilent horizontalement (`initHorizontalScroll` dans `motion.ts`). Sous 1024px de large **ou** sous
+640px de haut, le même markup retombe sur un swipe natif avec points d'accroche : détourner le
+scroll sur un téléphone est un combat, pas un effet. Le panneau se dimensionne sur la hauteur
+disponible et c'est l'image qui absorbe le jeu, jamais le chiffre ni le CTA.
+
+**Études de cas (`src/lib/case-studies.ts`, pages `/{lang}/realisations/{slug}`).** Trois projets
+livrés directement, en FR/EN/AR. Données structurées plutôt que content collection : ces entrées
+n'ont aucun corps de texte, seulement des champs.
+
+⚠️ **Chiffres.** Fastway est le seul cas avec un résultat business mesuré (21 000 → 37 000 abonnés
+en 4 mois, fourni et approuvé par le client) ; les autres valeurs de ce cas en dérivent
+arithmétiquement. Wolcons et Centre Dentaire Messnana n'affichent **que du périmètre livré,
+comptable sur leur propre site** (sections, réalisations publiées, langues). Aucun chiffre de
+trafic, de leads ou de chiffre d'affaires n'est revendiqué pour eux tant que le client ne l'a pas
+fourni.
+
+## Langue servie à la racine
+
+`functions/index.js` est une Pages Function qui possède **uniquement** `/`. Elle lit la requête et
+oriente : `?lang=xx` > cookie `desora-lang` > `Accept-Language` (valeurs q respectées) > `fr`.
+Le `LanguageSwitcher` pose le cookie au clic, donc un choix manuel tient d'une visite à l'autre.
+Ne pas remettre de règle `/ → /fr` dans `public/_redirects` : elle masquerait la fonction.
+
+## Kinetics (suite de `motion.ts`)
+
+Primitives ajoutées, toutes en transform/opacity/clip et toutes derrière `prefers-reduced-motion` :
+`data-hscroll` (rail figé), `data-depth-layer` (parallaxe multi-profondeur), `data-mask-reveal`
+(lignes qui montent depuis leur propre boîte clippée, via `SplitText({ mask: 'lines' })`, ce qui
+évite de raboter les accents français), `data-magnetic` (attraction du curseur), `data-tilt`
+(inclinaison + reflet), `data-marquee` (bandeau piloté par GSAP, réactif à la vitesse de scroll et
+RTL sans keyframe miroir), `data-logo-wall`, `data-ambient`.
+
+⚠️ **Les contrôles ne dépendent jamais d'une animation.** Le cluster mobile porte `data-no-entrance`
+et l'entrée du header a un chien de garde : une page ouverte dans un onglet d'arrière-plan ne reçoit
+pas de frames rAF, et l'ancien code laissait alors les boutons langue/thème/menu à `opacity: 0`,
+donc invisibles et non cliquables.
+
+## Polices : chargées par langue
+
+`BaseLayout` demande Cormorant + General Sans en FR/EN, et Amiri + Cairo en AR. Charger les huit
+fichiers arabes sur chaque page française mettait des polices jamais rendues sur le chemin critique.
+Si vous ajoutez une graisse, ajoutez-la du bon côté du test `isArabic`.
 
 ## Commandes
 - `npm run dev` — serveur de dev (port 4321)

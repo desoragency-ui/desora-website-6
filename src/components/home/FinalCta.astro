@@ -5,6 +5,16 @@ import { useTranslations, localizedPath } from '../../i18n/utils';
 import { siteConfig } from '../../lib/site-config';
 import type { Locale } from '../../i18n/config';
 
+/**
+ * The closing statement.
+ *
+ * Full bleed instead of a rounded box floating in a container: the last thing
+ * on the page should feel like the room going dark, not like one more card. The
+ * heading is read word by word, tied to the reader's own scroll (`data-word-reveal`),
+ * so the question lands at the pace it was written rather than arriving all at
+ * once. Used exactly once on the page, which is what keeps it a device rather
+ * than a tic.
+ */
 interface Props {
   locale: Locale;
   heading: string;
@@ -15,31 +25,70 @@ const { locale, heading, description } = Astro.props;
 const t = useTranslations(locale);
 ---
 
-<section class="mx-auto max-w-7xl px-5 py-24 sm:px-8">
-  <div class="relative overflow-hidden rounded-[2rem] bg-accent-strong px-8 py-20 text-center sm:px-16" data-reveal>
-    <BrandPattern tone="contrast" opacity={0.06} />
-    <div class="relative">
-    <h2 class="font-display text-[clamp(2.25rem,4.5vw,3.5rem)] font-semibold leading-[1.05] text-accent-foreground">
+<section
+  class="relative isolate overflow-hidden bg-accent-strong py-28 sm:py-36"
+  aria-labelledby="final-cta-heading"
+  data-curtain
+>
+  <BrandPattern tone="contrast" opacity={0.07} />
+
+  <div class="ambient-field" aria-hidden="true">
+    <div
+      class="ambient-plate -start-[10vw] top-[-10vh] h-[52vw] w-[52vw] opacity-30"
+      style="background: radial-gradient(circle, var(--pearl-100), transparent 68%)"
+      data-ambient="12"
+    >
+    </div>
+    <div
+      class="ambient-plate -end-[14vw] bottom-[-12vh] h-[40vw] w-[40vw] opacity-20"
+      style="background: radial-gradient(circle, var(--sand-300), transparent 66%)"
+      data-ambient="-9"
+    >
+    </div>
+  </div>
+
+  <div class="relative z-10 mx-auto max-w-5xl px-5 text-center sm:px-8">
+    <span class="mx-auto mb-8 flex w-fit items-center gap-3">
+      <span class="h-px w-8 bg-accent-foreground/45"></span>
+      <span class="overline !text-accent-foreground/80">{siteConfig.tagline}</span>
+      <span class="h-px w-8 bg-accent-foreground/45"></span>
+    </span>
+
+    <h2
+      id="final-cta-heading"
+      class="font-display text-[clamp(2.4rem,6.2vw,5rem)] font-semibold leading-[1.02] text-accent-foreground rtl:font-arabic-display rtl:leading-[1.3]"
+      data-word-reveal
+    >
       {heading}
     </h2>
-    <p class="mx-auto mt-5 max-w-xl text-base leading-relaxed text-accent-foreground/80">{description}</p>
-    <div class="mt-9 flex flex-wrap items-center justify-center gap-4">
+
+    <p
+      class="mx-auto mt-8 max-w-xl text-[1.0625rem] leading-relaxed text-accent-foreground/80"
+      data-reveal
+    >
+      {description}
+    </p>
+
+    <div class="mt-12 flex flex-wrap items-center justify-center gap-4">
       <a
         href={localizedPath(locale, 'contact')}
-        class="press flex h-13 items-center rounded-full bg-accent-foreground px-7 text-base font-semibold text-accent transition-transform duration-500 [transition-timing-function:cubic-bezier(0.16,1,0.3,1)] hover:scale-[1.03]"
+        data-magnetic="0.32"
+        class="press flex h-14 items-center rounded-full bg-accent-foreground px-8 text-base font-semibold text-accent transition-transform duration-500 [transition-timing-function:cubic-bezier(0.16,1,0.3,1)] hover:scale-[1.03]"
       >
-        {t('cta.discussProject')}
+        <span data-magnetic-label>{t('cta.discussProject')}</span>
       </a>
       <a
         href={siteConfig.whatsappUrl}
         target="_blank"
         rel="noopener noreferrer"
-        class="press flex h-13 items-center gap-2 rounded-full border border-accent-foreground/40 px-7 text-base font-semibold text-accent-foreground transition-all duration-500 [transition-timing-function:cubic-bezier(0.16,1,0.3,1)] hover:border-accent-foreground hover:bg-accent-foreground/10"
+        data-magnetic="0.26"
+        class="press flex h-14 items-center gap-2.5 rounded-full border border-accent-foreground/40 px-8 text-base font-semibold text-accent-foreground transition-all duration-500 [transition-timing-function:cubic-bezier(0.16,1,0.3,1)] hover:border-accent-foreground hover:bg-accent-foreground/10"
       >
-        <Icon name="whatsapp" class="h-5 w-5" />
-        {t('cta.whatsapp')}
+        <span data-magnetic-label class="flex items-center gap-2.5">
+          <Icon name="whatsapp" class="h-5 w-5" />
+          {t('cta.whatsapp')}
+        </span>
       </a>
-    </div>
     </div>
   </div>
 </section>

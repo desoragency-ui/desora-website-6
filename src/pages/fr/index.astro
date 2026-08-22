@@ -1,26 +1,31 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import Hero from '../../components/home/Hero.astro';
-import TrustMarquee from '../../components/home/TrustMarquee.astro';
+import ClientLogoWall from '../../components/home/ClientLogoWall.astro';
 import ServicesGrid from '../../components/home/ServicesGrid.astro';
 import Differentiation from '../../components/home/Differentiation.astro';
 import ProcessSteps from '../../components/ProcessSteps.astro';
-import CaseStudies from '../../components/home/CaseStudies.astro';
+import WorkShowcase from '../../components/home/WorkShowcase.astro';
 import Testimonials from '../../components/home/Testimonials.astro';
 import StatsBand from '../../components/home/StatsBand.astro';
 import FinalCta from '../../components/home/FinalCta.astro';
 import { getHome, getServices } from '../../lib/content';
+import { buildShowcase } from '../../lib/showcase';
 
 const locale = 'fr' as const;
 const home = await getHome(locale);
 const services = await getServices(locale);
 
 if (!home) throw new Error(`Missing home content for locale: ${locale}`);
+
+// Joins authored copy to the real client logos and plates. One helper for all
+// three locales so they cannot drift apart.
+const showcase = buildShowcase(locale, home.caseStudies.items);
 ---
 
 <BaseLayout title={home.seoTitle} description={home.seoDescription} locale={locale}>
   <Hero locale={locale} title={home.hero.title} subtitle={home.hero.subtitle} />
-  <TrustMarquee heading={home.trust.heading} items={home.trust.items} />
+  <ClientLogoWall locale={locale} heading={home.trust.heading} />
   <ServicesGrid
     locale={locale}
     heading={home.servicesIntro.heading}
@@ -34,7 +39,12 @@ if (!home) throw new Error(`Missing home content for locale: ${locale}`);
     points={home.differentiation.points}
   />
   <ProcessSteps heading={home.process.heading} description={home.process.description} steps={home.process.steps} />
-  <CaseStudies locale={locale} heading={home.caseStudies.heading} description={home.caseStudies.description} items={home.caseStudies.items} />
+  <WorkShowcase
+    locale={locale}
+    heading={home.caseStudies.heading}
+    description={home.caseStudies.description}
+    items={showcase}
+  />
   <Testimonials locale={locale} heading={home.testimonials.heading} items={home.testimonials.items} />
   <StatsBand heading={home.stats.heading} items={home.stats.items} />
   <FinalCta locale={locale} heading={home.finalCta.heading} description={home.finalCta.description} />

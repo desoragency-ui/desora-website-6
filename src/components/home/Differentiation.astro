@@ -31,7 +31,7 @@ const copy = {
 }[locale];
 ---
 
-<section class="overflow-hidden bg-bg-secondary py-24">
+<section class="overflow-hidden bg-bg-secondary py-24" data-curtain>
   <div class="mx-auto max-w-7xl px-5 sm:px-8">
     <div class="grid grid-cols-1 items-center gap-12 lg:grid-cols-[1.05fr_0.95fr] lg:gap-16">
       {/*
@@ -59,7 +59,7 @@ const copy = {
 
       <div>
         <div class="max-w-2xl" data-reveal>
-          <h2 class="font-display text-[clamp(1.75rem,3.5vw,2.75rem)] font-semibold leading-tight text-text-primary">
+          <h2 class="display-lg text-text-primary" data-reveal="lines">
             {heading}
           </h2>
           <p class="mt-4 text-lg text-text-secondary">{description}</p>
@@ -68,7 +68,7 @@ const copy = {
         <div class="mt-12 grid grid-cols-1 gap-8 sm:grid-cols-2" data-reveal-group>
           {
             points.map((point) => (
-              <div class="flex gap-4">
+              <div class="flex gap-4" data-tilt="2">
                 <span class="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-accent/10 text-accent">
                   <Icon name={point.icon as any} class="h-5 w-5" />
                 </span>

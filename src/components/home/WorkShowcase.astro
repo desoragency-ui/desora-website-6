@@ -1,0 +1,197 @@
+---
+import { Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+import Icon from '../Icon.astro';
+import { useTranslations, localizedPath } from '../../i18n/utils';
+import type { Locale } from '../../i18n/config';
+
+/**
+ * The work rail: the page's signature moment.
+ *
+ * On desktop the section pins and the case studies travel sideways under the
+ * scroll, each panel lifting as it reaches the middle of the frame. On touch the
+ * exact same markup degrades to a native swipe with snap points, because a
+ * hijacked scroll on a phone is a fight, not an effect. Both behaviours are
+ * driven from src/scripts/motion.ts (`initHorizontalScroll`) so there is one
+ * implementation and one reduced-motion policy.
+ *
+ * The client logo inside each panel uses the same masked-ink treatment as the
+ * logo wall, so travelling the rail feels like walking a gallery hang.
+ */
+
+export interface ShowcaseItem {
+  client: string;
+  sector: string;
+  /** One-sentence version, used by the full case studies. Preferred over the
+   *  challenge/result pair when present: a panel has room for one idea. */
+  summary?: string;
+  challenge: string;
+  result: string;
+  metric: { value: string; label: string };
+  serviceSlug: string;
+  /** Set when a full case-study page exists for this client. */
+  caseSlug?: string;
+  /** Optional real logo from src/lib/clients.ts. */
+  logoInk?: string;
+  /** Optional plate. Real client work where we have it, art direction elsewhere. */
+  image?: ImageMetadata;
+  imageAlt?: string;
+  /** Set when DESORA built the site being shown. */
+  builtByDesora?: boolean;
+}
+
+interface Props {
+  locale: Locale;
+  heading: string;
+  description: string;
+  items: ShowcaseItem[];
+}
+
+const { locale, heading, description, items } = Astro.props;
+const t = useTranslations(locale);
+
+const dragHint =
+  locale === 'ar' ? 'اسحب أو مرّر' : locale === 'en' ? 'Scroll or swipe' : 'Faites défiler';
+const builtLabel =
+  locale === 'ar' ? 'موقع من إنجازنا' : locale === 'en' ? 'Site built by DESORA' : 'Site signé DESORA';
+const caseLabel =
+  locale === 'ar' ? 'دراسة الحالة' : locale === 'en' ? 'Read the case study' : "Lire l'étude de cas";
+---
+
+<section
+  class="work-rail relative overflow-hidden bg-bg-primary"
+  data-hscroll
+  aria-labelledby="work-rail-heading"
+>
+  <div class="ambient-field" aria-hidden="true">
+    <div class="ambient-plate ambient-plate--crimson h-[46vw] w-[46vw] -start-[12vw] top-[8vh]" data-ambient="14"></div>
+    <div class="ambient-plate ambient-plate--sand h-[38vw] w-[38vw] -end-[10vw] bottom-[4vh]" data-ambient="-11"></div>
+  </div>
+
+  <div class="hscroll-stage relative flex flex-col justify-center py-20 lg:py-0">
+    <div class="mx-auto mb-10 w-full max-w-7xl px-5 sm:px-8 lg:mb-14">
+      <div class="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
+        <div class="max-w-2xl">
+          <h2 id="work-rail-heading" class="display-lg text-text-primary" data-mask-reveal>
+            {heading}
+          </h2>
+          <p class="mt-4 text-lg leading-relaxed text-text-secondary">{description}</p>
+        </div>
+        <p class="overline flex shrink-0 items-center gap-3">
+          <span class="hairline w-8"></span>
+          {dragHint}
+          <span class="tabular-nums">{String(items.length).padStart(2, '0')}</span>
+        </p>
+      </div>
+    </div>
+
+    <!-- On desktop the track takes whatever height the heading leaves, and each
+         panel fills it exactly. Sizing the card from a fixed image aspect
+         instead let it overrun the pinned viewport on short laptops, which
+         clipped the metric and the call to action off the bottom. -->
+    <div
+      data-hscroll-track
+      class="lg:min-h-0 lg:flex-1 lg:items-stretch lg:ps-[max(1.25rem,calc((100vw-80rem)/2+2rem))] lg:pe-[30vw]"
+    >
+      {
+        items.map((item, i) => (
+          <article
+            data-hscroll-panel
+            data-tilt="3"
+            class="group relative flex w-[86vw] max-w-[34rem] flex-col overflow-hidden rounded-3xl border border-hairline bg-surface shadow-[0_30px_80px_-40px_var(--shadow-tint)] sm:w-[62vw] lg:h-full lg:max-h-[40rem] lg:w-[38rem] lg:max-w-none"
+          >
+            <div class="relative aspect-[16/10] shrink-0 overflow-hidden bg-bg-secondary lg:aspect-auto lg:min-h-[9rem] lg:flex-1 lg:shrink">
+              {item.image ? (
+                <Image
+                  src={item.image}
+                  alt={item.imageAlt ?? ''}
+                  widths={[480, 720, 960, 1280]}
+                  sizes="(max-width: 1024px) 86vw, 38rem"
+                  format="webp"
+                  quality={84}
+                  loading="lazy"
+                  decoding="async"
+                  class="h-full w-full object-cover transition-transform duration-[1.2s] [transition-timing-function:cubic-bezier(0.16,1,0.3,1)] group-hover:scale-[1.05]"
+                />
+              ) : (
+                <div class="absolute inset-0 bg-[radial-gradient(120%_90%_at_15%_10%,color-mix(in_oklab,var(--color-accent-strong)_28%,transparent),transparent_62%)]" />
+              )}
+
+              <span
+                class="numeral pointer-events-none absolute end-5 top-4 text-[clamp(2.5rem,5vw,4rem)] leading-none text-pearl-50/85 mix-blend-overlay"
+                aria-hidden="true"
+              >
+                {String(i + 1).padStart(2, '0')}
+              </span>
+
+              {item.builtByDesora && (
+                <span class="absolute start-4 top-4 flex items-center gap-2 rounded-full bg-obsidian-900/70 px-3 py-1.5 text-[0.6875rem] font-semibold uppercase tracking-[0.18em] text-pearl-50 backdrop-blur-sm">
+                  <span class="h-1.5 w-1.5 rounded-full bg-gold" />
+                  {builtLabel}
+                </span>
+              )}
+            </div>
+
+            <div class="flex flex-1 flex-col p-7 sm:p-8 lg:flex-none lg:shrink-0">
+              {item.logoInk ? (
+                <span
+                  class="logo-ink !opacity-70 h-8 w-36 !bg-[var(--color-text-primary)] [mask-position:left_center] [-webkit-mask-position:left_center] rtl:[mask-position:right_center] rtl:[-webkit-mask-position:right_center]"
+                  style={`--logo-src:url('${item.logoInk}')`}
+                  role="img"
+                  aria-label={item.client}
+                />
+              ) : (
+                <h3 class="font-display text-2xl font-semibold text-text-primary">{item.client}</h3>
+              )}
+
+              <p class="overline mt-3">{item.sector}</p>
+
+              {item.summary ? (
+                <p class="mt-5 flex-1 text-[0.9375rem] leading-relaxed text-text-secondary">{item.summary}</p>
+              ) : (
+                <>
+                  <p class="mt-5 text-sm leading-relaxed text-text-secondary">{item.challenge}</p>
+                  <p class="mt-3 flex-1 text-sm leading-relaxed text-text-secondary">{item.result}</p>
+                </>
+              )}
+
+              <div class="mt-7 flex items-end justify-between gap-4 border-t border-hairline pt-6">
+                <div>
+                  <p class="numeral text-[clamp(2rem,3.4vw,2.75rem)] font-semibold leading-none text-accent" data-countup>
+                    {item.metric.value}
+                  </p>
+                  <p class="mt-2 max-w-[18ch] text-sm leading-snug text-text-secondary">{item.metric.label}</p>
+                </div>
+
+                <a
+                  href={
+                    item.caseSlug
+                      ? localizedPath(locale, `realisations/${item.caseSlug}`)
+                      : localizedPath(locale, `services/${item.serviceSlug}`)
+                  }
+                  class="press flex h-11 shrink-0 items-center gap-2 rounded-full border border-border px-5 text-sm font-medium text-text-primary transition-colors duration-500 hover:border-accent hover:text-accent"
+                >
+                  {item.caseSlug ? caseLabel : t('cta.viewService')}
+                  <Icon name="arrow-right" class="h-4 w-4 rtl:rotate-180" />
+                </a>
+              </div>
+            </div>
+          </article>
+        ))
+      }
+    </div>
+  </div>
+</section>
+
+<style>
+  /* Only the pinned (desktop) mode claims a full viewport. Before the script
+     runs, and on touch, the stage is auto-height so the rail can never leave a
+     tall empty box on the page if JS fails. */
+  .work-rail[data-hscroll-mode='pinned'] .hscroll-stage {
+    height: 100svh;
+  }
+
+  .work-rail[data-hscroll-mode='pinned'] {
+    overflow: hidden;
+  }
+</style>

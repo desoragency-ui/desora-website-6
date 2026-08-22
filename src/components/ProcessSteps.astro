@@ -1,4 +1,20 @@
 ---
+/**
+ * The method, told as pinned chapters.
+ *
+ * Five steps in a five-column grid invites skimming, which is exactly wrong for
+ * content whose whole argument is "the order matters, and skipping one costs
+ * more than respecting it". So the section pins and advances one step at a time
+ * under the reader's own scroll: you cannot reach step four without passing
+ * three. The rail on the reading edge keeps your place.
+ *
+ * Numbering earns its keep here, unlike on a card grid: this genuinely is a
+ * sequence, and the index is the information.
+ *
+ * Driven by `initChapters` in src/scripts/motion.ts. On touch, on short windows
+ * and under reduced motion the same markup falls back to a plain stacked list,
+ * because pinning a scroll under a thumb is a fight.
+ */
 interface Props {
   heading: string;
   description: string;
@@ -8,24 +24,60 @@ interface Props {
 const { heading, description, steps } = Astro.props;
 ---
 
-<section class="mx-auto max-w-7xl px-5 py-24 sm:px-8">
-  <div class="max-w-2xl" data-reveal>
-    <h2 class="font-display text-[clamp(2rem,4vw,3.25rem)] font-semibold leading-[1.08] text-text-primary">
-      {heading}
-    </h2>
-    <p class="mt-4 text-lg leading-relaxed text-text-secondary">{description}</p>
+<section
+  class="relative overflow-hidden border-y border-border bg-bg-secondary"
+  data-chapters
+  aria-labelledby="process-heading"
+>
+  <div class="ambient-field" aria-hidden="true">
+    <div class="ambient-plate ambient-plate--sand -end-[16vw] top-[10vh] h-[44vw] w-[44vw]" data-ambient="9"></div>
   </div>
 
-  <ol class="mt-14 grid grid-cols-1 gap-px overflow-hidden rounded-2xl border border-border bg-border sm:grid-cols-5" data-reveal-group>
-    {
-      steps.map((step, i) => (
-        <li class="flex flex-col gap-3 bg-surface p-7">
-          <span class="numeral text-5xl leading-none text-gold">{String(i + 1).padStart(2, '0')}</span>
-          <div class="hairline w-6"></div>
-          <h3 class="font-display text-lg font-semibold text-text-primary">{step.title}</h3>
-          <p class="mt-2 text-base leading-relaxed text-text-secondary">{step.description}</p>
-        </li>
-      ))
-    }
-  </ol>
+  <div
+    data-chapters-stage
+    class="relative mx-auto flex max-w-7xl flex-col justify-center px-5 py-20 sm:px-8 lg:min-h-[100svh] lg:py-0"
+  >
+    <div class="max-w-2xl">
+      <h2 id="process-heading" class="display-lg text-text-primary" data-reveal="lines">{heading}</h2>
+      <p class="mt-4 text-lg leading-relaxed text-text-secondary">{description}</p>
+    </div>
+
+    <div class="mt-12 grid gap-10 lg:mt-16 lg:grid-cols-[minmax(0,14rem)_1fr] lg:gap-16">
+      <!-- Rail. Each mark's rule extends when its chapter is the current one,
+           so the reader can see how far through the method they are. -->
+      <ol class="hidden flex-col gap-4 lg:flex" aria-hidden="true">
+        {
+          steps.map((step, i) => (
+            <li data-chapter-mark class="flex items-center gap-4">
+              <span class="numeral w-6 shrink-0 text-sm tabular-nums">{String(i + 1).padStart(2, '0')}</span>
+              <span class="chapter-rule h-px w-10 shrink-0 bg-current"></span>
+              <span class="truncate text-sm font-medium">{step.title}</span>
+            </li>
+          ))
+        }
+      </ol>
+
+      <div data-chapter-track>
+        {
+          steps.map((step, i) => (
+            <article data-chapter class="max-w-2xl">
+              <p class="numeral text-[clamp(3.5rem,9vw,7rem)] leading-[0.9] text-gold/45">
+                {String(i + 1).padStart(2, '0')}
+              </p>
+              <h3 class="mt-5 font-display text-[clamp(1.75rem,3.6vw,2.75rem)] font-semibold leading-[1.1] text-text-primary rtl:font-arabic-display">
+                {step.title}
+              </h3>
+              <p class="mt-5 text-[1.0625rem] leading-[1.75] text-text-secondary">{step.description}</p>
+            </article>
+          ))
+        }
+      </div>
+    </div>
+
+    <!-- Mobile keeps the count visible without the rail. -->
+    <p class="overline mt-10 lg:hidden">
+      {steps.length}
+      <span class="mx-2 inline-block h-1 w-1 rotate-45 bg-gold align-middle"></span>
+    </p>
+  </div>
 </section>

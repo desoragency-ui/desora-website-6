@@ -15,7 +15,14 @@ interface Props {
 
 const { locale, title, subtitle } = Astro.props;
 const t = useTranslations(locale);
-const eyebrow = locale === 'ar' ? 'وكالة تسويق راقية · المغرب' : locale === 'en' ? 'Premium Marketing Agency · Morocco' : 'Agence de marketing premium · Maroc';
+
+const eyebrow =
+  locale === 'ar'
+    ? 'وكالة تسويق راقية · المغرب'
+    : locale === 'en'
+      ? 'Premium Marketing Agency · Morocco'
+      : 'Agence de marketing premium · Maroc';
+
 const heroImage = getMedia('home-hero');
 const heroAlt =
   locale === 'ar'
@@ -23,9 +30,27 @@ const heroAlt =
     : locale === 'en'
       ? 'The DESORA studio: three creative directors reviewing a brand book'
       : 'Le studio DESORA : trois directeurs créatifs revoient un livre de marque';
+
+/**
+ * The signature strip under the hero: the promise in all three languages the
+ * studio actually works in, running as one continuous line. It is the fastest
+ * way to say "we do not translate into Arabic, we write in it", and it is the
+ * one thing on this page no competitor's template can borrow.
+ */
+const tagline = [
+  { text: 'Beyond Ordinary Brands', lang: 'en' },
+  { text: "Au-delà des marques ordinaires", lang: 'fr' },
+  { text: 'ما وراء العلامات العادية', lang: 'ar' },
+];
 ---
 
-<section class="bleed-hero flex min-h-[100svh] flex-col justify-center px-5 pb-20 pt-32 sm:px-8">
+<section
+  class="bleed-hero flex min-h-[100svh] flex-col justify-center px-5 pb-32 pt-32 sm:px-8"
+  data-depth-scope
+>
+  <!-- The plate sits behind a scrim, a blur-in entrance and a slow drift, so it
+       is never inspected at 1:1. Capping the ladder at 1920 and quality at 74
+       removes the heaviest request on the site with nothing visible to pay. -->
   {
     heroImage && (
       <div class="bleed-media" aria-hidden="true">
@@ -33,10 +58,10 @@ const heroAlt =
           id="hero-image"
           src={heroImage}
           alt=""
-          widths={[640, 960, 1280, 1600, 2048, 2752]}
+          widths={[640, 960, 1280, 1600, 1920]}
           sizes="100vw"
           format="webp"
-          quality={86}
+          quality={74}
           loading="eager"
           decoding="sync"
           fetchpriority="high"
@@ -44,54 +69,100 @@ const heroAlt =
       </div>
     )
   }
+
+  <!-- Two crimson/sand washes drifting at different rates behind the plate.
+       Heavily blurred, so they read as light in the room rather than shapes. -->
+  <div class="ambient-field" aria-hidden="true">
+    <div class="ambient-plate ambient-plate--crimson -start-[18vw] top-[6vh] h-[54vw] w-[54vw]" data-ambient="10"></div>
+    <div class="ambient-plate ambient-plate--gold -end-[14vw] bottom-[10vh] h-[40vw] w-[40vw]" data-ambient="-8"></div>
+  </div>
+
   <div class="bleed-scrim" aria-hidden="true"></div>
-  <BrandPattern opacity={0.035} />
+  <div class="absolute inset-0 z-[2]" data-depth-layer="-6" aria-hidden="true">
+    <BrandPattern opacity={0.045} />
+  </div>
 
   <div class="bleed-content mx-auto w-full max-w-7xl">
-  <div id="hero-copy" class="w-full max-w-2xl">
-    <span class="sr-only">{heroAlt}</span>
-    <div id="hero-eyebrow" class="mb-6 flex items-center gap-4">
-      <span class="hairline w-10 shrink-0"></span>
-      <span class="overline">{eyebrow}</span>
-    </div>
-    <h1
-      id="hero-title"
-      class="font-display text-[clamp(2.75rem,7vw,5.75rem)] font-semibold leading-[1.02] tracking-[-0.015em] text-text-primary"
-    >
-      {title}
-    </h1>
-    <p id="hero-subtitle" class="mt-7 max-w-2xl text-[clamp(1.05rem,2vw,1.3rem)] leading-relaxed text-text-secondary">
-      {subtitle}
-    </p>
-    <div id="hero-cta" class="mt-10 flex flex-wrap items-center gap-4">
-      <a
-        href={localizedPath(locale, 'contact')}
-        class="cta-shine press flex h-13 items-center rounded-full bg-accent-strong px-7 text-base font-semibold text-accent-foreground transition-colors duration-500 hover:bg-accent-strong-hover"
+    <div id="hero-copy" class="w-full max-w-3xl">
+      <span class="sr-only">{heroAlt}</span>
+
+      <div id="hero-eyebrow" class="mb-7 flex items-center gap-4">
+        <span class="hairline w-10 shrink-0"></span>
+        <span class="overline">{eyebrow}</span>
+      </div>
+
+      <!-- `font-display` is a Tailwind utility, and utilities outrank the
+           base-layer RTL rule in global.css, so Arabic needs the face swap
+           stated here explicitly rather than inherited. -->
+      <h1
+        id="hero-title"
+        class="font-display rtl:font-arabic-display text-[clamp(2.9rem,7.4vw,6.25rem)] font-semibold leading-[0.98] tracking-[-0.022em] text-text-primary rtl:leading-[1.28] rtl:tracking-normal"
       >
-        {t('cta.discussProject')}
-      </a>
-      <a
-        href={siteConfig.whatsappUrl}
-        target="_blank"
-        rel="noopener noreferrer"
-        class="press group flex h-13 items-center gap-2 rounded-full border border-border px-7 text-base font-semibold text-text-primary transition-all duration-500 [transition-timing-function:cubic-bezier(0.16,1,0.3,1)] hover:border-accent hover:bg-accent/5 hover:text-accent"
+        {title}
+      </h1>
+
+      <p
+        id="hero-subtitle"
+        class="mt-8 max-w-2xl text-[clamp(1.05rem,1.6vw,1.28rem)] leading-relaxed text-text-secondary"
       >
-        <Icon name="whatsapp" class="h-5 w-5" />
-        {t('cta.whatsapp')}
-      </a>
+        {subtitle}
+      </p>
+
+      <div id="hero-cta" class="mt-11 flex flex-wrap items-center gap-4">
+        <a
+          href={localizedPath(locale, 'contact')}
+          data-magnetic="0.3"
+          class="cta-shine press flex h-14 items-center rounded-full bg-accent-strong px-8 text-base font-semibold text-accent-foreground transition-colors duration-500 hover:bg-accent-strong-hover"
+        >
+          <span data-magnetic-label>{t('cta.discussProject')}</span>
+        </a>
+        <a
+          href={siteConfig.whatsappUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          data-magnetic="0.24"
+          class="press group flex h-14 items-center gap-2.5 rounded-full border border-border px-8 text-base font-semibold text-text-primary transition-all duration-500 [transition-timing-function:cubic-bezier(0.16,1,0.3,1)] hover:border-accent hover:bg-accent/5 hover:text-accent"
+        >
+          <span data-magnetic-label class="flex items-center gap-2.5">
+            <Icon name="whatsapp" class="h-5 w-5" />
+            {t('cta.whatsapp')}
+          </span>
+        </a>
+      </div>
     </div>
-  </div>
   </div>
 
-  <a
-    href="#services-grid"
-    class="absolute bottom-8 start-1/2 z-10 flex -translate-x-1/2 flex-col items-center gap-2 text-text-secondary transition-colors hover:text-accent rtl:translate-x-1/2"
-    aria-label={t('cta.seeAllServices')}
+  <!-- Trilingual signature strip. Sits at the foot of the hero and carries the
+       eye into the client wall below. -->
+  <div
+    id="hero-tagline"
+    class="bleed-content absolute inset-x-0 bottom-0 z-10 border-t border-hairline bg-bg-primary/55 py-4 backdrop-blur-[2px]"
   >
-    <span id="scroll-indicator-line" class="h-10 w-px origin-top bg-current"></span>
-  </a>
+    <div class="edge-fade overflow-hidden" data-marquee="34" data-marquee-copies="2">
+      <div class="flex w-max items-center" data-marquee-track>
+        {
+          [0, 1].map(() =>
+            tagline.map((entry) => (
+              <span class="flex shrink-0 items-center gap-6 pe-6 sm:gap-10 sm:pe-10">
+                <span
+                  lang={entry.lang}
+                  dir={entry.lang === 'ar' ? 'rtl' : 'ltr'}
+                  class:list={[
+                    'whitespace-nowrap text-[clamp(0.95rem,1.5vw,1.25rem)] tracking-[0.02em] text-text-secondary',
+                    entry.lang === 'ar' ? 'font-arabic-display' : 'font-display italic',
+                  ]}
+                >
+                  {entry.text}
+                </span>
+                <span class="h-1 w-1 shrink-0 rotate-45 bg-gold" aria-hidden="true" />
+              </span>
+            ))
+          )
+        }
+      </div>
+    </div>
+  </div>
 </section>
-
 
 <script>
   import { gsap } from 'gsap';
@@ -104,30 +175,28 @@ const heroAlt =
   const heroSection = document.querySelector('.bleed-hero');
   const heroImage = document.getElementById('hero-image');
 
-  if (!reduceMotion) {
-    gsap.fromTo(
-      '#scroll-indicator-line',
-      { scaleY: 0.3, opacity: 0.4 },
-      { scaleY: 1, opacity: 1, duration: 1.2, ease: 'sine.inOut', repeat: -1, yoyo: true }
-    );
-
-    // Depth on scroll: the photograph drifts slower than the page, the copy
-    // lifts away a touch faster. Scrubbed, transform/opacity only.
-    if (heroSection) {
-      if (heroImage) {
-        gsap.to(heroImage, {
-          yPercent: 12,
-          ease: 'none',
-          scrollTrigger: { trigger: heroSection, start: 'top top', end: 'bottom top', scrub: 0.8 },
-        });
-      }
-      gsap.to('#hero-copy', {
-        yPercent: -8,
-        opacity: 0.55,
+  if (!reduceMotion && heroSection) {
+    // Three depths leaving the frame at three speeds: the photograph drifts
+    // slowest, the copy lifts fastest, the signature strip goes with the page.
+    // That difference is what makes the hero read as a room rather than a card.
+    if (heroImage) {
+      gsap.to(heroImage, {
+        yPercent: 14,
         ease: 'none',
-        scrollTrigger: { trigger: heroSection, start: 'top top', end: 'bottom top', scrub: 0.6 },
+        scrollTrigger: { trigger: heroSection, start: 'top top', end: 'bottom top', scrub: 0.9 },
       });
     }
+    gsap.to('#hero-copy', {
+      yPercent: -11,
+      opacity: 0.4,
+      ease: 'none',
+      scrollTrigger: { trigger: heroSection, start: 'top top', end: 'bottom top', scrub: 0.6 },
+    });
+    gsap.to('#hero-tagline', {
+      opacity: 0,
+      ease: 'none',
+      scrollTrigger: { trigger: heroSection, start: 'top top', end: '35% top', scrub: 0.4 },
+    });
   }
 
   function playEntrance() {
@@ -135,74 +204,68 @@ const heroAlt =
     const title = document.getElementById('hero-title');
     const subtitle = document.getElementById('hero-subtitle');
     const cta = document.getElementById('hero-cta');
+    const strip = document.getElementById('hero-tagline');
     if (!title || !subtitle || !cta) return;
 
     if (reduceMotion) {
-      gsap.set([eyebrow, title, subtitle, cta].filter(Boolean), { opacity: 1, y: 0 });
+      gsap.set([eyebrow, title, subtitle, cta, strip].filter(Boolean), { opacity: 1, y: 0 });
       if (heroImage) gsap.set(heroImage, { opacity: 1, scale: 1 });
+      gsap.set('.bleed-scrim', { opacity: 1 });
       return;
     }
 
     const tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
 
-    // The photograph opens the page: a slow aperture wipe from the centre while
-    // it settles out of an over-scale. The copy rides in behind it, so the
-    // sequence reads as one orchestrated moment rather than scattered fades.
+    // The photograph opens the page: a slow aperture wipe out of an over-scale,
+    // with the copy riding in behind it. One orchestrated moment, not five fades.
     if (heroImage) {
       tl.fromTo(
         heroImage,
-        { opacity: 0, scale: 1.16, filter: 'blur(14px)' },
+        { opacity: 0, scale: 1.18, filter: 'blur(16px)' },
         {
           opacity: 1,
           scale: 1.02,
           filter: 'blur(0px)',
-          duration: 1.9,
-          ease: 'power3.out',
+          duration: 2,
           onComplete: () => heroImage.classList.add('is-drifting'),
         },
         0
-      );
-      tl.fromTo(
-        '.bleed-scrim',
-        { opacity: 0 },
-        { opacity: 1, duration: 1.4, ease: 'power2.out' },
-        0.25
-      );
+      ).fromTo('.bleed-scrim', { opacity: 0 }, { opacity: 1, duration: 1.4, ease: 'power2.out' }, 0.25);
     }
 
     if (eyebrow) {
-      tl.fromTo(eyebrow, { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: 0.7 }, 0.55);
+      tl.fromTo(eyebrow, { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: 0.7 }, 0.5);
     }
 
-    // Line-by-line title reveal is the signature moment; fall back to a
-    // plain fade if SplitText can't process this content for any reason.
+    // Line-by-line climb out of a clipped box. `mask: 'lines'` supplies that box,
+    // which is what keeps French accents on the line above from being shaved off.
     let titleLines: Element[] | null = null;
     try {
-      const split = new SplitText(title, { type: 'lines', linesClass: 'hero-line' });
+      const split = new SplitText(title, { type: 'lines', linesClass: 'hero-line', mask: 'lines' });
       titleLines = split.lines;
       gsap.set(title, { opacity: 1 });
-      gsap.set(titleLines, { opacity: 0, y: 28 });
+      gsap.set(titleLines, { yPercent: 112, opacity: 0 });
     } catch (e) {
       titleLines = null;
     }
 
     if (titleLines && titleLines.length) {
-      tl.to(titleLines, { opacity: 1, y: 0, duration: 0.9, stagger: 0.08 }, eyebrow ? '-=0.4' : 0);
+      tl.to(titleLines, { yPercent: 0, opacity: 1, duration: 1.15, stagger: 0.085 }, '-=0.35');
     } else {
-      tl.fromTo(title, { opacity: 0, y: 28 }, { opacity: 1, y: 0, duration: 0.9 }, eyebrow ? '-=0.4' : 0);
+      tl.fromTo(title, { opacity: 0, y: 28 }, { opacity: 1, y: 0, duration: 0.9 }, '-=0.35');
     }
 
-    tl.fromTo(subtitle, { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.8 }, '-=0.55').fromTo(
-      cta,
-      { opacity: 0, y: 16 },
-      { opacity: 1, y: 0, duration: 0.7 },
-      '-=0.5'
-    );
+    tl.fromTo(subtitle, { opacity: 0, y: 22 }, { opacity: 1, y: 0, duration: 0.85 }, '-=0.7')
+      .fromTo(cta, { opacity: 0, y: 18 }, { opacity: 1, y: 0, duration: 0.75 }, '-=0.55');
+
+    if (strip) {
+      tl.fromTo(strip, { opacity: 0, y: 24 }, { opacity: 1, y: 0, duration: 0.9 }, '-=0.5');
+    }
   }
 
-  gsap.set(['#hero-eyebrow', '#hero-title', '#hero-subtitle', '#hero-cta'], { opacity: 0 });
-  // Hide the plate up front so the entrance wipe has something to reveal. Done
-  // in JS (not CSS) so a failed script leaves the photograph visible.
+  gsap.set(['#hero-eyebrow', '#hero-title', '#hero-subtitle', '#hero-cta', '#hero-tagline'], { opacity: 0 });
+  // Hidden from JS rather than CSS: if this script never runs, the visitor still
+  // sees a complete hero instead of a blank screen.
   if (!reduceMotion && heroImage) {
     gsap.set(heroImage, { opacity: 0 });
     gsap.set('.bleed-scrim', { opacity: 0 });
@@ -210,9 +273,8 @@ const heroAlt =
 
   const preloader = document.getElementById('preloader');
   const alreadySkipped = document.documentElement.classList.contains('preloader-skip');
-  // Preloader may finish (and dispatch its event) before this module has
-  // even loaded, e.g. while gsap is still being imported above. Check its
-  // synchronous completion flag first instead of relying on the event alone.
+  // The preloader can finish before this module has even parsed, so check its
+  // synchronous flag first rather than trusting the event alone.
   if (!preloader || alreadySkipped || (window as any).__desoraPreloaderDone) {
     playEntrance();
   } else {
