@@ -1,0 +1,257 @@
+---
+import { Image } from 'astro:assets';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Icon from './Icon.astro';
+import BrandPattern from './BrandPattern.astro';
+import { getCaseStudy } from '../lib/case-studies';
+import { findClient } from '../lib/clients';
+import { getMedia } from '../lib/media';
+import { siteConfig } from '../lib/site-config';
+import { useTranslations, localizedPath } from '../i18n/utils';
+import type { Locale } from '../i18n/config';
+
+/**
+ * A single case study, told top to bottom.
+ *
+ * The rail on the homepage is the index; this is the depth. Structure follows
+ * how the work actually went: what was in the way, what we did, what shipped.
+ * The metric strip pins on the way down so the numbers stay in view while the
+ * reasoning scrolls past them, which is the whole argument of the page.
+ *
+ * Numbers come from src/lib/case-studies.ts and are either countable delivered
+ * scope or the client-approved audience figures. Nothing here is estimated.
+ */
+interface Props {
+  locale: Locale;
+  slug: string;
+}
+
+const { locale, slug } = Astro.props;
+const study = getCaseStudy(locale, slug);
+if (!study) throw new Error(`Missing case study: ${locale}/${slug}`);
+
+const t = useTranslations(locale);
+const client = findClient(study.client);
+
+const hero = getMedia(`case-${slug}`);
+// Secondary plates follow one naming rule for every case: `case-<slug>-2`,
+// `-3`. Drop a file in src/assets/media and it appears here.
+const plates = [`case-${slug}-2`, `case-${slug}-3`].map((s) => getMedia(s)).filter(Boolean);
+
+const labels = {
+  fr: {
+    eyebrow: 'Étude de cas',
+    challenge: 'Le blocage',
+    approach: 'Ce que nous avons fait',
+    delivered: 'Ce qui a été livré',
+    visit: 'Voir le résultat',
+    back: 'Toutes les réalisations',
+    next: 'Parler de votre projet',
+  },
+  en: {
+    eyebrow: 'Case study',
+    challenge: 'The bottleneck',
+    approach: 'What we did',
+    delivered: 'What shipped',
+    visit: 'See it live',
+    back: 'All our work',
+    next: 'Talk about your project',
+  },
+  ar: {
+    eyebrow: 'دراسة حالة',
+    challenge: 'العائق',
+    approach: 'ما قمنا به',
+    delivered: 'ما تم تسليمه',
+    visit: 'شاهد النتيجة',
+    back: 'كل الأعمال',
+    next: 'لنتحدث عن مشروعك',
+  },
+}[locale];
+
+const title = `${study.client}, ${labels.eyebrow.toLowerCase()}`;
+---
+
+<BaseLayout title={title} description={study.summary} locale={locale}>
+  <!-- Opening. The client's own mark carries the page, not our headline. -->
+  <header class="relative overflow-hidden pb-16 pt-36 sm:pb-20 sm:pt-44" data-depth-scope>
+    <div class="ambient-field" aria-hidden="true">
+      <div class="ambient-plate ambient-plate--crimson -start-[16vw] top-0 h-[48vw] w-[48vw]" data-ambient="9"></div>
+      <div class="ambient-plate ambient-plate--gold -end-[12vw] bottom-0 h-[34vw] w-[34vw]" data-ambient="-7"></div>
+    </div>
+    <BrandPattern opacity={0.04} />
+    <div class="rule-grid" aria-hidden="true"></div>
+
+    <div class="relative mx-auto max-w-5xl px-5 sm:px-8">
+      <div class="flex items-center gap-4">
+        <span class="hairline w-10 shrink-0"></span>
+        <span class="overline">{labels.eyebrow}</span>
+      </div>
+
+      {
+        client?.ink ? (
+          <span
+            class="logo-ink mt-8 block h-14 w-56 !opacity-90 [mask-position:left_center] [-webkit-mask-position:left_center] rtl:[mask-position:right_center] rtl:[-webkit-mask-position:right_center]"
+            style={`--logo-src:url('${client.ink}')`}
+            role="img"
+            aria-label={study.client}
+          />
+        ) : (
+          <h1 class="display-lg mt-8 text-text-primary">{study.client}</h1>
+        )
+      }
+
+      <p class="overline mt-5">{study.sector}</p>
+
+      <p
+        class="mt-8 max-w-3xl font-display text-[clamp(1.5rem,3.2vw,2.5rem)] font-semibold leading-[1.24] text-text-primary rtl:leading-[1.5]"
+        data-mask-reveal
+      >
+        {study.summary}
+      </p>
+
+      {
+        client?.href && (
+          <a
+            href={client.href}
+            target="_blank"
+            rel="noopener noreferrer"
+            data-magnetic="0.22"
+            class="press mt-9 inline-flex h-12 items-center gap-2 rounded-full border border-border px-6 text-sm font-semibold text-text-primary transition-colors duration-500 hover:border-accent hover:text-accent"
+          >
+            <span data-magnetic-label class="flex items-center gap-2">
+              {labels.visit}
+              <Icon name="arrow-up-right" class="h-4 w-4" />
+            </span>
+          </a>
+        )
+      }
+    </div>
+  </header>
+
+  {
+    hero && (
+      <div class="mx-auto max-w-7xl px-5 sm:px-8">
+        <figure class="figure figure--graded figure--kenburns overflow-hidden rounded-3xl" data-figure style="aspect-ratio:21/9">
+          <Image
+            class="figure-media"
+            src={hero}
+            alt={`${study.client}, ${study.sector}`}
+            widths={[768, 1024, 1440, 1920]}
+            sizes="(max-width: 1280px) 100vw, 1280px"
+            format="webp"
+            quality={84}
+            loading="eager"
+            fetchpriority="high"
+          />
+        </figure>
+      </div>
+    )
+  }
+
+  <!-- The numbers pin while the reasoning scrolls past them. -->
+  <section class="relative border-y border-border bg-bg-secondary py-14 sm:py-16" aria-label={labels.delivered}>
+    <div class="mx-auto max-w-7xl px-5 sm:px-8">
+      <dl class="grid grid-cols-2 gap-x-6 gap-y-10 lg:grid-cols-4" data-reveal-group>
+        {
+          study.metrics.map((m) => (
+            <div>
+              <dt class="numeral text-[clamp(2.25rem,4.5vw,3.5rem)] font-semibold leading-none text-accent" data-countup>
+                {m.value}
+              </dt>
+              <dd class="mt-3 text-sm leading-snug text-text-secondary">{m.label}</dd>
+            </div>
+          ))
+        }
+      </dl>
+    </div>
+  </section>
+
+  <!-- Bottleneck, then response. Two columns on desktop so the reader can hold
+       the problem in view while reading the answer. -->
+  <section class="mx-auto max-w-7xl px-5 py-20 sm:px-8 sm:py-28">
+    <div class="grid gap-12 lg:grid-cols-2 lg:gap-16">
+      <div data-reveal>
+        <h2 class="overline">{labels.challenge}</h2>
+        <p class="mt-6 text-[1.0625rem] leading-[1.75] text-text-secondary">{study.challenge}</p>
+      </div>
+      <div data-reveal>
+        <h2 class="overline">{labels.approach}</h2>
+        <p class="mt-6 text-[1.0625rem] leading-[1.75] text-text-secondary">{study.approach}</p>
+      </div>
+    </div>
+
+    {
+      plates.length > 0 && (
+        <div class="mt-16 grid gap-5 sm:grid-cols-2" data-depth-scope>
+          {plates.slice(0, 2).map((plate, i) => (
+            <figure
+              class="figure figure--graded figure--hover overflow-hidden rounded-2xl"
+              data-figure
+              data-parallax={i === 0 ? 5 : -5}
+              style="aspect-ratio:4/3"
+            >
+              <Image
+                class="figure-media"
+                src={plate!}
+                alt=""
+                widths={[480, 720, 960]}
+                sizes="(max-width: 640px) 100vw, 50vw"
+                format="webp"
+                quality={82}
+                loading="lazy"
+                decoding="async"
+              />
+            </figure>
+          ))}
+        </div>
+      )
+    }
+  </section>
+
+  <!-- What shipped. A list, because that is what it is. -->
+  <section class="border-t border-border bg-bg-secondary py-20 sm:py-24">
+    <div class="mx-auto max-w-4xl px-5 sm:px-8">
+      <h2 class="display-lg text-text-primary" data-mask-reveal>{labels.delivered}</h2>
+      <ul class="mt-10 space-y-0" data-reveal-group>
+        {
+          study.deliverables.map((d, i) => (
+            <li class="flex gap-5 border-b border-hairline py-6 first:border-t">
+              <span class="numeral shrink-0 pt-0.5 text-sm text-gold">{String(i + 1).padStart(2, '0')}</span>
+              <span class="text-[1.0625rem] leading-[1.7] text-text-secondary">{d}</span>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <section class="relative overflow-hidden py-20 sm:py-24">
+    <BrandPattern opacity={0.04} />
+    <div class="relative mx-auto flex max-w-4xl flex-col items-start gap-6 px-5 sm:px-8">
+      <a
+        href={localizedPath(locale, `services/${study.serviceSlug}`)}
+        class="link-underline link-underline--gold text-sm font-medium text-text-secondary"
+      >
+        {t('cta.viewService')}
+      </a>
+      <div class="flex flex-wrap gap-4">
+        <a
+          href={localizedPath(locale, 'contact')}
+          data-magnetic="0.3"
+          class="cta-shine press flex h-14 items-center rounded-full bg-accent-strong px-8 text-base font-semibold text-accent-foreground transition-colors duration-500 hover:bg-accent-strong-hover"
+        >
+          <span data-magnetic-label>{labels.next}</span>
+        </a>
+        <a
+          href={siteConfig.whatsappUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="press flex h-14 items-center gap-2.5 rounded-full border border-border px-8 text-base font-semibold text-text-primary transition-colors duration-500 hover:border-accent hover:text-accent"
+        >
+          <Icon name="whatsapp" class="h-5 w-5" />
+          {t('cta.whatsapp')}
+        </a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

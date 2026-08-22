@@ -5,9 +5,12 @@ import Icon from './Icon.astro';
 
 interface Props {
   locale: Locale;
+  /** Compact renders the code only (FR/EN/AR) so it fits the mobile top bar
+   *  next to the theme toggle and the menu button. */
+  compact?: boolean;
 }
 
-const { locale } = Astro.props;
+const { locale, compact = false } = Astro.props;
 const t = useTranslations(locale);
 const currentPath = Astro.url.pathname;
 ---
@@ -16,28 +19,38 @@ const currentPath = Astro.url.pathname;
   <button
     type="button"
     data-lang-trigger
-    class="flex h-11 items-center gap-1.5 rounded-full px-3 text-sm font-medium text-text-primary transition-colors hover:bg-bg-secondary"
+    class:list={[
+      'flex h-11 items-center justify-center rounded-full text-sm font-medium text-text-primary transition-colors hover:bg-bg-secondary',
+      compact ? 'w-11 gap-0' : 'gap-1.5 px-3',
+    ]}
     aria-haspopup="true"
     aria-expanded="false"
     aria-label={t('lang.label')}
   >
-    <Icon name="globe" class="h-4 w-4" />
-    <span>{localeNames[locale]}</span>
-    <Icon name="chevron-down" class="h-3.5 w-3.5" />
+    {compact ? (
+      <span class="text-[0.8125rem] font-semibold tracking-wide">{localeNames[locale]}</span>
+    ) : (
+      <>
+        <Icon name="globe" class="h-4 w-4" />
+        <span>{localeNames[locale]}</span>
+        <Icon name="chevron-down" class="h-3.5 w-3.5" />
+      </>
+    )}
   </button>
   <ul
     data-lang-menu
     role="menu"
-    class="absolute end-0 top-full z-50 mt-2 min-w-40 rounded-xl border border-border bg-surface p-1.5 shadow-lg"
+    class="absolute end-0 top-full z-[60] mt-2 min-w-44 rounded-xl border border-border bg-surface p-1.5 shadow-[0_24px_60px_-18px_var(--shadow-tint)]"
   >
     {
       locales.map((l: Locale) => (
         <li role="none">
           <a
             role="menuitem"
+            data-lang-option={l}
             href={switchLocalePath(currentPath, l)}
             class:list={[
-              'flex items-center justify-between rounded-lg px-3 py-2 text-sm transition-colors hover:bg-bg-secondary',
+              'flex items-center justify-between gap-4 rounded-lg px-3 py-2.5 text-sm transition-colors hover:bg-bg-secondary',
               l === locale ? 'font-semibold text-accent' : 'text-text-primary',
             ]}
           >
@@ -51,9 +64,8 @@ const currentPath = Astro.url.pathname;
 </div>
 
 <script>
-  // Rendered in both the desktop bar and the mobile menu, so bind each instance
-  // independently. The old getElementById approach wired only the first (the
-  // desktop one), leaving the mobile switcher inert.
+  // Rendered in both the desktop bar and the mobile bar, so bind each instance
+  // independently. A single getElementById would wire only the first one.
   document.querySelectorAll<HTMLElement>('[data-lang-switcher]').forEach((wrapper) => {
     const trigger = wrapper.querySelector<HTMLButtonElement>('[data-lang-trigger]');
     const menu = wrapper.querySelector<HTMLElement>('[data-lang-menu]');
@@ -66,8 +78,23 @@ const currentPath = Astro.url.pathname;
 
     trigger.addEventListener('click', (e) => {
       e.stopPropagation();
+      // Only one switcher may be open at a time.
+      document.querySelectorAll('[data-lang-menu].is-open').forEach((m) => {
+        if (m !== menu) m.classList.remove('is-open');
+      });
       const isOpen = menu.classList.toggle('is-open');
       trigger.setAttribute('aria-expanded', String(isOpen));
+    });
+
+    // Remember the choice so the bare root (functions/index.js) sends this
+    // visitor to the same language next time instead of re-sniffing the browser.
+    menu.querySelectorAll<HTMLAnchorElement>('[data-lang-option]').forEach((a) => {
+      a.addEventListener('click', () => {
+        const chosen = a.dataset.langOption;
+        if (!chosen) return;
+        const secure = location.protocol === 'https:' ? '; Secure' : '';
+        document.cookie = `desora-lang=${chosen}; path=/; max-age=31536000; SameSite=Lax${secure}`;
+      });
     });
 
     document.addEventListener('click', (e) => {

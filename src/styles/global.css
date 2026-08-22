@@ -610,3 +610,402 @@ html.preloader-skip #preloader {
     scroll-behavior: auto !important;
   }
 }
+
+/* ==========================================================================
+   KINETICS & DEPTH
+   Support layer for src/scripts/motion.ts. Everything here is transform,
+   opacity, clip or filter, so nothing in this block can trigger layout.
+   ========================================================================== */
+
+@layer components {
+  /* --- Pinned horizontal rail -------------------------------------------
+     Desktop: JS pins the section and drives [data-hscroll-track] sideways.
+     Below 1024px (and under reduced motion) the same markup degrades to a
+     native swipe with snap points, which is cheaper and is what a thumb
+     expects. `data-hscroll-mode` is written by the script. */
+  [data-hscroll] {
+    position: relative;
+  }
+
+  [data-hscroll-track] {
+    display: flex;
+    gap: clamp(1rem, 2.5vw, 2rem);
+    will-change: transform;
+  }
+
+  [data-hscroll][data-hscroll-mode="native"] [data-hscroll-track] {
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scroll-padding-inline: 1.25rem;
+    padding-inline: 1.25rem;
+    padding-bottom: 1.25rem;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  [data-hscroll][data-hscroll-mode="native"] [data-hscroll-track]::-webkit-scrollbar {
+    display: none;
+  }
+  [data-hscroll][data-hscroll-mode="native"] [data-hscroll-panel] {
+    scroll-snap-align: center;
+  }
+
+  [data-hscroll-panel] {
+    flex: 0 0 auto;
+    will-change: transform, opacity;
+  }
+
+  /* --- Line-mask reveal --------------------------------------------------
+     SplitText's `mask: "lines"` supplies the overflow-hidden wrapper; this
+     only guarantees the line itself is a block, so yPercent means "its own
+     height" rather than an inline box's. */
+  .mask-line {
+    display: block;
+    will-change: transform, opacity;
+  }
+
+  /* --- Specular tilt -----------------------------------------------------
+     A soft highlight tracks the cursor across the card face. Sits above the
+     surface, below the content. --sheen-x/y are written by the script. */
+  [data-tilt] {
+    position: relative;
+  }
+  [data-tilt]::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+    background: radial-gradient(
+      55% 55% at var(--sheen-x, 50%) var(--sheen-y, 50%),
+      color-mix(in oklab, var(--color-gold) 22%, transparent),
+      transparent 70%
+    );
+  }
+  [data-tilt]:hover::after {
+    opacity: 1;
+  }
+
+  /* --- Ambient plates ----------------------------------------------------
+     Slow crimson/sand washes that give bands a sense of air behind the type.
+     Blurred heavily so they never resolve into shapes. */
+  .ambient-field {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    overflow: hidden;
+    pointer-events: none;
+    isolation: isolate;
+  }
+  .ambient-plate {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(clamp(48px, 9vw, 120px));
+    will-change: transform;
+  }
+  .ambient-plate--crimson {
+    background: radial-gradient(circle, var(--color-accent-strong), transparent 68%);
+    opacity: 0.3;
+  }
+  .ambient-plate--sand {
+    background: radial-gradient(circle, var(--sand-500), transparent 68%);
+    opacity: 0.22;
+  }
+  .ambient-plate--gold {
+    background: radial-gradient(circle, var(--color-gold), transparent 66%);
+    opacity: 0.16;
+  }
+  html[data-theme="dark"] .ambient-plate--crimson {
+    opacity: 0.42;
+  }
+  html[data-theme="dark"] .ambient-plate--sand {
+    opacity: 0.16;
+  }
+
+  /* --- Rule grid ---------------------------------------------------------
+     A gold hairline lattice on the layout's own column rhythm. Structure made
+     visible rather than wallpaper: the columns line up with the content grid,
+     which is why it reads as architecture instead of decoration. */
+  .rule-grid {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    background-image: linear-gradient(to right, var(--color-hairline) 1px, transparent 1px);
+    background-size: calc(100% / 6) 100%;
+    opacity: 0.5;
+    -webkit-mask-image: linear-gradient(to bottom, transparent, black 18%, black 82%, transparent);
+    mask-image: linear-gradient(to bottom, transparent, black 18%, black 82%, transparent);
+  }
+  @media (max-width: 767px) {
+    .rule-grid {
+      background-size: calc(100% / 3) 100%;
+    }
+  }
+
+  /* --- Client logo wall --------------------------------------------------
+     Every mark is normalised to one alpha silhouette (public/brand/clients/*.png)
+     and painted through mask-image, so it takes the page's ink colour and adapts
+     to the theme. The real full-colour logo sits underneath and cross-fades in on
+     hover. The wall reads as one designed set at rest, and as the client's own
+     brand on attention. */
+  .logo-cell {
+    position: relative;
+    display: grid;
+    place-items: center;
+    aspect-ratio: 5 / 2;
+    padding: clamp(0.75rem, 2vw, 1.25rem);
+    will-change: transform, opacity;
+  }
+
+  .logo-ink,
+  .logo-color {
+    transition: opacity 0.55s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .logo-ink {
+    width: 100%;
+    height: 100%;
+    background-color: var(--color-text-primary);
+    -webkit-mask-image: var(--logo-src);
+    mask-image: var(--logo-src);
+    -webkit-mask-repeat: no-repeat;
+    mask-repeat: no-repeat;
+    -webkit-mask-position: center;
+    mask-position: center;
+    -webkit-mask-size: contain;
+    mask-size: contain;
+    opacity: 0.42;
+  }
+
+  .logo-color {
+    position: absolute;
+    inset: clamp(0.75rem, 2vw, 1.25rem);
+    width: auto;
+    height: auto;
+    max-width: 100%;
+    max-height: 100%;
+    margin: auto;
+    object-fit: contain;
+    opacity: 0;
+  }
+
+  .logo-cell:hover .logo-ink,
+  .logo-cell:focus-within .logo-ink {
+    opacity: 0;
+  }
+  .logo-cell:hover .logo-color,
+  .logo-cell:focus-within .logo-color {
+    opacity: 1;
+  }
+
+  /* --- Kinetic display type ----------------------------------------------
+     The one place the wordmark's Didone contrast is pushed to poster scale.
+     Optical sizing only, no synthetic weight. */
+  .display-xl {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: clamp(3rem, 9.5vw, 9rem);
+    line-height: 0.94;
+    letter-spacing: -0.025em;
+  }
+  html[dir="rtl"] .display-xl {
+    font-family: var(--font-arabic-display);
+    letter-spacing: 0;
+    line-height: 1.24;
+  }
+
+  .display-lg {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: clamp(2.25rem, 5.2vw, 4.25rem);
+    line-height: 1.02;
+    letter-spacing: -0.018em;
+  }
+  html[dir="rtl"] .display-lg {
+    font-family: var(--font-arabic-display);
+    letter-spacing: 0;
+    line-height: 1.34;
+  }
+
+  /* Italic Cormorant for a single emphasised word inside a display line.
+     Once per page at most: it is the accent, not the voice. Arabic has no
+     italic tradition, so RTL keeps the upright face and carries the emphasis
+     on colour alone. */
+  .display-accent {
+    font-style: italic;
+    color: var(--color-accent);
+  }
+  html[dir="rtl"] .display-accent {
+    font-style: normal;
+  }
+
+  /* --- Edge fade for full-bleed strips ----------------------------------- */
+  .edge-fade {
+    -webkit-mask-image: linear-gradient(to right, transparent, black 6%, black 94%, transparent);
+    mask-image: linear-gradient(to right, transparent, black 6%, black 94%, transparent);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-hscroll-track] {
+    will-change: auto;
+  }
+  [data-tilt]::after {
+    display: none;
+  }
+}
+
+/* ==========================================================================
+   SIGNATURE MOTION, support layer
+   Paired with the second half of src/scripts/motion.ts.
+   ========================================================================== */
+
+@layer components {
+  /* --- Cursor ------------------------------------------------------------
+     A hairline gold ring that trails the pointer and swells over anything
+     interactive. The real cursor is deliberately left visible underneath:
+     hiding it breaks text selection affordance and drag handles, and buys
+     nothing. Created by JS only on a fine pointer, so touch never sees it. */
+  .desora-cursor {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 9999;
+    width: 34px;
+    height: 34px;
+    border: 1px solid var(--color-gold);
+    border-radius: 50%;
+    opacity: 0;
+    pointer-events: none;
+    mix-blend-mode: difference;
+    transition:
+      width 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+      height 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+      opacity 0.3s linear,
+      background-color 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .desora-cursor.is-visible {
+    opacity: 0.85;
+  }
+  .desora-cursor.is-active {
+    width: 58px;
+    height: 58px;
+    background-color: color-mix(in oklab, var(--color-gold) 16%, transparent);
+  }
+  .desora-cursor.is-down {
+    width: 26px;
+    height: 26px;
+  }
+
+  /* --- Peek plate --------------------------------------------------------
+     One shared floating image for a whole grid, swapped on hover. */
+  .peek-plate {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 60;
+    width: clamp(180px, 17vw, 260px);
+    aspect-ratio: 4 / 3;
+    overflow: hidden;
+    border-radius: 1rem;
+    border: 1px solid var(--color-hairline);
+    box-shadow: 0 30px 70px -30px var(--shadow-tint);
+    opacity: 0;
+    transform-origin: center;
+    pointer-events: none;
+    scale: 0.9;
+    transition:
+      opacity 0.45s cubic-bezier(0.16, 1, 0.3, 1),
+      scale 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .peek-plate.is-visible {
+    opacity: 1;
+    scale: 1;
+  }
+  .peek-plate img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  /* --- Pinned chapters ---------------------------------------------------
+     Pinned mode stacks every chapter in one box and cross-fades them; stacked
+     mode (touch, short windows, reduced motion) is a plain flow list. */
+  [data-chapters][data-chapters-mode='pinned'] [data-chapter-track] {
+    display: grid;
+  }
+  [data-chapters][data-chapters-mode='pinned'] [data-chapter] {
+    grid-area: 1 / 1;
+  }
+  [data-chapters][data-chapters-mode='stacked'] [data-chapter-track] {
+    display: flex;
+    flex-direction: column;
+    gap: 2.5rem;
+  }
+
+  [data-chapter-mark] {
+    color: var(--color-text-secondary);
+    opacity: 0.4;
+    transition:
+      opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1),
+      color 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  [data-chapter-mark].is-current {
+    opacity: 1;
+    color: var(--color-accent);
+  }
+  [data-chapter-mark] .chapter-rule {
+    transform: scaleX(0.25);
+    transform-origin: left center;
+    transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  html[dir='rtl'] [data-chapter-mark] .chapter-rule {
+    transform-origin: right center;
+  }
+  [data-chapter-mark].is-current .chapter-rule {
+    transform: scaleX(1);
+  }
+
+  /* --- Word reveal -------------------------------------------------------
+     Words brighten in sequence, tied to scroll position. */
+  .reveal-word {
+    will-change: opacity;
+  }
+
+  /* --- Skew scope --------------------------------------------------------
+     The skewed element needs its own compositing layer, or the sub-pixel
+     shear crawls on text during the spring back. */
+  [data-skew] {
+    will-change: transform;
+    backface-visibility: hidden;
+  }
+
+  /* --- Curtain bands ----------------------------------------------------- */
+  [data-curtain] {
+    will-change: clip-path, transform;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .desora-cursor,
+  .peek-plate {
+    display: none !important;
+  }
+  [data-skew],
+  [data-curtain] {
+    will-change: auto;
+    transform: none !important;
+    clip-path: none !important;
+  }
+}
+
+/* Coarse pointers never get the cursor ring or the peek plate, even if a
+   hybrid device reports both. */
+@media (hover: none), (pointer: coarse) {
+  .desora-cursor,
+  .peek-plate {
+    display: none !important;
+  }
+}

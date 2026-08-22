@@ -105,7 +105,12 @@ const navLinks = [
       </a>
     </div>
 
-    <div class="flex items-center gap-2 lg:hidden">
+    <!-- Mobile controls. The language switcher lives HERE, in the bar, not
+         inside the menu panel: buried in the panel it was unreachable without
+         first opening the menu, and its dropdown was clipped by the panel's
+         own scroll container. -->
+    <div class="flex items-center gap-1 lg:hidden" data-no-entrance>
+      <LanguageSwitcher locale={locale} compact />
       <ThemeToggle locale={locale} />
       <button
         type="button"
@@ -158,12 +163,9 @@ const navLinks = [
           </a>
         ))
       }
-      <div class="mt-4 flex items-center justify-between px-4">
-        <LanguageSwitcher locale={locale} />
-      </div>
       <a
         href={localizedPath(locale, 'contact')}
-        class="cta-shine press mt-4 flex h-12 items-center justify-center rounded-full bg-accent-strong px-5 text-base font-semibold text-accent-foreground"
+        class="cta-shine press mt-6 flex h-12 items-center justify-center rounded-full bg-accent-strong px-5 text-base font-semibold text-accent-foreground"
       >
         {t('nav.cta')}
       </a>
@@ -195,12 +197,27 @@ const navLinks = [
   // already sitting there when the curtain lifts.
   function playHeaderEntrance() {
     if (reduceMotion || !header) return;
-    const items = header.querySelectorAll('#header-inner > *');
-    gsap.fromTo(
+
+    // The mobile control cluster is deliberately EXCLUDED from the entrance.
+    // Animating it means starting it at opacity 0, and anything that stops the
+    // rAF loop before the tween finishes (a page loaded in a background tab, a
+    // prerender, a stalled main thread) leaves the language, theme and menu
+    // buttons invisible and unclickable. Decorative elements may fade in;
+    // controls are visible from first paint, always.
+    const items = header.querySelectorAll('#header-inner > *:not([data-no-entrance])');
+    if (!items.length) return;
+
+    const tl = gsap.fromTo(
       items,
       { opacity: 0, y: -14 },
       { opacity: 1, y: 0, duration: 0.9, stagger: 0.08, ease: 'power3.out', clearProps: 'transform' }
     );
+
+    // Watchdog. setTimeout keeps running when rAF is throttled, so a header
+    // that never got its frames still ends up visible rather than stuck at 0.
+    window.setTimeout(() => {
+      if (!tl.progress || tl.progress() < 1) gsap.set(items, { opacity: 1, y: 0, clearProps: 'transform' });
+    }, 2600);
   }
 
   if ((window as any).__desoraPreloaderDone || document.documentElement.classList.contains('preloader-skip')) {

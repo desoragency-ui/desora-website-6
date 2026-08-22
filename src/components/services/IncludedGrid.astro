@@ -12,8 +12,8 @@ const { locale, items } = Astro.props;
 const t = useTranslations(locale);
 ---
 
-<section class="mx-auto max-w-7xl px-5 py-16 sm:px-8">
-  <h2 class="font-display text-[clamp(1.65rem,3vw,2.25rem)] font-semibold text-text-primary">
+<section class="mx-auto max-w-7xl px-5 py-16 sm:px-8" data-curtain>
+  <h2 class="font-display text-[clamp(1.65rem,3vw,2.25rem)] font-semibold text-text-primary" data-reveal="lines">
     {t('pricing.included')}
   </h2>
   <span class="hairline mt-5 block max-w-24"></span>

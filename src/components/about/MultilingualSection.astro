@@ -10,12 +10,12 @@ interface Props {
 const { heading, description, languages } = Astro.props;
 ---
 
-<section class="bg-bg-secondary py-20">
+<section class="bg-bg-secondary py-20" data-curtain>
   <div class="mx-auto max-w-3xl px-5 text-center sm:px-8" data-reveal>
     <span class="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-accent/10 text-accent">
       <Icon name="globe" class="h-5.5 w-5.5" />
     </span>
-    <h2 class="mt-5 font-display text-2xl font-semibold text-text-primary sm:text-3xl">{heading}</h2>
+    <h2 class="mt-5 font-display text-2xl font-semibold text-text-primary sm:text-3xl" data-reveal="lines">{heading}</h2>
     <p class="mt-5 text-base leading-relaxed text-text-secondary">{description}</p>
     <div class="mt-8 flex flex-wrap items-center justify-center gap-3">
       {

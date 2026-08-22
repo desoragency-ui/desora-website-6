@@ -3,7 +3,7 @@ import tailwindcss from '@tailwindcss/vite';
 import sitemap from '@astrojs/sitemap';
 
 // TODO: replace with the real production domain before going live.
-const SITE_URL = 'https://desora.ma';
+const SITE_URL = 'https://www.desora.net';
 
 export default defineConfig({
   site: SITE_URL,
