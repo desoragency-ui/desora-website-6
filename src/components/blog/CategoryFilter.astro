@@ -11,7 +11,7 @@ const { locale, categories } = Astro.props;
 const t = useTranslations(locale);
 ---
 
-<div id="blog-filter" class="flex flex-wrap gap-2" role="group" aria-label={t('nav.blog')}>
+<div id="blog-filter" class="flex flex-wrap gap-2" data-reveal-group role="group" aria-label={t('nav.blog')}>
   <button
     type="button"
     data-filter="all"
