@@ -1,14 +1,20 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import PageHero from '../../components/PageHero.astro';
 import { siteConfig } from '../../lib/site-config';
 
 const locale = 'ar' as const;
 ---
 
 <BaseLayout title="الإشعار القانوني" description="الإشعار القانوني لديزورا." locale={locale}>
-  <section class="px-5 pb-24 pt-36 sm:px-8">
+  <PageHero
+    eyebrow="معلومات قانونية"
+    title={"الإشعار القانوني"}
+    subtitle={"الناشر والاستضافة وشروط استخدام موقع ديزورا."}
+  />
+
+  <section class="px-5 pb-24 sm:px-8">
     <div class="prose-content mx-auto max-w-2xl">
-      <h1 class="font-display text-3xl font-semibold text-text-primary">الإشعار القانوني</h1>
 
       <div class="mt-8 rounded-2xl border border-dashed border-border bg-surface p-6 text-sm text-text-secondary">
         معلومات التسجيل أدناه هي عناصر مؤقتة يجب استكمالها بالبيانات الحقيقية للشركة (ICE، RC، الشكل القانوني، المقر الاجتماعي) قبل النشر النهائي للموقع.
