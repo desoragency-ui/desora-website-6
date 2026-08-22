@@ -1,21 +1,61 @@
 ---
+import BrandPattern from './BrandPattern.astro';
+
+/**
+ * The opening band for every page that is not the homepage: about, contact,
+ * blog, legal.
+ *
+ * A centred headline over a single blurred blob was the most generic thing on
+ * the site. This keeps the same content contract and gives it the same
+ * vocabulary as the homepage: an overline pinned to a drawn hairline, the title
+ * climbing out line by line from behind its own clipped box, and two ambient
+ * washes drifting at different rates behind the brand pattern so the band has
+ * air in it.
+ *
+ * Left-aligned rather than centred, so it agrees with the editorial grid the
+ * rest of the page sits on. Centred display type reads as a landing page; this
+ * house reads as a publication.
+ */
 interface Props {
   title: string;
   subtitle: string;
+  /** Small label above the title. Falls back to nothing rather than filler. */
+  eyebrow?: string;
 }
 
-const { title, subtitle } = Astro.props;
+const { title, subtitle, eyebrow } = Astro.props;
 ---
 
-<section class="relative overflow-hidden px-5 pb-16 pt-36 sm:px-8">
-  <div class="pointer-events-none absolute inset-0 -z-10 overflow-hidden" aria-hidden="true">
-    <div class="absolute -left-[10%] top-[-15%] h-[38vw] w-[38vw] max-h-[480px] max-w-[480px] rounded-full bg-accent/12 blur-[110px]"></div>
+<section class="relative overflow-hidden px-5 pb-20 pt-36 sm:px-8 sm:pb-24 sm:pt-44" data-depth-scope>
+  <div class="ambient-field" aria-hidden="true">
+    <div class="ambient-plate ambient-plate--crimson -start-[16vw] top-[-12vh] h-[46vw] w-[46vw]" data-ambient="11"></div>
+    <div class="ambient-plate ambient-plate--gold -end-[12vw] bottom-[-16vh] h-[34vw] w-[34vw]" data-ambient="-8"></div>
   </div>
-  <div class="mx-auto max-w-3xl text-center" data-reveal>
-    <h1 class="font-display text-[clamp(2.25rem,5.5vw,3.75rem)] font-semibold leading-[1.1] tracking-tight text-text-primary">
+
+  <div class="absolute inset-0 z-[1]" data-depth-layer="-5" aria-hidden="true">
+    <BrandPattern opacity={0.04} />
+  </div>
+
+  <div class="rule-grid" aria-hidden="true"></div>
+
+  <div class="relative z-10 mx-auto max-w-7xl">
+    {
+      eyebrow && (
+        <div class="mb-7 flex items-center gap-4">
+          <span class="hairline w-10 shrink-0" data-hairline-draw />
+          <span class="overline">{eyebrow}</span>
+        </div>
+      )
+    }
+
+    <h1
+      class="max-w-4xl font-display text-[clamp(2.4rem,6.2vw,4.75rem)] font-semibold leading-[1.03] tracking-[-0.02em] text-text-primary rtl:font-arabic-display rtl:leading-[1.3] rtl:tracking-normal"
+      data-reveal="lines"
+    >
       {title}
     </h1>
-    <p class="mx-auto mt-6 max-w-2xl text-[clamp(1.05rem,1.8vw,1.2rem)] leading-relaxed text-text-secondary">
+
+    <p class="mt-8 max-w-2xl text-[clamp(1.05rem,1.6vw,1.25rem)] leading-relaxed text-text-secondary" data-reveal>
       {subtitle}
     </p>
   </div>
