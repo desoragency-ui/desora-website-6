@@ -142,6 +142,13 @@
 }
 
 @layer base {
+  /* <Picture> emits <picture><source><img>. Without this the wrapper would
+     become a layout box between the container and the image, breaking every
+     rule that sizes .figure-media or .bleed-media img directly. */
+  picture {
+    display: contents;
+  }
+
   html {
     background-color: var(--color-bg-primary);
     color-scheme: light;
@@ -1214,18 +1221,7 @@ html.preloader-skip #preloader {
      container, which would repaint the texture every frame. It is what keeps
      large flat areas of Pearl from looking like untouched #FFF.
      ------------------------------------------------------------------ */
-  .grain-overlay {
-    position: fixed;
-    inset: 0;
-    z-index: 1;
-    pointer-events: none;
-    opacity: 0.03;
-    background-image: var(--img-grain);
-    background-size: 160px 160px;
-  }
-  html[data-theme='dark'] .grain-overlay {
-    opacity: 0.05;
-  }
+  html[data-theme='dark']
 
   /* ------------------------------------------------------------------
      HAIRLINE DIVIDER, refined

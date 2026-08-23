@@ -1,5 +1,5 @@
 ---
-import { Image } from 'astro:assets';
+import { Picture } from 'astro:assets';
 import Icon from '../Icon.astro';
 import BrandPattern from '../BrandPattern.astro';
 import { useTranslations, localizedPath } from '../../i18n/utils';
@@ -24,14 +24,15 @@ const image = getServiceMedia(slug);
   {
     image && (
       <div class="bleed-media" aria-hidden="true">
-        <Image
+        <Picture
           class="service-hero-image"
           src={image}
           alt=""
-          widths={[640, 960, 1280, 1600, 2048, 2752]}
+          widths={[720, 1280, 1920]}
           sizes="100vw"
-          format="webp"
-          quality={86}
+          formats={['avif', 'webp']}
+          fallbackFormat="webp"
+          quality={48}
           loading="eager"
           decoding="sync"
           fetchpriority="high"
@@ -40,7 +41,7 @@ const image = getServiceMedia(slug);
     )
   }
   <div class="bleed-scrim" aria-hidden="true"></div>
-  <BrandPattern opacity={0.022} />
+  <BrandPattern opacity={0.014} />
 
   <div class="bleed-content mx-auto w-full max-w-7xl">
     <div class="max-w-2xl" data-reveal>

@@ -1,5 +1,5 @@
 ---
-import { Image } from 'astro:assets';
+import { Picture } from 'astro:assets';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Icon from './Icon.astro';
 import BrandPattern from './BrandPattern.astro';
@@ -78,7 +78,7 @@ const title = `${study.client}, ${labels.eyebrow.toLowerCase()}`;
       <div class="ambient-plate ambient-plate--crimson -start-[16vw] top-0 h-[48vw] w-[48vw]" data-ambient="9"></div>
       <div class="ambient-plate ambient-plate--gold -end-[12vw] bottom-0 h-[34vw] w-[34vw]" data-ambient="-7"></div>
     </div>
-    <BrandPattern opacity={0.025} />
+    <BrandPattern opacity={0.015} />
     <div class="rule-grid" aria-hidden="true"></div>
 
     <div class="relative mx-auto max-w-5xl px-5 sm:px-8">
@@ -129,14 +129,15 @@ const title = `${study.client}, ${labels.eyebrow.toLowerCase()}`;
     hero && (
       <div class="mx-auto max-w-7xl px-5 sm:px-8">
         <figure class="figure figure--graded figure--kenburns overflow-hidden rounded-3xl" data-figure style="aspect-ratio:21/9">
-          <Image
+          <Picture
             class="figure-media"
             src={hero}
             alt={`${study.client}, ${study.sector}`}
-            widths={[768, 1024, 1440, 1920]}
+            widths={[768, 1280, 1920]}
             sizes="(max-width: 1280px) 100vw, 1280px"
-            format="webp"
-            quality={84}
+            formats={['avif', 'webp']}
+            fallbackFormat="webp"
+            quality={48}
             loading="eager"
             fetchpriority="high"
           />
@@ -187,14 +188,15 @@ const title = `${study.client}, ${labels.eyebrow.toLowerCase()}`;
               data-parallax={i === 0 ? 5 : -5}
               style="aspect-ratio:4/3"
             >
-              <Image
+              <Picture
                 class="figure-media"
                 src={plate!}
                 alt=""
-                widths={[480, 720, 960]}
+                widths={[480, 960]}
                 sizes="(max-width: 640px) 100vw, 50vw"
-                format="webp"
-                quality={82}
+                formats={['avif', 'webp']}
+                fallbackFormat="webp"
+                quality={48}
                 loading="lazy"
                 decoding="async"
               />
@@ -223,7 +225,7 @@ const title = `${study.client}, ${labels.eyebrow.toLowerCase()}`;
   </section>
 
   <section class="relative overflow-hidden py-20 sm:py-24">
-    <BrandPattern opacity={0.025} />
+    <BrandPattern opacity={0.015} />
     <div class="relative mx-auto flex max-w-4xl flex-col items-start gap-6 px-5 sm:px-8">
       <a
         href={localizedPath(locale, `services/${study.serviceSlug}`)}

@@ -120,7 +120,6 @@ const xDefaultHref = new URL(`/fr${restPath ? `/${restPath}` : ''}`, Astro.site)
         so it is painted once instead of repainting with every scrolled frame.
         It is what keeps large flat fields of Pearl from reading as untouched
         #FFF, which is the difference between "printed" and "rendered". */}
-    <div class="grain-overlay" aria-hidden="true"></div>
     <Preloader />
     {/* Reading progress. Purely decorative, so it stays out of the a11y tree. */}
     <div
