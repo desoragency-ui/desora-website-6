@@ -1,7 +1,6 @@
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { SplitText } from 'gsap/SplitText';
-import Lenis from 'lenis';
 
 gsap.registerPlugin(ScrollTrigger, SplitText);
 
@@ -13,33 +12,15 @@ export const EASE = 'cubic-bezier(0.16, 1, 0.3, 1)';
 export const EASE_ARR = [0.16, 1, 0.3, 1] as const;
 gsap.registerEase('desora', (p) => gsap.parseEase('power3.out')(p));
 
-export let lenis: Lenis | undefined;
-
-if (!reduceMotion) {
-  // Scroll feel, retuned. The old values (lerp 0.075, wheelMultiplier 0.92)
-  // were chosen for "weight" and landed on "wading": the viewport took roughly
-  // half a second to catch up to the wheel, and each tick travelled LESS than a
-  // native scroll would. That reads as lag, not luxury.
-  //
-  // lerp 0.2 still smooths the step between wheel notches but tracks the input
-  // closely enough to feel direct. wheelMultiplier slightly above 1 means a
-  // flick now covers more ground than native, not less.
-  //
-  // syncTouch is off: on a phone the native momentum scroller is hardware
-  // driven and always beats a JS rAF loop. Hijacking it was pure cost.
-  lenis = new Lenis({
-    autoRaf: false,
-    lerp: 0.2,
-    wheelMultiplier: 1.08,
-    touchMultiplier: 1.6,
-    syncTouch: false,
-  });
-  lenis.on('scroll', ScrollTrigger.update);
-  gsap.ticker.add((time) => {
-    lenis?.raf(time * 1000);
-  });
-  gsap.ticker.lagSmoothing(0);
-}
+/** Smooth scroll: REMOVED.
+ *
+ *  Lenis interpolates the viewport toward the real scroll position, so the page
+ *  always trails the input by design. Retuning the lerp only shortened the lag,
+ *  it could not remove it. Native scrolling is instant and is handled by the
+ *  compositor rather than a JS rAF loop, so it also frees a frame's worth of
+ *  work for everything else on the page.
+ */
+export const lenis: undefined = undefined;
 
 /** Generic scroll-reveal system: add data-reveal (single element) or
  * data-reveal-group (staggers direct children) instead of writing bespoke
@@ -51,61 +32,41 @@ function initReveals() {
   const items = gsap.utils.toArray<HTMLElement>('[data-reveal]');
   items.forEach((el) => {
     if (reduceMotion) {
-      gsap.set(el, { opacity: 1, y: 0, clipPath: 'none' });
+      gsap.set(el, { opacity: 1, y: 0 });
       return;
     }
 
-    const mode = el.dataset.reveal;
-
-    // Headings split to lines or characters and climb out from behind their own
-    // clipped box. `mask` supplies that box, so an accent on the line above is
-    // never shaved off, which matters in French and would not show up in an
-    // English-only test.
-    if (mode === 'lines' || mode === 'chars') {
+    if (el.dataset.reveal === 'lines') {
       try {
-        const split = new SplitText(el, {
-          type: mode,
-          linesClass: 'reveal-line',
-          charsClass: 'reveal-char',
-          mask: 'lines',
-        });
-        const targets = mode === 'chars' ? split.chars : split.lines;
+        const split = new SplitText(el, { type: 'lines', linesClass: 'reveal-line' });
         gsap.set(el, { opacity: 1 });
         gsap.fromTo(
-          targets,
-          { yPercent: 108, opacity: 0, rotate: mode === 'chars' ? 3 : 0 },
+          split.lines,
+          { opacity: 0, y: 24 },
           {
-            yPercent: 0,
             opacity: 1,
-            rotate: 0,
-            duration: mode === 'chars' ? 0.9 : 1.15,
-            stagger: mode === 'chars' ? 0.018 : 0.085,
+            y: 0,
+            duration: 1,
+            stagger: 0.07,
             ease: 'power3.out',
-            scrollTrigger: { trigger: el, start: 'top 86%', once: true },
+            scrollTrigger: { trigger: el, start: 'top 88%', once: true },
           }
         );
         return;
       } catch {
-        /* fall through to the block reveal below */
+        /* fall through to the plain reveal below */
       }
     }
 
-    // Default: a curtain wipe, not a fade. The block is uncovered from the
-    // bottom edge while it settles out of a slight over-scale, so it reads as
-    // something being revealed rather than something being turned up in
-    // opacity. Opacity stays at 1 throughout, which is what kills the "everything
-    // gently fades in" feel the whole page used to have.
     gsap.fromTo(
       el,
-      { clipPath: 'inset(0% 0% 100% 0%)', y: 46, scale: 0.985 },
+      { opacity: 0, y: 40 },
       {
-        clipPath: 'inset(0% 0% 0% 0%)',
+        opacity: 1,
         y: 0,
-        scale: 1,
-        duration: 1.2,
+        duration: 1.1,
         ease: 'power3.out',
         scrollTrigger: { trigger: el, start: 'top 88%', once: true },
-        onComplete: () => gsap.set(el, { clipPath: 'none' }),
       }
     );
   });
@@ -114,26 +75,19 @@ function initReveals() {
   groups.forEach((group) => {
     const children = Array.from(group.children) as HTMLElement[];
     if (reduceMotion) {
-      gsap.set(children, { opacity: 1, y: 0, clipPath: 'none' });
+      gsap.set(children, { opacity: 1, y: 0 });
       return;
     }
-
-    // Cards deal out rather than fade up: each one arrives from slightly below
-    // and behind, with a hair of rotation, uncovered by its own wipe. `from`
-    // follows the reading direction so an Arabic grid deals from the right.
     gsap.fromTo(
       children,
-      { clipPath: 'inset(0% 0% 100% 0%)', y: 54, scale: 0.965, rotate: isRtl() ? -1.1 : 1.1 },
+      { opacity: 0, y: 36 },
       {
-        clipPath: 'inset(0% 0% 0% 0%)',
+        opacity: 1,
         y: 0,
-        scale: 1,
-        rotate: 0,
-        duration: 1.05,
-        stagger: { each: 0.085, from: isRtl() ? 'end' : 'start' },
+        duration: 0.9,
+        stagger: 0.09,
         ease: 'power3.out',
         scrollTrigger: { trigger: group, start: 'top 88%', once: true },
-        onComplete: () => gsap.set(children, { clipPath: 'none' }),
       }
     );
   });
@@ -296,11 +250,7 @@ function initAnchorLinks() {
       const target = document.getElementById(id);
       if (!target) return;
       e.preventDefault();
-      if (lenis) {
-        lenis.scrollTo(target, { offset: -96, duration: 1.4 });
-      } else {
-        target.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth', block: 'start' });
-      }
+      target.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth', block: 'start' });
     });
   });
 }
@@ -308,42 +258,12 @@ function initAnchorLinks() {
 /** A gold hairline across the very top that fills as the page is read. Drawn
  * with scaleX on a single fixed element, so it costs one composited layer and
  * never triggers layout. RTL flips the origin so it fills from the right. */
-function initScrollProgress() {
-  if (reduceMotion) return;
-  const bar = document.getElementById('scroll-progress');
-  if (!bar) return;
-
-  gsap.set(bar, {
-    scaleX: 0,
-    transformOrigin: document.documentElement.dir === 'rtl' ? 'right center' : 'left center',
-  });
-
-  gsap.to(bar, {
-    scaleX: 1,
-    ease: 'none',
-    scrollTrigger: { start: 0, end: 'max', scrub: 0.4 },
-  });
-}
+/* initScrollProgress: REMOVED for performance (scrubbed scaleX tied to total scroll). */
 
 /** Sections drift up and settle as they enter, a half-beat behind the content
  * revealing inside them. Gives the page a sense of depth while scrolling
  * without any element moving far enough to read as a gimmick. */
-function initSectionDepth() {
-  if (reduceMotion) return;
-
-  gsap.utils.toArray<HTMLElement>('[data-depth]').forEach((el) => {
-    gsap.fromTo(
-      el,
-      { y: 28, scale: 0.994 },
-      {
-        y: 0,
-        scale: 1,
-        ease: 'power2.out',
-        scrollTrigger: { trigger: el, start: 'top 92%', end: 'top 55%', scrub: 0.8 },
-      }
-    );
-  });
-}
+/* initSectionDepth: REMOVED for performance (scrubbed y/scale on every section on the page). */
 
 /* ==========================================================================
    Depth and kinetics.
@@ -366,9 +286,6 @@ function debounce<T extends (...args: any[]) => void>(fn: T, wait: number) {
   };
 }
 
-/** Pointer-capable, non-touch device. Magnetic pulls and tilt are meaningless
- *  on touch and cost battery, so they never initialise there. */
-const finePointer = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
 
 /** Pinned horizontal rail.
  *
@@ -466,31 +383,7 @@ function initHorizontalScroll() {
  *  `data-depth-layer="20"` moves with it (comes forward). Values are percent of
  *  the element's own height, so a value reads the same at any size.
  */
-function initDepthLayers() {
-  if (reduceMotion) return;
-
-  gsap.utils.toArray<HTMLElement>('[data-depth-layer]').forEach((el) => {
-    const depth = parseFloat(el.dataset.depthLayer || '0');
-    if (!isFinite(depth) || depth === 0) return;
-    const scope = el.closest<HTMLElement>('[data-depth-scope]') ?? el.parentElement ?? el;
-
-    gsap.fromTo(
-      el,
-      { yPercent: -depth },
-      {
-        yPercent: depth,
-        ease: 'none',
-        scrollTrigger: {
-          trigger: scope,
-          start: 'top bottom',
-          end: 'bottom top',
-          scrub: 0.7,
-          invalidateOnRefresh: true,
-        },
-      }
-    );
-  });
-}
+/* initDepthLayers: REMOVED for performance (multi-layer parallax, scrubbed). */
 
 /** Headline reveal: each line climbs out from behind its own clipped box.
  *  Reads like a printed line being pulled off the press, not a div fading in. */
@@ -533,66 +426,11 @@ function initMaskReveals() {
 /** Magnetic pull. The control leans toward the cursor inside its own hit area
  *  and springs back on exit. Deliberately small: a suggestion of attraction,
  *  not a toy that chases the mouse around. */
-function initMagnetic() {
-  if (reduceMotion || !finePointer) return;
-
-  document.querySelectorAll<HTMLElement>('[data-magnetic]').forEach((el) => {
-    const strength = parseFloat(el.dataset.magnetic || '0.28');
-    const label = el.querySelector<HTMLElement>('[data-magnetic-label]');
-    const quickX = gsap.quickTo(el, 'x', { duration: 0.5, ease: 'power3.out' });
-    const quickY = gsap.quickTo(el, 'y', { duration: 0.5, ease: 'power3.out' });
-    const labelX = label ? gsap.quickTo(label, 'x', { duration: 0.65, ease: 'power3.out' }) : null;
-    const labelY = label ? gsap.quickTo(label, 'y', { duration: 0.65, ease: 'power3.out' }) : null;
-
-    el.addEventListener('pointermove', (e) => {
-      const r = el.getBoundingClientRect();
-      const dx = (e.clientX - (r.left + r.width / 2)) * strength;
-      const dy = (e.clientY - (r.top + r.height / 2)) * strength;
-      quickX(dx);
-      quickY(dy);
-      // The label trails the button slightly, which is what sells the weight.
-      labelX?.(dx * 0.35);
-      labelY?.(dy * 0.35);
-    });
-
-    const release = () => {
-      quickX(0);
-      quickY(0);
-      labelX?.(0);
-      labelY?.(0);
-    };
-    el.addEventListener('pointerleave', release);
-    el.addEventListener('blur', release);
-  });
-}
+/* initMagnetic: REMOVED for performance (pointermove tracking on every CTA). */
 
 /** Cards catch the light: a few degrees of tilt plus a specular sheen that
  *  tracks the cursor. Perspective lives on the parent so siblings stay coplanar. */
-function initTilt() {
-  if (reduceMotion || !finePointer) return;
-
-  document.querySelectorAll<HTMLElement>('[data-tilt]').forEach((card) => {
-    const max = parseFloat(card.dataset.tilt || '5');
-    const setRotX = gsap.quickTo(card, 'rotationX', { duration: 0.6, ease: 'power3.out' });
-    const setRotY = gsap.quickTo(card, 'rotationY', { duration: 0.6, ease: 'power3.out' });
-    gsap.set(card, { transformPerspective: 900, transformStyle: 'preserve-3d' });
-
-    card.addEventListener('pointermove', (e) => {
-      const r = card.getBoundingClientRect();
-      const px = (e.clientX - r.left) / r.width;
-      const py = (e.clientY - r.top) / r.height;
-      setRotY((px - 0.5) * max * 2);
-      setRotX((0.5 - py) * max * 2);
-      card.style.setProperty('--sheen-x', `${px * 100}%`);
-      card.style.setProperty('--sheen-y', `${py * 100}%`);
-    });
-
-    card.addEventListener('pointerleave', () => {
-      setRotX(0);
-      setRotY(0);
-    });
-  });
-}
+/* initTilt: REMOVED for performance (3D transform per pointermove across 16 cards). */
 
 /** Seamless marquee driven by GSAP rather than a CSS keyframe.
  *
@@ -636,17 +474,7 @@ function initMarquees() {
     build();
     window.addEventListener('resize', debounce(build, 250));
 
-    // Scroll velocity surges the strip, then it eases back to base speed.
-    let scrollTs: gsap.core.Tween | undefined;
-    ScrollTrigger.create({
-      onUpdate: (self) => {
-        if (!loop) return;
-        const surge = gsap.utils.clamp(1, 5, 1 + Math.abs(self.getVelocity()) / 900);
-        scrollTs?.kill();
-        loop.timeScale(surge);
-        scrollTs = gsap.to(loop, { timeScale: 1, duration: 0.9, ease: 'power2.out', overwrite: true });
-      },
-    });
+    /* Velocity surge: REMOVED for performance (ran on every scroll frame). */
 
     // Pause on hover so a visitor can actually read a name.
     viewport.addEventListener('pointerenter', () => loop?.pause());
@@ -678,33 +506,7 @@ function initLogoWall() {
 
 /** Ambient plates drift and breathe behind content. One shared timeline per
  *  element, infinite, extremely slow: it should never be consciously noticed. */
-function initAmbient() {
-  if (reduceMotion) return;
-
-  gsap.utils.toArray<HTMLElement>('[data-ambient]').forEach((el, i) => {
-    const drift = parseFloat(el.dataset.ambient || '18');
-    const tween = gsap.to(el, {
-      xPercent: drift,
-      yPercent: drift * -0.55,
-      scale: 1.12,
-      duration: 26 + i * 4,
-      ease: 'sine.inOut',
-      repeat: -1,
-      yoyo: true,
-      paused: true,
-    });
-
-    // Only animate while the plate is actually on screen. An infinite tween on
-    // a large composited layer otherwise keeps the compositor busy for the
-    // entire session, including for the eight plates below the fold.
-    ScrollTrigger.create({
-      trigger: el.closest('section') ?? el,
-      start: 'top bottom',
-      end: 'bottom top',
-      onToggle: (self) => (self.isActive ? tween.play() : tween.pause()),
-    });
-  });
-}
+/* initAmbient: REMOVED for performance (infinite drift tweens on large plates). */
 
 
 /* ==========================================================================
@@ -722,152 +524,32 @@ function initAmbient() {
  *  heavy. `data-skew` is now inert and left in the markup harmlessly.
  */
 
-/** Bands arrive from under the band above them.
- *
- *  Each `[data-curtain]` section is clipped to nothing at its top edge and
- *  uncovers as it enters, so the page reads as a stack of plates being dealt
- *  rather than a column of boxes scrolling past. Scrubbed, so the reveal is
- *  tied to the reader's own scrolling rather than playing on a timer.
+/** Section curtain: REMOVED. It clipped each band on a scrubbed timeline,
+ *  which left sections part-hidden if a trigger resolved late and made the
+ *  whole page feel like it was catching up with the scroll. `data-curtain`
+ *  is now inert and harmless in the markup.
  */
-function initCurtains() {
-  if (reduceMotion) return;
 
-  gsap.utils.toArray<HTMLElement>('[data-curtain]').forEach((section) => {
-    gsap.fromTo(
-      section,
-      { clipPath: 'inset(14% 0% 0% 0%)', scale: 0.975 },
-      {
-        clipPath: 'inset(0% 0% 0% 0%)',
-        scale: 1,
-        ease: 'none',
-        scrollTrigger: {
-          trigger: section,
-          start: 'top bottom',
-          end: 'top 55%',
-          scrub: 0.7,
-        },
-      }
-    );
-  });
-}
-
-/** Custom cursor: REMOVED on request. The page uses the system cursor. */
-
-/** Cursor-following image plate: REMOVED on request. Service rows now respond
- *  with the crimson wash and the indent alone. */
-
-/** Pinned chapters.
- *
- *  `[data-chapters]` pins its `[data-chapters-stage]` and steps through the
- *  `[data-chapter]` children as the reader scrolls, one at a time. Used for the
- *  method: five steps that must be read in order, so the page holds the reader
- *  on each one instead of letting them skim past.
+/** Pinned chapters: REMOVED (home page, the method section).
+ *  It pinned the section and stepped through the five steps under a scrubbed
+ *  timeline, which hijacked the scroll and made the page feel stuck. Without
+ *  it `data-chapters-mode` is never set, so neither the pinned nor the stacked
+ *  CSS rule matches and the steps simply render as a normal stacked list.
  */
-function initChapters() {
-  const scopes = gsap.utils.toArray<HTMLElement>('[data-chapters]');
 
-  scopes.forEach((scope) => {
-    const stage = scope.querySelector<HTMLElement>('[data-chapters-stage]');
-    const chapters = gsap.utils.toArray<HTMLElement>('[data-chapter]', scope);
-    const marks = gsap.utils.toArray<HTMLElement>('[data-chapter-mark]', scope);
-    if (!stage || chapters.length < 2) return;
-
-    // Reduced motion, and touch, get the plain stacked list: every chapter
-    // visible, no pinning, nothing to fight a thumb.
-    const canPin = window.matchMedia('(min-width: 1024px) and (min-height: 640px)').matches;
-    if (reduceMotion || !canPin) {
-      scope.dataset.chaptersMode = 'stacked';
-      gsap.set(chapters, { opacity: 1, clearProps: 'transform' });
-      return;
-    }
-    scope.dataset.chaptersMode = 'pinned';
-
-    gsap.set(chapters, { opacity: 0, yPercent: 8 });
-    gsap.set(chapters[0], { opacity: 1, yPercent: 0 });
-    marks[0]?.classList.add('is-current');
-
-    const tl = gsap.timeline({
-      scrollTrigger: {
-        trigger: scope,
-        start: 'top top',
-        end: () => `+=${chapters.length * 62}%`,
-        pin: stage,
-        scrub: 0.6,
-        anticipatePin: 1,
-        invalidateOnRefresh: true,
-        onUpdate: (self) => {
-          const i = Math.min(chapters.length - 1, Math.floor(self.progress * chapters.length));
-          marks.forEach((m, mi) => m.classList.toggle('is-current', mi === i));
-        },
-      },
-    });
-
-    chapters.forEach((ch, i) => {
-      if (i === 0) return;
-      tl.to(chapters[i - 1], { opacity: 0, yPercent: -8, duration: 0.5, ease: 'power2.inOut' }, i - 1)
-        .fromTo(
-          ch,
-          { opacity: 0, yPercent: 8 },
-          { opacity: 1, yPercent: 0, duration: 0.5, ease: 'power2.inOut' },
-          i - 1 + 0.25
-        );
-    });
-  });
-}
-
-/** Words that arrive one at a time, tied to the scroll.
- *
- *  `[data-word-reveal]` splits to words and brightens them in sequence as the
- *  block crosses the viewport, so a statement is read at the pace it was
- *  written. Used once per page at most: it is a device, and a device used twice
- *  is a tic.
+/** Scroll-scrubbed word reveal: REMOVED for the same reason as the curtain.
+ *  `data-word-reveal` is inert; the heading simply renders.
  */
-function initWordReveal() {
-  gsap.utils.toArray<HTMLElement>('[data-word-reveal]').forEach((el) => {
-    if (reduceMotion) {
-      gsap.set(el, { opacity: 1 });
-      return;
-    }
-    let words: Element[] = [];
-    try {
-      const split = new SplitText(el, { type: 'words', wordsClass: 'reveal-word' });
-      words = split.words;
-    } catch {
-      gsap.set(el, { opacity: 1 });
-      return;
-    }
-    gsap.set(el, { opacity: 1 });
-    gsap.fromTo(
-      words,
-      { opacity: 0.18 },
-      {
-        opacity: 1,
-        ease: 'none',
-        stagger: 0.35,
-        scrollTrigger: { trigger: el, start: 'top 78%', end: 'bottom 55%', scrub: 0.5 },
-      }
-    );
-  });
-}
 
 initReveals();
 initHairlines();
 initCounters();
 initFigures();
 initAnchorLinks();
-initScrollProgress();
-initSectionDepth();
 initHorizontalScroll();
-initDepthLayers();
 initMaskReveals();
-initMagnetic();
-initTilt();
 initMarquees();
 initLogoWall();
-initAmbient();
-initCurtains();
-initChapters();
-initWordReveal();
 
 requestAnimationFrame(() => ScrollTrigger.refresh());
 // Web fonts change text metrics after load, which shifts every trigger point.
