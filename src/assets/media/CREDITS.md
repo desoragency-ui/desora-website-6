@@ -11,3 +11,8 @@
 - `case-fastway-3.jpg` — Patricia Bozan, Pexels #36626702
 
 Sourced through the free-stock-images MCP server (Pexels + Pixabay APIs).
+
+- `home-approach.jpg` — Ron Lach, Pexels #9617369, used by the "Why DESORA"
+  section. It replaced the brand-book still life, which pictured an object
+  rather than the section's actual argument: a method, worked through by the
+  person you deal with. The previous plate is kept as `home-approach-book.jpeg`.

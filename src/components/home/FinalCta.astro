@@ -25,12 +25,11 @@ const { locale, heading, description } = Astro.props;
 const t = useTranslations(locale);
 ---
 
-<section
-  class="relative isolate overflow-hidden bg-accent-strong py-28 sm:py-36"
-  aria-labelledby="final-cta-heading"
-  data-curtain
->
-  <BrandPattern tone="contrast" opacity={0.07} />
+<!-- Contained plate, not a full-bleed band: the closing statement reads better
+     as an object sitting on the page than as the page changing colour. -->
+<section class="mx-auto max-w-7xl px-5 py-24 sm:px-8" aria-labelledby="final-cta-heading" data-curtain>
+  <div class="relative isolate overflow-hidden rounded-[2.5rem] bg-accent-strong px-6 py-20 sm:px-16 sm:py-24">
+  <BrandPattern tone="contrast" opacity={0.03} />
 
   <div class="ambient-field" aria-hidden="true">
     <div
@@ -93,5 +92,6 @@ const t = useTranslations(locale);
         </span>
       </a>
     </div>
+  </div>
   </div>
 </section>

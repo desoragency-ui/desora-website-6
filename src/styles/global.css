@@ -883,69 +883,9 @@ html.preloader-skip #preloader {
      interactive. The real cursor is deliberately left visible underneath:
      hiding it breaks text selection affordance and drag handles, and buys
      nothing. Created by JS only on a fine pointer, so touch never sees it. */
-  .desora-cursor {
-    position: fixed;
-    top: 0;
-    left: 0;
-    z-index: 9999;
-    width: 34px;
-    height: 34px;
-    border: 1px solid var(--color-gold);
-    border-radius: 50%;
-    opacity: 0;
-    pointer-events: none;
-    /* No blend mode. `difference` on a fixed element that follows the pointer
-       forces the browser to recomposite the viewport on every mouse move. The
-       ring reads fine as plain gold. */
-    transition:
-      width 0.4s cubic-bezier(0.16, 1, 0.3, 1),
-      height 0.4s cubic-bezier(0.16, 1, 0.3, 1),
-      opacity 0.3s linear,
-      background-color 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-  }
-  .desora-cursor.is-visible {
-    opacity: 0.85;
-  }
-  .desora-cursor.is-active {
-    width: 58px;
-    height: 58px;
-    background-color: color-mix(in oklab, var(--color-gold) 16%, transparent);
-  }
-  .desora-cursor.is-down {
-    width: 26px;
-    height: 26px;
-  }
 
   /* --- Peek plate --------------------------------------------------------
      One shared floating image for a whole grid, swapped on hover. */
-  .peek-plate {
-    position: fixed;
-    top: 0;
-    left: 0;
-    z-index: 60;
-    width: clamp(180px, 17vw, 260px);
-    aspect-ratio: 4 / 3;
-    overflow: hidden;
-    border-radius: 1rem;
-    border: 1px solid var(--color-hairline);
-    box-shadow: 0 30px 70px -30px var(--shadow-tint);
-    opacity: 0;
-    transform-origin: center;
-    pointer-events: none;
-    scale: 0.9;
-    transition:
-      opacity 0.45s cubic-bezier(0.16, 1, 0.3, 1),
-      scale 0.45s cubic-bezier(0.16, 1, 0.3, 1);
-  }
-  .peek-plate.is-visible {
-    opacity: 1;
-    scale: 1;
-  }
-  .peek-plate img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
 
   /* --- Pinned chapters ---------------------------------------------------
      Pinned mode stacks every chapter in one box and cross-fades them; stacked
@@ -1003,10 +943,6 @@ html.preloader-skip #preloader {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .desora-cursor,
-  .peek-plate {
-    display: none !important;
-  }
   [data-skew],
   [data-curtain] {
     will-change: auto;
@@ -1018,10 +954,6 @@ html.preloader-skip #preloader {
 /* Coarse pointers never get the cursor ring or the peek plate, even if a
    hybrid device reports both. */
 @media (hover: none), (pointer: coarse) {
-  .desora-cursor,
-  .peek-plate {
-    display: none !important;
-  }
 }
 
 /* ==========================================================================

@@ -1,8 +1,6 @@
 ---
-import { getImage } from 'astro:assets';
 import Icon from '../Icon.astro';
 import { localizedPath } from '../../i18n/utils';
-import { getServiceMedia } from '../../lib/media';
 import type { Locale } from '../../i18n/config';
 
 /**
@@ -28,16 +26,6 @@ interface Props {
 
 const { locale, heading, description, services } = Astro.props;
 
-// One small optimised plate per service for the cursor preview. Generated at
-// build time so the hover costs a cached image request, not a full-size photo.
-const peeks = await Promise.all(
-  services.map(async (service) => {
-    const media = getServiceMedia(service.slug);
-    if (!media) return undefined;
-    const img = await getImage({ src: media, width: 520, height: 390, format: 'webp', quality: 70 });
-    return img.src;
-  })
-);
 ---
 
 <section
@@ -56,14 +44,13 @@ const peeks = await Promise.all(
       <p class="max-w-md text-lg leading-relaxed text-text-secondary" data-reveal>{description}</p>
     </div>
 
-    <ul class="mt-16 border-t border-hairline" data-skew>
+    <ul class="mt-16 space-y-1" data-skew>
       {
         services.map((service, i) => (
           <li>
             <a
               href={localizedPath(locale, `services/${service.slug}`)}
-              data-peek={peeks[i]}
-              class="service-row group relative flex items-center gap-5 border-b border-hairline py-7 sm:gap-8 sm:py-9"
+              class="service-row group relative flex items-center gap-5 rounded-2xl py-6 sm:gap-8 sm:py-7"
             >
               {/* The crimson wash sweeps in from the reading edge on hover, so
                   the row lights up rather than merely changing colour. */}

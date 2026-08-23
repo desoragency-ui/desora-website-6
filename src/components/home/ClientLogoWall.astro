@@ -3,14 +3,21 @@ import { clients } from '../../lib/clients';
 import type { Locale } from '../../i18n/config';
 
 /**
- * The client wall.
+ * The client strip.
  *
- * Every mark is a real logo taken from that client's own site or profile (see
- * src/lib/clients.ts). At rest the wall is painted in a single ink through
- * mask-image, so twelve logos drawn by twelve different designers still read as
- * one considered set and still respond to the theme. On hover the cell releases
- * its real colours and its neighbours recede, which is what turns a static
- * credibility strip into something worth pointing a cursor at.
+ * A continuous marquee travelling right to left rather than a static grid: the
+ * roster is long enough that a grid either wraps into an awkward last row or
+ * forces the marks too small to read. Moving, they stay at a legible size and
+ * the section reads as a running credit rather than a table.
+ *
+ * At rest every mark is painted in a single ink through mask-image, so twelve
+ * logos drawn by twelve different designers read as one considered set and
+ * follow the theme. Hovering a mark releases its real colours and pauses the
+ * strip so it can actually be read.
+ *
+ * Driven by `initMarquees` in src/scripts/motion.ts, which handles the RTL
+ * direction flip and the pause-on-hover. Two copies, because that is what the
+ * script's wrap maths expects.
  */
 interface Props {
   locale: Locale;
@@ -21,31 +28,39 @@ interface Props {
 const { locale, heading, note } = Astro.props;
 const builtLabel =
   locale === 'ar' ? 'موقع من إنجازنا' : locale === 'en' ? 'Site built by DESORA' : 'Site signé DESORA';
+
+const copies = [
+  { items: clients, hidden: false },
+  { items: clients, hidden: true },
+];
 ---
 
-<section class="relative overflow-hidden border-y border-border bg-bg-secondary py-16 sm:py-20" aria-labelledby="client-wall-heading">
-  <div class="rule-grid" aria-hidden="true"></div>
+<section
+  class="relative overflow-hidden border-y border-border bg-bg-secondary py-14 sm:py-16"
+  aria-labelledby="client-wall-heading"
+>
+  <div class="relative mx-auto mb-10 flex max-w-7xl flex-col gap-3 px-5 sm:flex-row sm:items-baseline sm:justify-between sm:px-8">
+    <h2 id="client-wall-heading" class="overline">{heading}</h2>
+    {note && <p class="text-sm text-text-secondary">{note}</p>}
+  </div>
 
-  <div class="relative mx-auto max-w-7xl px-5 sm:px-8">
-    <div class="flex flex-col gap-3 sm:flex-row sm:items-baseline sm:justify-between">
-      <h2 id="client-wall-heading" class="overline">{heading}</h2>
-      {note && <p class="text-sm text-text-secondary">{note}</p>}
-    </div>
-
-    <ul
-      class="logo-wall mt-10 grid grid-cols-2 border-s border-t border-hairline sm:grid-cols-3 lg:grid-cols-4"
-      data-logo-wall
-    >
+  <div class="edge-fade relative overflow-hidden" data-marquee="46" data-marquee-copies="2" data-logo-wall>
+    <div class="logo-wall flex w-max items-center" data-marquee-track>
       {
-        clients.map((client) => {
-          const Cell = client.href ? 'a' : 'div';
-          return (
-            <li class="border-b border-e border-hairline">
+        copies.map((copy) =>
+          copy.items.map((client) => {
+            const Cell = client.href ? 'a' : 'div';
+            return (
               <Cell
-                class:list={['logo-cell group/logo', client.tile && 'logo-cell--tile']}
+                class:list={[
+                  'logo-cell group/logo relative w-[10.5rem] shrink-0 sm:w-[13rem]',
+                  client.tile && 'logo-cell--tile',
+                ]}
                 data-logo-cell
                 style={`--logo-src:url('${client.ink}')`}
-                {...(client.href
+                aria-hidden={copy.hidden ? 'true' : undefined}
+                tabindex={copy.hidden ? -1 : undefined}
+                {...(client.href && !copy.hidden
                   ? { href: client.href, target: '_blank', rel: 'noopener noreferrer' }
                   : {})}
               >
@@ -59,50 +74,50 @@ const builtLabel =
                   width="460"
                   height="190"
                 />
-                <span class="sr-only">
-                  {client.name}, {client.sector[locale]}
-                </span>
+                {!copy.hidden && (
+                  <span class="sr-only">
+                    {client.name}, {client.sector[locale]}
+                  </span>
+                )}
                 {client.builtByDesora && (
                   <span
-                    class="pointer-events-none absolute end-3 top-3 h-1.5 w-1.5 rounded-full bg-gold opacity-0 transition-opacity duration-500 group-hover/logo:opacity-100"
+                    class="pointer-events-none absolute end-4 top-2 h-1.5 w-1.5 rounded-full bg-gold opacity-0 transition-opacity duration-500 group-hover/logo:opacity-100"
                     title={builtLabel}
                     aria-hidden="true"
                   />
                 )}
               </Cell>
-            </li>
-          );
-        })
+            );
+          })
+        )
       }
-    </ul>
-
-    <p class="mt-6 flex items-center gap-2 text-xs text-text-secondary">
-      <span class="inline-block h-1.5 w-1.5 rounded-full bg-gold" aria-hidden="true"></span>
-      {builtLabel}
-    </p>
+    </div>
   </div>
+
+  <p class="relative mx-auto mt-8 flex max-w-7xl items-center gap-2 px-5 text-xs text-text-secondary sm:px-8">
+    <span class="inline-block h-1.5 w-1.5 rounded-full bg-gold" aria-hidden="true"></span>
+    {builtLabel}
+  </p>
 </section>
 
 <style>
-  /* Attention is a spotlight: hovering one mark dims the rest of the wall so
-     the eye lands where the cursor is. Pure CSS, no JS, no layout. */
+  /* Attention is a spotlight: hovering one mark dims the rest of the strip so
+     the eye lands where the cursor is. The marquee itself pauses on hover,
+     handled in motion.ts. */
   .logo-wall:hover .logo-cell {
-    opacity: 0.32;
+    opacity: 0.3;
   }
   .logo-wall .logo-cell:hover,
   .logo-wall .logo-cell:focus-visible {
     opacity: 1;
   }
   .logo-cell {
-    transition: opacity 0.45s cubic-bezier(0.16, 1, 0.3, 1), transform 0.45s cubic-bezier(0.16, 1, 0.3, 1);
-  }
-  .logo-wall .logo-cell:hover {
-    transform: translateY(-2px);
+    transition: opacity 0.45s cubic-bezier(0.16, 1, 0.3, 1);
   }
 
   @media (hover: none) {
-    /* Touch has no hover state to reveal colour with, so every mark simply
-       shows in its own colours and the ink layer stays out of the way. */
+    /* Touch has no hover to reveal colour with, so every mark simply shows in
+       its own colours and the ink layer stays out of the way. */
     .logo-wall:hover .logo-cell {
       opacity: 1;
     }
@@ -115,10 +130,8 @@ const builtLabel =
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .logo-cell,
-    .logo-wall .logo-cell:hover {
+    .logo-cell {
       transition-duration: 0.01ms;
-      transform: none;
     }
   }
 </style>

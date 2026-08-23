@@ -751,98 +751,10 @@ function initCurtains() {
   });
 }
 
-/** A cursor with weight.
- *
- *  A hairline gold ring trails the pointer on a spring and swells over anything
- *  interactive, with the real cursor left visible underneath so nothing about
- *  clicking or text selection changes. Pointer-fine only: on touch this never
- *  initialises and the element is never created.
- */
-function initCursor() {
-  if (reduceMotion || !finePointer) return;
+/** Custom cursor: REMOVED on request. The page uses the system cursor. */
 
-  const ring = document.createElement('div');
-  ring.className = 'desora-cursor';
-  ring.setAttribute('aria-hidden', 'true');
-  document.body.appendChild(ring);
-
-  const x = gsap.quickTo(ring, 'x', { duration: 0.42, ease: 'power3.out' });
-  const y = gsap.quickTo(ring, 'y', { duration: 0.42, ease: 'power3.out' });
-  gsap.set(ring, { xPercent: -50, yPercent: -50 });
-
-  let shown = false;
-  window.addEventListener(
-    'pointermove',
-    (e) => {
-      if (e.pointerType !== 'mouse') return;
-      if (!shown) {
-        shown = true;
-        ring.classList.add('is-visible');
-      }
-      x(e.clientX);
-      y(e.clientY);
-    },
-    { passive: true }
-  );
-
-  // Swell over anything the visitor can act on.
-  const interactive = 'a, button, [role="button"], input, textarea, select, summary, [data-magnetic]';
-  document.addEventListener('pointerover', (e) => {
-    const el = e.target as HTMLElement;
-    if (el?.closest?.(interactive)) ring.classList.add('is-active');
-  });
-  document.addEventListener('pointerout', (e) => {
-    const el = e.target as HTMLElement;
-    if (el?.closest?.(interactive)) ring.classList.remove('is-active');
-  });
-
-  document.addEventListener('pointerdown', () => ring.classList.add('is-down'));
-  document.addEventListener('pointerup', () => ring.classList.remove('is-down'));
-  document.addEventListener('mouseleave', () => ring.classList.remove('is-visible'));
-  document.addEventListener('mouseenter', () => ring.classList.add('is-visible'));
-}
-
-/** Cards that show their subject on approach.
- *
- *  `[data-peek]` cards share one floating plate that follows the cursor and
- *  swaps its image to whichever card is hovered. One element and one texture
- *  swap for the whole grid, instead of a hidden image inside every card.
- */
-function initPeek() {
-  if (reduceMotion || !finePointer) return;
-
-  const cards = gsap.utils.toArray<HTMLElement>('[data-peek]');
-  if (!cards.length) return;
-
-  const plate = document.createElement('div');
-  plate.className = 'peek-plate';
-  plate.setAttribute('aria-hidden', 'true');
-  const img = document.createElement('img');
-  img.alt = '';
-  img.decoding = 'async';
-  plate.appendChild(img);
-  document.body.appendChild(plate);
-
-  const x = gsap.quickTo(plate, 'x', { duration: 0.55, ease: 'power3.out' });
-  const y = gsap.quickTo(plate, 'y', { duration: 0.55, ease: 'power3.out' });
-  gsap.set(plate, { xPercent: -50, yPercent: -50 });
-
-  cards.forEach((card) => {
-    const src = card.dataset.peek;
-    if (!src) return;
-
-    card.addEventListener('pointerenter', (e) => {
-      if ((e as PointerEvent).pointerType !== 'mouse') return;
-      img.src = src;
-      plate.classList.add('is-visible');
-    });
-    card.addEventListener('pointermove', (e) => {
-      x((e as PointerEvent).clientX);
-      y((e as PointerEvent).clientY);
-    });
-    card.addEventListener('pointerleave', () => plate.classList.remove('is-visible'));
-  });
-}
+/** Cursor-following image plate: REMOVED on request. Service rows now respond
+ *  with the crimson wash and the indent alone. */
 
 /** Pinned chapters.
  *
@@ -954,8 +866,6 @@ initMarquees();
 initLogoWall();
 initAmbient();
 initCurtains();
-initCursor();
-initPeek();
 initChapters();
 initWordReveal();
 
