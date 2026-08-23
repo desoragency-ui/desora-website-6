@@ -73,20 +73,23 @@ const t = useTranslations(locale);
       <a
         href={localizedPath(locale, 'contact')}
         data-magnetic="0.32"
-        class="press flex h-14 items-center rounded-full bg-accent-foreground px-8 text-base font-semibold text-accent transition-transform duration-500 [transition-timing-function:cubic-bezier(0.16,1,0.3,1)] hover:scale-[1.03]"
+        class="btn-lux btn-lux--inverse"
       >
         <span data-magnetic-label>{t('cta.discussProject')}</span>
+        <span class="btn-lux__well">
+          <Icon name="arrow-up-right" class="h-4 w-4" />
+        </span>
       </a>
       <a
         href={siteConfig.whatsappUrl}
         target="_blank"
         rel="noopener noreferrer"
         data-magnetic="0.26"
-        class="press flex h-14 items-center gap-2.5 rounded-full border border-accent-foreground/40 px-8 text-base font-semibold text-accent-foreground transition-all duration-500 [transition-timing-function:cubic-bezier(0.16,1,0.3,1)] hover:border-accent-foreground hover:bg-accent-foreground/10"
+        class="btn-lux text-accent-foreground shadow-[inset_0_0_0_1px_color-mix(in_oklab,var(--color-accent-foreground)_38%,transparent)] hover:shadow-[inset_0_0_0_1px_var(--color-accent-foreground)]"
       >
-        <span data-magnetic-label class="flex items-center gap-2.5">
-          <Icon name="whatsapp" class="h-5 w-5" />
-          {t('cta.whatsapp')}
+        <span data-magnetic-label>{t('cta.whatsapp')}</span>
+        <span class="btn-lux__well bg-[color-mix(in_oklab,var(--color-accent-foreground)_16%,transparent)]">
+          <Icon name="whatsapp" class="h-4 w-4" />
         </span>
       </a>
     </div>

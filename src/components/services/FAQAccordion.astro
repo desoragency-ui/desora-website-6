@@ -15,7 +15,7 @@ const t = useTranslations(locale);
 <section class="bg-bg-secondary py-20" data-curtain>
   <div class="mx-auto max-w-3xl px-5 sm:px-8">
     <h2 class="font-display text-2xl font-semibold text-text-primary" data-reveal="lines">{t('faq.title')}</h2>
-    <div class="mt-8 divide-y divide-border rounded-2xl border border-border bg-surface" data-faq>
+    <div class="bezel mt-8" data-faq><div class="bezel-core divide-y divide-hairline">
       {
         items.map((item) => (
           <div class="faq-item">
@@ -36,7 +36,7 @@ const t = useTranslations(locale);
           </div>
         ))
       }
-    </div>
+    </div></div>
   </div>
 </section>
 

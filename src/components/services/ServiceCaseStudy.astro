@@ -97,7 +97,7 @@ const hasBaselines = caseStudy?.metrics.every((m) => m.before && m.after) ?? fal
         </div>
 
         {caseStudy.quote && (
-          <blockquote class="mt-12 rounded-2xl border border-border bg-surface p-8" data-reveal>
+          <blockquote class="bezel bezel--interactive mt-12" data-reveal><div class="bezel-core p-8">
             <p class="font-display text-[clamp(1.15rem,2vw,1.5rem)] leading-snug text-text-primary">
               "{caseStudy.quote}"
             </p>
@@ -105,7 +105,7 @@ const hasBaselines = caseStudy?.metrics.every((m) => m.before && m.after) ?? fal
               <p class="font-semibold text-text-primary">{caseStudy.author}</p>
               <p class="text-text-secondary">{caseStudy.role}</p>
             </footer>
-          </blockquote>
+          </div></blockquote>
         )}
       </div>
     </section>

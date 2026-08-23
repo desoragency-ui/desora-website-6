@@ -23,14 +23,18 @@ const navLinks = [
 ];
 ---
 
+<!-- Floating island. A bar welded to the top edge is the most template-like
+     thing a site can do, so the header is detached from every edge and rounded
+     into a capsule: an object above the page rather than a strip stuck to it.
+     The glass and the ring intensify once the page has scrolled under it. -->
 <header
   id="site-header"
-  class="fixed inset-x-0 top-0 z-50 w-full border-b border-transparent transition-[background-color,border-color,backdrop-filter,height] duration-500 [transition-timing-function:cubic-bezier(0.16,1,0.3,1)] data-[scrolled=true]:border-hairline data-[scrolled=true]:bg-bg-primary/80 data-[scrolled=true]:backdrop-blur-xl"
+  class="pointer-events-none fixed inset-x-0 top-0 z-50 w-full px-3 pt-3 transition-[padding] duration-700 [transition-timing-function:cubic-bezier(0.32,0.72,0,1)] sm:px-5 sm:pt-5 data-[scrolled=true]:pt-2 sm:data-[scrolled=true]:pt-3"
   data-scrolled="false"
 >
   <div
     id="header-inner"
-    class="mx-auto flex h-20 w-full max-w-7xl items-center justify-between px-5 transition-[height] duration-500 [transition-timing-function:cubic-bezier(0.16,1,0.3,1)] sm:px-8 [header[data-scrolled=true]_&]:h-[68px]"
+    class="island pointer-events-auto mx-auto flex h-[4.25rem] w-full max-w-7xl items-center justify-between pe-2 ps-5 transition-[height] duration-700 [transition-timing-function:cubic-bezier(0.32,0.72,0,1)] sm:pe-3 sm:ps-7 [header[data-scrolled=true]_&]:h-[3.75rem]"
   >
     <a
       href={localizedPath(locale, '')}
@@ -99,9 +103,12 @@ const navLinks = [
       <ThemeToggle locale={locale} />
       <a
         href={localizedPath(locale, 'contact')}
-        class="cta-shine press ms-2 flex h-11 items-center rounded-full bg-accent-strong px-5 text-sm font-semibold text-accent-foreground transition-colors duration-500 hover:bg-accent-strong-hover"
+        class="btn-lux btn-lux--fill cta-shine ms-2 !h-11 !ps-5 text-sm"
       >
-        {t('nav.cta')}
+        <span>{t('nav.cta')}</span>
+        <span class="btn-lux__well !h-8 !w-8">
+          <Icon name="arrow-up-right" class="h-3.5 w-3.5" />
+        </span>
       </a>
     </div>
 
@@ -120,7 +127,10 @@ const navLinks = [
         aria-expanded="false"
         aria-controls="mobile-menu"
       >
-        <Icon name="menu" class="h-6 w-6" />
+        <span class="burger" aria-hidden="true">
+          <span></span>
+          <span></span>
+        </span>
       </button>
     </div>
   </div>
@@ -165,9 +175,12 @@ const navLinks = [
       }
       <a
         href={localizedPath(locale, 'contact')}
-        class="cta-shine press mt-6 flex h-12 items-center justify-center rounded-full bg-accent-strong px-5 text-base font-semibold text-accent-foreground"
+        class="btn-lux btn-lux--fill cta-shine mt-6 w-full justify-between"
       >
-        {t('nav.cta')}
+        <span>{t('nav.cta')}</span>
+        <span class="btn-lux__well">
+          <Icon name="arrow-up-right" class="h-4 w-4" />
+        </span>
       </a>
     </nav>
   </div>

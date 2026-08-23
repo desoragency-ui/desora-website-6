@@ -20,7 +20,7 @@ const topLevel = headings.filter((h) => h.depth <= 2);
 
 {
   topLevel.length > 0 && (
-    <nav class="sticky top-28 hidden rounded-2xl border border-border bg-surface p-6 lg:block" aria-label={t('blog.tableOfContents')}>
+    <nav class="bezel bezel--sm sticky top-28 hidden lg:block" aria-label={t('blog.tableOfContents')}><div class="bezel-core p-6">
       <p class="font-display text-sm font-semibold text-text-primary">{t('blog.tableOfContents')}</p>
       <ul class="mt-4 space-y-2.5 border-s border-border ps-4 text-sm">
         {topLevel.map((h) => (
@@ -31,6 +31,6 @@ const topLevel = headings.filter((h) => h.depth <= 2);
           </li>
         ))}
       </ul>
-    </nav>
+    </div></nav>
   )
 }

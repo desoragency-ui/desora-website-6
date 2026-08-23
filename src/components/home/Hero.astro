@@ -86,9 +86,8 @@ const tagline = [
     <div id="hero-copy" class="w-full max-w-3xl">
       <span class="sr-only">{heroAlt}</span>
 
-      <div id="hero-eyebrow" class="mb-7 flex items-center gap-4">
-        <span class="hairline w-10 shrink-0"></span>
-        <span class="overline">{eyebrow}</span>
+      <div id="hero-eyebrow" class="mb-8">
+        <span class="eyebrow">{eyebrow}</span>
       </div>
 
       <!-- `font-display` is a Tailwind utility, and utilities outrank the
@@ -112,20 +111,23 @@ const tagline = [
         <a
           href={localizedPath(locale, 'contact')}
           data-magnetic="0.3"
-          class="cta-shine press flex h-14 items-center rounded-full bg-accent-strong px-8 text-base font-semibold text-accent-foreground transition-colors duration-500 hover:bg-accent-strong-hover"
+          class="btn-lux btn-lux--fill cta-shine"
         >
           <span data-magnetic-label>{t('cta.discussProject')}</span>
+          <span class="btn-lux__well">
+            <Icon name="arrow-up-right" class="h-4 w-4" />
+          </span>
         </a>
         <a
           href={siteConfig.whatsappUrl}
           target="_blank"
           rel="noopener noreferrer"
           data-magnetic="0.24"
-          class="press group flex h-14 items-center gap-2.5 rounded-full border border-border px-8 text-base font-semibold text-text-primary transition-all duration-500 [transition-timing-function:cubic-bezier(0.16,1,0.3,1)] hover:border-accent hover:bg-accent/5 hover:text-accent"
+          class="btn-lux btn-lux--ghost"
         >
-          <span data-magnetic-label class="flex items-center gap-2.5">
-            <Icon name="whatsapp" class="h-5 w-5" />
-            {t('cta.whatsapp')}
+          <span data-magnetic-label>{t('cta.whatsapp')}</span>
+          <span class="btn-lux__well">
+            <Icon name="whatsapp" class="h-4 w-4" />
           </span>
         </a>
       </div>

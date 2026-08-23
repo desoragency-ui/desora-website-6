@@ -82,10 +82,7 @@ const title = `${study.client}, ${labels.eyebrow.toLowerCase()}`;
     <div class="rule-grid" aria-hidden="true"></div>
 
     <div class="relative mx-auto max-w-5xl px-5 sm:px-8">
-      <div class="flex items-center gap-4">
-        <span class="hairline w-10 shrink-0"></span>
-        <span class="overline">{labels.eyebrow}</span>
-      </div>
+      <div><span class="eyebrow">{labels.eyebrow}</span></div>
 
       {
         client?.ink ? (
@@ -238,7 +235,7 @@ const title = `${study.client}, ${labels.eyebrow.toLowerCase()}`;
         <a
           href={localizedPath(locale, 'contact')}
           data-magnetic="0.3"
-          class="cta-shine press flex h-14 items-center rounded-full bg-accent-strong px-8 text-base font-semibold text-accent-foreground transition-colors duration-500 hover:bg-accent-strong-hover"
+          class="btn-lux btn-lux--fill cta-shine"
         >
           <span data-magnetic-label>{labels.next}</span>
         </a>
@@ -246,7 +243,7 @@ const title = `${study.client}, ${labels.eyebrow.toLowerCase()}`;
           href={siteConfig.whatsappUrl}
           target="_blank"
           rel="noopener noreferrer"
-          class="press flex h-14 items-center gap-2.5 rounded-full border border-border px-8 text-base font-semibold text-text-primary transition-colors duration-500 hover:border-accent hover:text-accent"
+          class="btn-lux btn-lux--ghost"
         >
           <Icon name="whatsapp" class="h-5 w-5" />
           {t('cta.whatsapp')}

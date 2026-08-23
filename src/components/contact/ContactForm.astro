@@ -20,7 +20,7 @@ const t = useTranslations(locale);
       name="name"
       type="text"
       required
-      class="h-12 w-full rounded-xl border border-border bg-surface px-4 text-sm text-text-primary focus:border-accent"
+      class="h-12 w-full rounded-xl bg-[color-mix(in_oklab,var(--color-text-primary)_3%,transparent)] px-4 text-sm text-text-primary shadow-[inset_0_0_0_1px_color-mix(in_oklab,var(--color-text-primary)_11%,transparent)] outline-none transition-shadow duration-500 [transition-timing-function:cubic-bezier(0.32,0.72,0,1)] focus:shadow-[inset_0_0_0_1.5px_var(--color-accent)]"
     />
   </div>
   <div>
@@ -29,7 +29,7 @@ const t = useTranslations(locale);
       id="company"
       name="company"
       type="text"
-      class="h-12 w-full rounded-xl border border-border bg-surface px-4 text-sm text-text-primary focus:border-accent"
+      class="h-12 w-full rounded-xl bg-[color-mix(in_oklab,var(--color-text-primary)_3%,transparent)] px-4 text-sm text-text-primary shadow-[inset_0_0_0_1px_color-mix(in_oklab,var(--color-text-primary)_11%,transparent)] outline-none transition-shadow duration-500 [transition-timing-function:cubic-bezier(0.32,0.72,0,1)] focus:shadow-[inset_0_0_0_1.5px_var(--color-accent)]"
     />
   </div>
   <div>
@@ -38,7 +38,7 @@ const t = useTranslations(locale);
       id="service"
       name="service"
       required
-      class="h-12 w-full rounded-xl border border-border bg-surface px-4 text-sm text-text-primary focus:border-accent"
+      class="h-12 w-full rounded-xl bg-[color-mix(in_oklab,var(--color-text-primary)_3%,transparent)] px-4 text-sm text-text-primary shadow-[inset_0_0_0_1px_color-mix(in_oklab,var(--color-text-primary)_11%,transparent)] outline-none transition-shadow duration-500 [transition-timing-function:cubic-bezier(0.32,0.72,0,1)] focus:shadow-[inset_0_0_0_1.5px_var(--color-accent)]"
     >
       <option value="" selected disabled>{t('form.servicePlaceholder')}</option>
       {services.map((s) => <option value={s.title}>{s.title}</option>)}
@@ -51,7 +51,7 @@ const t = useTranslations(locale);
       name="message"
       rows="5"
       required
-      class="w-full rounded-xl border border-border bg-surface px-4 py-3 text-sm text-text-primary focus:border-accent"
+      class="w-full py-3 rounded-xl bg-[color-mix(in_oklab,var(--color-text-primary)_3%,transparent)] px-4 text-sm text-text-primary shadow-[inset_0_0_0_1px_color-mix(in_oklab,var(--color-text-primary)_11%,transparent)] outline-none transition-shadow duration-500 [transition-timing-function:cubic-bezier(0.32,0.72,0,1)] focus:shadow-[inset_0_0_0_1.5px_var(--color-accent)]"
     ></textarea>
   </div>
   <button

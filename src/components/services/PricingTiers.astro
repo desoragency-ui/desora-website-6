@@ -69,18 +69,19 @@ const tiers = [
         tiers.map((tier) => (
           <article
             class:list={[
-              'tier group relative flex h-full flex-col rounded-[1.75rem] p-8 sm:p-9',
+              'tier bezel group relative flex h-full flex-col',
               'transition-[transform,border-color,box-shadow] duration-500 [transition-timing-function:cubic-bezier(0.16,1,0.3,1)]',
               tier.recommended
-                ? 'tier--featured border border-gold/45 bg-surface shadow-2xl lg:-translate-y-5'
-                : 'border border-border bg-surface hover:-translate-y-1.5 hover:border-gold/40',
+                ? 'tier--featured lg:-translate-y-5 [&>.bezel-core]:shadow-[inset_0_0_0_1px_color-mix(in_oklab,var(--color-gold)_45%,transparent)]'
+                : 'bezel--interactive',
             ]}
           >
+            <div class="bezel-core flex h-full flex-col p-8 sm:p-9">
             {/* Chapter number, sitting in the corner like a plate mark. */}
             <div class="flex items-baseline justify-between gap-4">
               <span class="numeral text-3xl leading-none text-gold/70">{tier.index}</span>
               {tier.recommended && (
-                <span class="overline rounded-full border border-gold/50 px-3 py-1.5 text-gold">
+                <span class="eyebrow">
                   {t('pricing.recommended')}
                 </span>
               )}
@@ -120,16 +121,19 @@ const tiers = [
             <a
               href={localizedPath(locale, 'contact')}
               class:list={[
-                'press mt-10 flex h-[3.25rem] items-center justify-center rounded-full px-6 text-base font-semibold',
+                'btn-lux mt-10 w-full justify-between',
                 'transition-all duration-500 [transition-timing-function:cubic-bezier(0.16,1,0.3,1)]',
                 tier.recommended
                   ? 'cta-shine bg-accent-strong text-accent-foreground hover:bg-accent-strong-hover'
-                  : 'border border-border text-text-primary hover:border-accent hover:bg-accent hover:text-accent-foreground',
+                  : 'btn-lux--ghost',
               ]}
             >
-              {t('cta.discussPack')}
-              <Icon name="arrow-right" class="ms-2 h-4 w-4 rtl:rotate-180" />
+              <span>{t('cta.discussPack')}</span>
+              <span class="btn-lux__well">
+                <Icon name="arrow-right" class="h-4 w-4 rtl:rotate-180" />
+              </span>
             </a>
+            </div>
           </article>
         ))
       }

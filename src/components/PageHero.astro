@@ -41,9 +41,8 @@ const { title, subtitle, eyebrow } = Astro.props;
   <div class="relative z-10 mx-auto max-w-7xl">
     {
       eyebrow && (
-        <div class="mb-7 flex items-center gap-4">
-          <span class="hairline w-10 shrink-0" data-hairline-draw />
-          <span class="overline">{eyebrow}</span>
+        <div class="mb-8">
+          <span class="eyebrow">{eyebrow}</span>
         </div>
       )
     }

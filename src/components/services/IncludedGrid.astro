@@ -20,12 +20,12 @@ const t = useTranslations(locale);
   <div class="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3" data-reveal-group>
     {
       items.map((item) => (
-        <div class="flex min-w-0 items-center gap-4 rounded-xl border border-border bg-surface p-5 transition-colors duration-300 hover:border-gold/50">
+        <div class="bezel bezel--sm bezel--interactive min-w-0"><div class="bezel-core flex items-center gap-4 p-5">
           <span class="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg bg-bg-secondary text-accent">
             <Icon name={item.icon as any} class="h-5 w-5" />
           </span>
           <span class="text-base font-medium leading-snug text-text-primary">{item.label}</span>
-        </div>
+        </div></div>
       ))
     }
   </div>

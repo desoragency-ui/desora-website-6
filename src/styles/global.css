@@ -1009,3 +1009,305 @@ html.preloader-skip #preloader {
     display: none !important;
   }
 }
+
+/* ==========================================================================
+   THE LUXURY LAYER
+   Finish, depth and hardware. No new colours, no new typefaces, no copy
+   changes: the brand system is fixed. What changes is how surfaces are made.
+
+   The tell of a cheap interface is a flat box with a 1px grey border sitting
+   directly on the page. The tell of an expensive one is a machined enclosure:
+   a plate held inside a tray, with a hairline of light along its top edge and
+   concentric radii between shell and core. Everything below builds that.
+   ========================================================================== */
+
+@layer components {
+  /* ------------------------------------------------------------------
+     DOUBLE BEZEL
+     Outer shell (the tray) + inner core (the plate). The shell carries a
+     tinted wash and a hairline ring; the core carries its own surface and an
+     inset highlight along the top edge, which is what reads as a machined
+     bevel catching light. Radii are concentric: core radius = shell radius
+     minus shell padding, so the curves stay parallel.
+     ------------------------------------------------------------------ */
+  .bezel {
+    --bezel-pad: 0.4375rem;
+    --bezel-radius: 2rem;
+    position: relative;
+    padding: var(--bezel-pad);
+    border-radius: var(--bezel-radius);
+    background: color-mix(in oklab, var(--color-text-primary) 4%, transparent);
+    box-shadow:
+      inset 0 0 0 1px color-mix(in oklab, var(--color-text-primary) 7%, transparent),
+      0 40px 90px -50px var(--shadow-tint);
+    transition:
+      box-shadow 0.7s cubic-bezier(0.32, 0.72, 0, 1),
+      transform 0.7s cubic-bezier(0.32, 0.72, 0, 1);
+  }
+
+  .bezel-core {
+    position: relative;
+    height: 100%;
+    border-radius: calc(var(--bezel-radius) - var(--bezel-pad));
+    background: var(--color-surface);
+    box-shadow:
+      inset 0 1px 0 0 color-mix(in oklab, var(--pearl-50) 70%, transparent),
+      inset 0 0 0 1px color-mix(in oklab, var(--color-text-primary) 5%, transparent);
+    overflow: hidden;
+  }
+
+  /* In dark mode the top-edge highlight is light catching an espresso surface,
+     so it has to be much fainter or the bevel turns into a white line. */
+  html[data-theme='dark'] .bezel-core {
+    box-shadow:
+      inset 0 1px 0 0 color-mix(in oklab, var(--pearl-50) 9%, transparent),
+      inset 0 0 0 1px color-mix(in oklab, var(--pearl-50) 6%, transparent);
+  }
+
+  /* Lift on approach. The shell's ring warms toward gold rather than the whole
+     card changing colour: jewellery, not a state change. */
+  .bezel--interactive:hover,
+  .bezel--interactive:focus-within {
+    transform: translateY(-3px);
+    box-shadow:
+      inset 0 0 0 1px color-mix(in oklab, var(--color-gold) 34%, transparent),
+      0 50px 110px -46px var(--shadow-tint);
+  }
+
+  .bezel--sm {
+    --bezel-pad: 0.3125rem;
+    --bezel-radius: 1.35rem;
+  }
+  .bezel--lg {
+    --bezel-pad: 0.5rem;
+    --bezel-radius: 2.5rem;
+  }
+  /* Flush variant: the tray without the plate, for bands that already sit on a
+     tinted surface and would otherwise read as a box inside a box. */
+  .bezel--flush {
+    background: transparent;
+    box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--color-text-primary) 8%, transparent);
+  }
+
+  /* ------------------------------------------------------------------
+     ISLAND CONTROLS
+     Pills with a nested icon well. The arrow never floats naked beside the
+     label: it sits in its own circular recess flush with the pill's inner
+     padding, and moves diagonally on hover so the button has internal
+     kinetic tension rather than just a colour change.
+     ------------------------------------------------------------------ */
+  .btn-lux {
+    --btn-ease: cubic-bezier(0.32, 0.72, 0, 1);
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.875rem;
+    height: 3.5rem;
+    padding-inline: 0.5rem 0.5rem;
+    padding-inline-start: 1.75rem;
+    border-radius: 999px;
+    font-weight: 600;
+    white-space: nowrap;
+    transition:
+      transform 0.5s var(--btn-ease),
+      background-color 0.5s var(--btn-ease),
+      box-shadow 0.5s var(--btn-ease);
+  }
+  .btn-lux:active {
+    transform: scale(0.982);
+  }
+
+  .btn-lux__well {
+    display: grid;
+    place-items: center;
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 999px;
+    flex: 0 0 auto;
+    transition: transform 0.55s var(--btn-ease), background-color 0.55s var(--btn-ease);
+  }
+  .btn-lux:hover .btn-lux__well {
+    transform: translate(0.14rem, -0.09rem) scale(1.06);
+  }
+  html[dir='rtl'] .btn-lux:hover .btn-lux__well {
+    transform: translate(-0.14rem, -0.09rem) scale(1.06);
+  }
+
+  /* Filled: crimson plate, pearl label, pearl-tinted well. */
+  .btn-lux--fill {
+    background-color: var(--color-accent-strong);
+    color: var(--color-accent-foreground);
+    box-shadow:
+      inset 0 1px 0 0 color-mix(in oklab, var(--pearl-50) 22%, transparent),
+      0 18px 40px -22px color-mix(in oklab, var(--color-accent-strong) 70%, transparent);
+  }
+  .btn-lux--fill:hover {
+    background-color: var(--color-accent-strong-hover);
+  }
+  .btn-lux--fill .btn-lux__well {
+    background-color: color-mix(in oklab, var(--pearl-50) 18%, transparent);
+  }
+
+  /* Ghost: hairline ring on the page surface, warms to gold on approach. */
+  .btn-lux--ghost {
+    color: var(--color-text-primary);
+    box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--color-text-primary) 14%, transparent);
+  }
+  .btn-lux--ghost:hover {
+    box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--color-gold) 46%, transparent);
+  }
+  .btn-lux--ghost .btn-lux__well {
+    background-color: color-mix(in oklab, var(--color-text-primary) 7%, transparent);
+  }
+
+  /* Inverse: used on the crimson CTA band, where the page colours flip. */
+  .btn-lux--inverse {
+    background-color: var(--color-accent-foreground);
+    color: var(--color-accent);
+  }
+  .btn-lux--inverse .btn-lux__well {
+    background-color: color-mix(in oklab, var(--color-accent-strong) 14%, transparent);
+  }
+
+  /* ------------------------------------------------------------------
+     EYEBROW PILL
+     The overline, given a body. Small caps in a hairline capsule reads as a
+     considered label; the same text floating alone reads as a leftover.
+     ------------------------------------------------------------------ */
+  .eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.375rem 0.8125rem;
+    border-radius: 999px;
+    font-family: var(--font-body);
+    font-size: 0.625rem;
+    font-weight: 600;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--color-gold);
+    box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--color-gold) 30%, transparent);
+    background: color-mix(in oklab, var(--color-gold) 6%, transparent);
+  }
+  html[dir='rtl'] .eyebrow {
+    letter-spacing: 0.1em;
+  }
+  .eyebrow::before {
+    content: '';
+    width: 0.25rem;
+    height: 0.25rem;
+    rotate: 45deg;
+    background: currentColor;
+    flex: 0 0 auto;
+  }
+
+  /* ------------------------------------------------------------------
+     FLOATING ISLAND HEADER
+     A navigation bar welded to the top edge is the single most template-like
+     thing a site can do. Detached, inset from the edges and rounded into a
+     capsule, it reads as an object floating above the page instead.
+     ------------------------------------------------------------------ */
+  .island {
+    border-radius: 999px;
+    background: color-mix(in oklab, var(--color-bg-primary) 72%, transparent);
+    box-shadow:
+      inset 0 1px 0 0 color-mix(in oklab, var(--pearl-50) 55%, transparent),
+      inset 0 0 0 1px color-mix(in oklab, var(--color-text-primary) 8%, transparent),
+      0 24px 60px -34px var(--shadow-tint);
+    backdrop-filter: blur(22px) saturate(150%);
+    -webkit-backdrop-filter: blur(22px) saturate(150%);
+    transition:
+      background-color 0.7s cubic-bezier(0.32, 0.72, 0, 1),
+      box-shadow 0.7s cubic-bezier(0.32, 0.72, 0, 1);
+  }
+  html[data-theme='dark'] .island {
+    box-shadow:
+      inset 0 1px 0 0 color-mix(in oklab, var(--pearl-50) 8%, transparent),
+      inset 0 0 0 1px color-mix(in oklab, var(--pearl-50) 7%, transparent),
+      0 24px 60px -30px hsl(0 0% 0% / 0.6);
+  }
+
+  /* ------------------------------------------------------------------
+     HAMBURGER MORPH
+     The two rules rotate and converge into an X. A swap between two icons is
+     a state change; this is a transition, and it costs nothing.
+     ------------------------------------------------------------------ */
+  .burger {
+    position: relative;
+    width: 1.125rem;
+    height: 0.75rem;
+  }
+  .burger span {
+    position: absolute;
+    inset-inline: 0;
+    height: 1.5px;
+    border-radius: 2px;
+    background: currentColor;
+    transition: transform 0.55s cubic-bezier(0.32, 0.72, 0, 1);
+  }
+  .burger span:nth-child(1) {
+    top: 0;
+  }
+  .burger span:nth-child(2) {
+    bottom: 0;
+    /* Deliberately short: an asymmetric rest state is more designed than two
+       identical rules, and it still resolves to a symmetric X. */
+    inset-inline-end: 0.3125rem;
+  }
+  [aria-expanded='true'] .burger span:nth-child(1) {
+    transform: translateY(0.375rem) rotate(45deg);
+  }
+  [aria-expanded='true'] .burger span:nth-child(2) {
+    inset-inline-end: 0;
+    transform: translateY(-0.375rem) rotate(-45deg);
+  }
+
+  /* ------------------------------------------------------------------
+     GLOBAL FILM GRAIN
+     Fixed, pointer-events-none, painted once. Never attached to a scrolling
+     container, which would repaint the texture every frame. It is what keeps
+     large flat areas of Pearl from looking like untouched #FFF.
+     ------------------------------------------------------------------ */
+  .grain-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    opacity: 0.035;
+    background-image: var(--img-grain);
+    background-size: 160px 160px;
+    mix-blend-mode: overlay;
+  }
+  html[data-theme='dark'] .grain-overlay {
+    opacity: 0.05;
+  }
+
+  /* ------------------------------------------------------------------
+     HAIRLINE DIVIDER, refined
+     A tapered rule reads as engraved; a flat 1px grey line reads as a table
+     border. Fades to nothing at both ends.
+     ------------------------------------------------------------------ */
+  .rule-fade {
+    height: 1px;
+    border: 0;
+    background: linear-gradient(
+      to right,
+      transparent,
+      color-mix(in oklab, var(--color-gold) 42%, transparent) 18%,
+      color-mix(in oklab, var(--color-gold) 42%, transparent) 82%,
+      transparent
+    );
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bezel,
+  .bezel--interactive:hover,
+  .btn-lux,
+  .btn-lux__well,
+  .burger span,
+  .island {
+    transition: none;
+    transform: none;
+  }
+}

@@ -76,8 +76,9 @@ const t = useTranslations(locale);
       items.map((item) => (
         <blockquote
           data-tilt="3"
-          class="group relative flex w-[min(30rem,86vw)] shrink-0 snap-start flex-col justify-between overflow-hidden rounded-2xl border border-hairline bg-surface p-8 transition-colors duration-500 hover:border-accent/40 sm:p-10"
+          class="bezel bezel--interactive group relative flex w-[min(30rem,86vw)] shrink-0 snap-start flex-col"
         >
+          <div class="bezel-core flex flex-1 flex-col justify-between p-8 sm:p-10">
           <Icon
             name="quote"
             class="pointer-events-none absolute end-6 top-6 h-14 w-14 text-gold/15 transition-colors duration-500 group-hover:text-gold/30"
@@ -92,6 +93,7 @@ const t = useTranslations(locale);
               <span class="block text-text-secondary">{item.role}</span>
             </span>
           </footer>
+          </div>
         </blockquote>
       ))
     }

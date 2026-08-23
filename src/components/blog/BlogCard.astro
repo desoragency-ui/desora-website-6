@@ -20,9 +20,9 @@ const readingMinutes = estimateReadingMinutes(entry.body ?? '');
 
 <a
   href={localizedPath(locale, `blog/${slug}`)}
-  class="group flex flex-col overflow-hidden rounded-2xl border border-border bg-surface transition-all duration-300 hover:-translate-y-1 hover:border-accent hover:shadow-lg"
+  class="bezel bezel--sm bezel--interactive group flex flex-col"
   data-category={entry.data.category}
->
+><div class="bezel-core">
   <div class="flex aspect-[16/9] items-center justify-center bg-gradient-to-br from-accent/15 via-bg-secondary to-[color:var(--sand-400)]/15">
     <Icon name={category.icon as any} class="h-10 w-10 text-accent/70" />
   </div>
@@ -34,4 +34,4 @@ const readingMinutes = estimateReadingMinutes(entry.body ?? '');
     <p class="mt-2 flex-1 text-sm leading-relaxed text-text-secondary">{entry.data.excerpt}</p>
     <span class="mt-5 text-xs font-medium text-text-secondary">{t('blog.readingTime', { min: String(readingMinutes) })}</span>
   </div>
-</a>
+</div></a>

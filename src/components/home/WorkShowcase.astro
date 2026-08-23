@@ -98,8 +98,9 @@ const caseLabel =
           <article
             data-hscroll-panel
             data-tilt="3"
-            class="group relative flex w-[86vw] max-w-[34rem] flex-col overflow-hidden rounded-3xl border border-hairline bg-surface shadow-[0_30px_80px_-40px_var(--shadow-tint)] sm:w-[62vw] lg:h-full lg:max-h-[40rem] lg:w-[38rem] lg:max-w-none"
+            class="bezel bezel--interactive group relative flex w-[86vw] max-w-[34rem] flex-col sm:w-[62vw] lg:h-full lg:max-h-[40rem] lg:w-[38rem] lg:max-w-none"
           >
+            <div class="bezel-core flex flex-1 flex-col">
             <div class="relative aspect-[16/10] shrink-0 overflow-hidden bg-bg-secondary lg:aspect-auto lg:min-h-[9rem] lg:flex-1 lg:shrink">
               {item.image ? (
                 <Image
@@ -175,6 +176,7 @@ const caseLabel =
                   <Icon name="arrow-right" class="h-4 w-4 rtl:rotate-180" />
                 </a>
               </div>
+            </div>
             </div>
           </article>
         ))

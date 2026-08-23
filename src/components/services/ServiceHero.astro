@@ -56,7 +56,7 @@ const image = getServiceMedia(slug);
       <div class="mt-9 flex flex-wrap items-center gap-4">
         <a
           href={localizedPath(locale, 'contact')}
-          class="cta-shine press flex h-13 items-center rounded-full bg-accent-strong px-7 text-base font-semibold text-accent-foreground transition-colors duration-500 hover:bg-accent-strong-hover"
+          class="btn-lux btn-lux--fill cta-shine"
         >
           {t('cta.discussProject')}
         </a>
@@ -64,7 +64,7 @@ const image = getServiceMedia(slug);
           href={siteConfig.whatsappUrl}
           target="_blank"
           rel="noopener noreferrer"
-          class="press flex h-13 items-center gap-2 rounded-full border border-border px-7 text-base font-semibold text-text-primary transition-all duration-500 [transition-timing-function:cubic-bezier(0.16,1,0.3,1)] hover:border-accent hover:bg-accent/5 hover:text-accent"
+          class="btn-lux btn-lux--ghost"
         >
           <Icon name="whatsapp" class="h-5 w-5" />
           {t('cta.whatsapp')}

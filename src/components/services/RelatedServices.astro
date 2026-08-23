@@ -24,8 +24,8 @@ const related = allServices.filter((s) => slugs.includes(s.slug));
           <a
             href={localizedPath(locale, `services/${service.slug}`)}
             data-tilt="2"
-            class="group flex items-center justify-between gap-4 rounded-2xl border border-border bg-surface p-6 transition-colors hover:border-accent"
-          >
+            class="bezel bezel--sm bezel--interactive group block"
+          ><div class="bezel-core flex items-center justify-between gap-4 p-6">
             <div class="flex items-center gap-4">
               <span class="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-bg-secondary text-accent">
                 <Icon name={service.icon as any} class="h-5 w-5" />
@@ -36,7 +36,7 @@ const related = allServices.filter((s) => slugs.includes(s.slug));
               </div>
             </div>
             <Icon name="arrow-right" class="h-4.5 w-4.5 shrink-0 text-text-secondary transition-colors group-hover:text-accent rtl:rotate-180" />
-          </a>
+          </div></a>
         ))}
       </div>
     </section>
