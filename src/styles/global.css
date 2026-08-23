@@ -630,7 +630,6 @@ html.preloader-skip #preloader {
   [data-hscroll-track] {
     display: flex;
     gap: clamp(1rem, 2.5vw, 2rem);
-    will-change: transform;
   }
 
   [data-hscroll][data-hscroll-mode="native"] [data-hscroll-track] {
@@ -651,7 +650,6 @@ html.preloader-skip #preloader {
 
   [data-hscroll-panel] {
     flex: 0 0 auto;
-    will-change: transform, opacity;
   }
 
   /* --- Line-mask reveal --------------------------------------------------
@@ -660,7 +658,6 @@ html.preloader-skip #preloader {
      height" rather than an inline box's. */
   .mask-line {
     display: block;
-    will-change: transform, opacity;
   }
 
   /* --- Specular tilt -----------------------------------------------------
@@ -698,23 +695,42 @@ html.preloader-skip #preloader {
     pointer-events: none;
     isolation: isolate;
   }
+  /* No blur filter. A radial-gradient already falls off softly, so stacking a
+     blur(120px) on a ~780px layer bought almost nothing visually and cost a
+     full-size gaussian pass every frame the plate moved. The extra colour stops
+     below reproduce the gaussian falloff for free. This was the single most
+     expensive thing on the page. */
   .ambient-plate {
     position: absolute;
     border-radius: 50%;
-    filter: blur(clamp(48px, 9vw, 120px));
-    will-change: transform;
   }
   .ambient-plate--crimson {
-    background: radial-gradient(circle, var(--color-accent-strong), transparent 68%);
-    opacity: 0.3;
+    background: radial-gradient(
+      circle closest-side,
+      color-mix(in oklab, var(--color-accent-strong) 85%, transparent) 0%,
+      color-mix(in oklab, var(--color-accent-strong) 42%, transparent) 34%,
+      color-mix(in oklab, var(--color-accent-strong) 12%, transparent) 60%,
+      transparent 80%
+    );
+    opacity: 0.34;
   }
   .ambient-plate--sand {
-    background: radial-gradient(circle, var(--sand-500), transparent 68%);
-    opacity: 0.22;
+    background: radial-gradient(
+      circle closest-side,
+      color-mix(in oklab, var(--sand-500) 80%, transparent) 0%,
+      color-mix(in oklab, var(--sand-500) 38%, transparent) 36%,
+      transparent 78%
+    );
+    opacity: 0.26;
   }
   .ambient-plate--gold {
-    background: radial-gradient(circle, var(--color-gold), transparent 66%);
-    opacity: 0.16;
+    background: radial-gradient(
+      circle closest-side,
+      color-mix(in oklab, var(--color-gold) 70%, transparent) 0%,
+      color-mix(in oklab, var(--color-gold) 30%, transparent) 38%,
+      transparent 78%
+    );
+    opacity: 0.2;
   }
   html[data-theme="dark"] .ambient-plate--crimson {
     opacity: 0.42;
@@ -756,7 +772,6 @@ html.preloader-skip #preloader {
     place-items: center;
     aspect-ratio: 5 / 2;
     padding: clamp(0.75rem, 2vw, 1.25rem);
-    will-change: transform, opacity;
   }
 
   .logo-ink,
@@ -879,7 +894,9 @@ html.preloader-skip #preloader {
     border-radius: 50%;
     opacity: 0;
     pointer-events: none;
-    mix-blend-mode: difference;
+    /* No blend mode. `difference` on a fixed element that follows the pointer
+       forces the browser to recomposite the viewport on every mouse move. The
+       ring reads fine as plain gold. */
     transition:
       width 0.4s cubic-bezier(0.16, 1, 0.3, 1),
       height 0.4s cubic-bezier(0.16, 1, 0.3, 1),
@@ -971,20 +988,17 @@ html.preloader-skip #preloader {
   /* --- Word reveal -------------------------------------------------------
      Words brighten in sequence, tied to scroll position. */
   .reveal-word {
-    will-change: opacity;
+    /* no will-change: the tween is opacity-only and already composited */
   }
 
   /* --- Skew scope --------------------------------------------------------
      The skewed element needs its own compositing layer, or the sub-pixel
      shear crawls on text during the spring back. */
-  [data-skew] {
-    will-change: transform;
-    backface-visibility: hidden;
-  }
+  /* data-skew is inert since the velocity skew was removed for performance. */
 
   /* --- Curtain bands ----------------------------------------------------- */
   [data-curtain] {
-    will-change: clip-path, transform;
+    contain: paint;
   }
 }
 
@@ -1214,8 +1228,8 @@ html.preloader-skip #preloader {
       inset 0 1px 0 0 color-mix(in oklab, var(--pearl-50) 55%, transparent),
       inset 0 0 0 1px color-mix(in oklab, var(--color-text-primary) 8%, transparent),
       0 24px 60px -34px var(--shadow-tint);
-    backdrop-filter: blur(22px) saturate(150%);
-    -webkit-backdrop-filter: blur(22px) saturate(150%);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
     transition:
       background-color 0.7s cubic-bezier(0.32, 0.72, 0, 1),
       box-shadow 0.7s cubic-bezier(0.32, 0.72, 0, 1);
@@ -1273,10 +1287,9 @@ html.preloader-skip #preloader {
     inset: 0;
     z-index: 1;
     pointer-events: none;
-    opacity: 0.035;
+    opacity: 0.03;
     background-image: var(--img-grain);
     background-size: 160px 160px;
-    mix-blend-mode: overlay;
   }
   html[data-theme='dark'] .grain-overlay {
     opacity: 0.05;

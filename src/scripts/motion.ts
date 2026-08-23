@@ -16,16 +16,23 @@ gsap.registerEase('desora', (p) => gsap.parseEase('power3.out')(p));
 export let lenis: Lenis | undefined;
 
 if (!reduceMotion) {
-  // lerp 0.075 = a touch of weight in the scroll, like a heavy door on good
-  // hinges. wheelMultiplier just under 1 stops a flick of the wheel from
-  // firing the page down a screen and a half. syncTouch carries the same
-  // easing to touch devices instead of handing them the native jerk.
+  // Scroll feel, retuned. The old values (lerp 0.075, wheelMultiplier 0.92)
+  // were chosen for "weight" and landed on "wading": the viewport took roughly
+  // half a second to catch up to the wheel, and each tick travelled LESS than a
+  // native scroll would. That reads as lag, not luxury.
+  //
+  // lerp 0.2 still smooths the step between wheel notches but tracks the input
+  // closely enough to feel direct. wheelMultiplier slightly above 1 means a
+  // flick now covers more ground than native, not less.
+  //
+  // syncTouch is off: on a phone the native momentum scroller is hardware
+  // driven and always beats a JS rAF loop. Hijacking it was pure cost.
   lenis = new Lenis({
     autoRaf: false,
-    lerp: 0.075,
-    wheelMultiplier: 0.92,
-    syncTouch: true,
-    syncTouchLerp: 0.09,
+    lerp: 0.2,
+    wheelMultiplier: 1.08,
+    touchMultiplier: 1.6,
+    syncTouch: false,
   });
   lenis.on('scroll', ScrollTrigger.update);
   gsap.ticker.add((time) => {
@@ -676,7 +683,7 @@ function initAmbient() {
 
   gsap.utils.toArray<HTMLElement>('[data-ambient]').forEach((el, i) => {
     const drift = parseFloat(el.dataset.ambient || '18');
-    gsap.to(el, {
+    const tween = gsap.to(el, {
       xPercent: drift,
       yPercent: drift * -0.55,
       scale: 1.12,
@@ -684,6 +691,17 @@ function initAmbient() {
       ease: 'sine.inOut',
       repeat: -1,
       yoyo: true,
+      paused: true,
+    });
+
+    // Only animate while the plate is actually on screen. An infinite tween on
+    // a large composited layer otherwise keeps the compositor busy for the
+    // entire session, including for the eight plates below the fold.
+    ScrollTrigger.create({
+      trigger: el.closest('section') ?? el,
+      start: 'top bottom',
+      end: 'bottom top',
+      onToggle: (self) => (self.isActive ? tween.play() : tween.pause()),
     });
   });
 }
@@ -695,33 +713,14 @@ function initAmbient() {
    transform / opacity / clip only, still entirely behind prefers-reduced-motion.
    ========================================================================== */
 
-/** The page leans into the scroll.
+/** Scroll-velocity skew: REMOVED.
  *
- *  Content skews a fraction of a degree in proportion to scroll velocity and
- *  springs back the instant the wheel stops. It is far too small to notice as
- *  an effect and impossible to miss as a feeling: the page gains mass. Capped
- *  hard, because past about 2.5 degrees it stops reading as weight and starts
- *  reading as a broken transform.
+ *  It shear-transformed large blocks of type in proportion to scroll speed.
+ *  A skew on text cannot be served from the existing raster, so every frame of
+ *  every scroll re-rasterized the whole block. It was a subtle effect with a
+ *  very unsubtle cost, and it was a direct contributor to scrolling feeling
+ *  heavy. `data-skew` is now inert and left in the markup harmlessly.
  */
-function initVelocitySkew() {
-  if (reduceMotion || !finePointer) return;
-
-  const targets = gsap.utils.toArray<HTMLElement>('[data-skew]');
-  if (!targets.length) return;
-
-  const setters = targets.map((el) => gsap.quickTo(el, 'skewY', { duration: 0.55, ease: 'power3.out' }));
-  let raf = 0;
-
-  ScrollTrigger.create({
-    onUpdate: (self) => {
-      const skew = gsap.utils.clamp(-2.5, 2.5, self.getVelocity() / -420);
-      cancelAnimationFrame(raf);
-      setters.forEach((set) => set(skew));
-      // Spring back even if no further scroll event arrives.
-      raf = requestAnimationFrame(() => setters.forEach((set) => set(0)));
-    },
-  });
-}
 
 /** Bands arrive from under the band above them.
  *
@@ -954,7 +953,6 @@ initTilt();
 initMarquees();
 initLogoWall();
 initAmbient();
-initVelocitySkew();
 initCurtains();
 initCursor();
 initPeek();
