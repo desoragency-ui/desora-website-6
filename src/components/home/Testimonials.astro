@@ -63,7 +63,7 @@ const t = useTranslations(locale);
 
     <!-- Progress hairline. Reflects real scroll position in the rail. -->
     <div class="mt-8 h-px w-full bg-hairline" aria-hidden="true">
-      <div id="testimonials-progress" class="h-px w-0 origin-left bg-accent transition-[width] duration-300 rtl:origin-right"></div>
+      <div id="testimonials-progress" class="h-px w-full origin-left scale-x-0 bg-accent transition-transform duration-300 [transition-timing-function:cubic-bezier(0.16,1,0.3,1)] rtl:origin-right"></div>
     </div>
   </div>
 
@@ -127,7 +127,8 @@ const t = useTranslations(locale);
     const max = track.scrollWidth - track.clientWidth;
     const pos = Math.abs(track.scrollLeft);
     const ratio = max > 0 ? Math.min(1, pos / max) : 0;
-    if (progress) progress.style.width = `${Math.max(4, ratio * 100)}%`;
+    // scaleX, not width: width relayouts the bar on every scroll frame.
+    if (progress) progress.style.transform = `scaleX(${Math.max(0.04, ratio)})`;
     if (indexEl) {
       const i = Math.min(cards.length, Math.round(ratio * (cards.length - 1)) + 1);
       indexEl.textContent = String(i).padStart(2, '0');

@@ -99,7 +99,7 @@ const dir = locale === 'ar' ? 'rtl' : 'ltr';
           <span id="quiz-step-title" class="text-sm text-text-secondary"></span>
         </div>
         <div class="h-px w-full bg-hairline">
-          <div id="quiz-progress" class="h-px w-0 bg-accent transition-[width] duration-700 [transition-timing-function:cubic-bezier(0.16,1,0.3,1)]"></div>
+          <div id="quiz-progress" class="h-px w-full origin-left scale-x-0 bg-accent transition-transform duration-700 [transition-timing-function:cubic-bezier(0.16,1,0.3,1)] rtl:origin-right"></div>
         </div>
       </div>
 
@@ -172,12 +172,14 @@ const dir = locale === 'ar' ? 'rtl' : 'ltr';
                             class="sr-only"
                           />
                           <span class="quiz-opt-box">
-                            {opt.preview && <span class={`quiz-prev quiz-prev--${opt.preview}`} aria-hidden="true" />}
-                            <span class="quiz-opt-text">
-                              <span class="quiz-opt-label">{t(opt.label)}</span>
-                              {opt.hint && <span class="quiz-opt-hint">{t(opt.hint)}</span>}
+                            <span class="quiz-opt-core">
+                              {opt.preview && <span class={`quiz-prev quiz-prev--${opt.preview}`} aria-hidden="true" />}
+                              <span class="quiz-opt-text">
+                                <span class="quiz-opt-label">{t(opt.label)}</span>
+                                {opt.hint && <span class="quiz-opt-hint">{t(opt.hint)}</span>}
+                              </span>
+                              <span class="quiz-tick" aria-hidden="true" />
                             </span>
-                            <span class="quiz-tick" aria-hidden="true" />
                           </span>
                         </label>
                       ))}
@@ -363,7 +365,8 @@ const dir = locale === 'ar' ? 'rtl' : 'ltr';
 
       stepN.textContent = String(i + 1);
       stepTitle.textContent = steps[i].getAttribute('data-title') || '';
-      progress.style.width = ((i + 1) / steps.length) * 100 + '%';
+      // scaleX, not width: a width transition relayouts the bar every frame.
+      progress.style.transform = 'scaleX(' + (i + 1) / steps.length + ')';
       backBtn.style.visibility = i === 0 ? 'hidden' : 'visible';
       nextLabelEl.textContent = i === steps.length - 1 ? submitLabel : nextLabel;
 
@@ -534,10 +537,12 @@ const dir = locale === 'ar' ? 'rtl' : 'ltr';
   /* Inputs: a nested well, matching the control language used site-wide. */
   .quiz-input {
     width: 100%;
-    border-radius: 1rem;
+    border-radius: 0.95rem;
     border: 0;
     background: var(--color-surface);
-    box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--color-text-primary) 12%, transparent);
+    box-shadow:
+      inset 0 1px 0 0 color-mix(in oklab, var(--pearl-50) 60%, transparent),
+      inset 0 0 0 1px color-mix(in oklab, var(--color-text-primary) 11%, transparent);
     padding: 1rem 1.15rem;
     font: inherit;
     font-size: 1rem;
@@ -553,24 +558,54 @@ const dir = locale === 'ar' ? 'rtl' : 'ltr';
 
   /* Options */
   .quiz-opt { display: block; cursor: pointer; }
+
+  /* Double bezel: an outer tray holding an inner plate, the same construction
+     as .bezel site-wide. Radii are concentric (core = shell minus padding) so
+     the curves stay parallel, which is the whole tell of the technique. */
   .quiz-opt-box {
+    --shell-pad: 0.3125rem;
+    --shell-radius: 1.15rem;
+    display: block;
+    height: 100%;
+    padding: var(--shell-pad);
+    border-radius: var(--shell-radius);
+    background: color-mix(in oklab, var(--color-text-primary) 3.5%, transparent);
+    box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--color-text-primary) 6%, transparent);
+    transition:
+      box-shadow 0.45s cubic-bezier(0.32, 0.72, 0, 1),
+      transform 0.45s cubic-bezier(0.32, 0.72, 0, 1);
+  }
+
+  .quiz-opt-core {
     display: flex;
     align-items: center;
     gap: 0.9rem;
     height: 100%;
-    border-radius: 1rem;
+    padding: 0.85rem 1rem;
+    border-radius: calc(var(--shell-radius) - var(--shell-pad));
     background: var(--color-surface);
-    box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--color-text-primary) 10%, transparent);
-    padding: 1rem 1.15rem;
-    transition:
-      box-shadow 0.45s cubic-bezier(0.16, 1, 0.3, 1),
-      transform 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+    box-shadow:
+      inset 0 1px 0 0 color-mix(in oklab, var(--pearl-50) 65%, transparent),
+      inset 0 0 0 1px color-mix(in oklab, var(--color-text-primary) 5%, transparent);
+    transition: background-color 0.45s cubic-bezier(0.32, 0.72, 0, 1);
   }
+  :global(html[data-theme='dark']) .quiz-opt-core {
+    box-shadow:
+      inset 0 1px 0 0 color-mix(in oklab, var(--pearl-50) 8%, transparent),
+      inset 0 0 0 1px color-mix(in oklab, var(--pearl-50) 6%, transparent);
+  }
+
   .quiz-opt:hover .quiz-opt-box { transform: translateY(-2px); }
-  .quiz-opt input:focus-visible + .quiz-opt-box { outline: 2px solid var(--color-accent); outline-offset: 2px; }
+  .quiz-opt input:focus-visible + .quiz-opt-box { outline: 2px solid var(--color-accent); outline-offset: 3px; }
+
+  /* Selected: the tray's ring warms to crimson and the plate takes a wash. The
+     ring lives on the shell, so the highlight reads as the frame responding
+     rather than the whole card changing colour. */
   .quiz-opt input:checked + .quiz-opt-box {
     box-shadow: inset 0 0 0 1.5px var(--color-accent);
-    background: color-mix(in oklab, var(--color-accent) 6%, var(--color-surface));
+  }
+  .quiz-opt input:checked + .quiz-opt-box .quiz-opt-core {
+    background: color-mix(in oklab, var(--color-accent) 7%, var(--color-surface));
   }
 
   .quiz-opt-text { display: flex; flex-direction: column; gap: 0.15rem; flex: 1; min-width: 0; }
@@ -594,10 +629,10 @@ const dir = locale === 'ar' ? 'rtl' : 'ltr';
     transform: scale(0);
     transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
   }
-  .quiz-opt input:checked + .quiz-opt-box .quiz-tick {
+  .quiz-opt input:checked + .quiz-opt-box .quiz-opt-core .quiz-tick {
     box-shadow: inset 0 0 0 1.5px var(--color-accent);
   }
-  .quiz-opt input:checked + .quiz-opt-box .quiz-tick::after { transform: scale(1); }
+  .quiz-opt input:checked + .quiz-opt-box .quiz-opt-core .quiz-tick::after { transform: scale(1); }
 
   /* CSS sample tiles. No screenshots to ship, and they follow the theme. */
   .quiz-prev {
@@ -693,6 +728,6 @@ const dir = locale === 'ar' ? 'rtl' : 'ltr';
   @media (prefers-reduced-motion: reduce) {
     .quiz-panel.is-active,
     .quiz-step.is-active { animation: none; }
-    .quiz-opt-box, .quiz-input, .quiz-tick, .quiz-tick::after, .quiz-drop { transition: none; }
+    .quiz-opt-box, .quiz-opt-core, .quiz-input, .quiz-tick, .quiz-tick::after, .quiz-drop { transition: none; }
   }
 </style>
