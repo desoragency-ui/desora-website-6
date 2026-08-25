@@ -1,0 +1,698 @@
+---
+import Icon from '../Icon.astro';
+import BrandPattern from '../BrandPattern.astro';
+import QuizDone from './QuizDone.astro';
+import { quizSteps, quizUi } from '../../lib/quiz';
+import { siteConfig } from '../../lib/site-config';
+import { localizedPath } from '../../i18n/utils';
+import { locales, localeNames, type Locale } from '../../i18n/config';
+
+/**
+ * The project brief quiz.
+ *
+ * One step per screen, because thirteen short screens on a phone beat one long
+ * form every time: the visitor always sees a single decision and a progress
+ * bar that is visibly moving. All steps are rendered server-side and toggled
+ * with a class, so there is no client framework and the whole thing works from
+ * one small script.
+ *
+ * Conditional questions (`showIf`) are evaluated on every answer change rather
+ * than only on step entry, so ticking "Contact form" reveals the field-picker
+ * immediately underneath it instead of on the next screen.
+ *
+ * Answers post to a Google Apps Script Web App, which owns the spreadsheet and
+ * the WhatsApp notification. That keeps every credential inside the client's
+ * own Google account: nothing secret is ever shipped in this bundle.
+ */
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const t = <T extends Record<Locale, string>>(o: T) => o[locale];
+const dir = locale === 'ar' ? 'rtl' : 'ltr';
+---
+
+<section class="relative min-h-[100svh] overflow-hidden pb-24 pt-28 sm:pt-32">
+  <BrandPattern opacity={0.014} />
+  <div class="ambient-field" aria-hidden="true">
+    <div class="ambient-plate ambient-plate--crimson -start-[18vw] top-[4vh] h-[46vw] w-[46vw]"></div>
+    <div class="ambient-plate ambient-plate--gold -end-[14vw] bottom-[8vh] h-[34vw] w-[34vw]"></div>
+  </div>
+
+  <div class="relative mx-auto w-full max-w-3xl px-5 sm:px-8">
+    <!-- Language: the quiz carries its own switcher. Someone can arrive from a
+         French page and still answer more comfortably in Arabic. -->
+    <div class="mb-10 flex items-center justify-between gap-4">
+      <a
+        href={localizedPath(locale, '')}
+        class="inline-flex items-center gap-2 text-sm text-text-secondary transition-colors duration-500 hover:text-accent"
+      >
+        <Icon name="arrow-right" class="h-4 w-4 rotate-180 rtl:rotate-0" />
+        DESORA
+      </a>
+      <div class="flex items-center gap-1" role="group" aria-label="Language">
+        {
+          locales.map((l) => (
+            <a
+              href={`/${l}/brief`}
+              class:list={[
+                'rounded-full px-3 py-1.5 text-xs font-semibold transition-colors duration-500',
+                l === locale
+                  ? 'bg-accent-strong text-accent-foreground'
+                  : 'text-text-secondary hover:text-accent',
+              ]}
+              aria-current={l === locale ? 'true' : undefined}
+            >
+              {localeNames[l]}
+            </a>
+          ))
+        }
+      </div>
+    </div>
+
+    <!-- Intro ------------------------------------------------------------ -->
+    <div id="quiz-intro" class="quiz-panel is-active">
+      <span class="eyebrow">{t(quizUi.eyebrow)}</span>
+      <h1
+        class="mt-7 font-display text-[clamp(2.2rem,5.5vw,3.4rem)] font-semibold leading-[1.06] text-text-primary rtl:font-arabic-display rtl:leading-[1.35]"
+      >
+        {t(quizUi.title)}
+      </h1>
+      <p class="mt-6 max-w-xl text-lg leading-relaxed text-text-secondary">{t(quizUi.intro)}</p>
+      <button type="button" id="quiz-start" class="btn-lux btn-lux--fill cta-shine mt-10">
+        <span>{t(quizUi.start)}</span>
+        <span class="btn-lux__well"><Icon name="arrow-right" class="h-4 w-4 rtl:rotate-180" /></span>
+      </button>
+    </div>
+
+    <!-- Steps ------------------------------------------------------------ -->
+    <form id="quiz-form" novalidate>
+      <!-- Progress -->
+      <div id="quiz-progress-wrap" class="mb-10 hidden">
+        <div class="mb-3 flex items-baseline justify-between">
+          <span class="overline">
+            {t(quizUi.step)} <span id="quiz-step-n" class="numeral">1</span>
+            <span class="mx-1 text-gold">/</span>
+            <span class="numeral">{quizSteps.length}</span>
+          </span>
+          <span id="quiz-step-title" class="text-sm text-text-secondary"></span>
+        </div>
+        <div class="h-px w-full bg-hairline">
+          <div id="quiz-progress" class="h-px w-0 bg-accent transition-[width] duration-700 [transition-timing-function:cubic-bezier(0.16,1,0.3,1)]"></div>
+        </div>
+      </div>
+
+      {
+        quizSteps.map((step, si) => (
+          <fieldset class="quiz-panel quiz-step" data-step={si} data-title={t(step.title)}>
+            <legend class="sr-only">{t(step.title)}</legend>
+
+            {step.questions.map((q) => (
+              <div
+                class="quiz-q"
+                data-qid={q.id}
+                data-required={q.required ? 'true' : 'false'}
+                data-type={q.type}
+                data-show-if={q.showIf ? `${q.showIf.id}:${q.showIf.equals}` : undefined}
+              >
+                <h2 class="font-display text-[clamp(1.4rem,3.4vw,2.1rem)] font-semibold leading-[1.18] text-text-primary rtl:font-arabic-display rtl:leading-[1.5]">
+                  {t(q.label)}
+                </h2>
+                {q.help && <p class="mt-2.5 text-sm leading-relaxed text-text-secondary">{t(q.help)}</p>}
+
+                <div class="mt-6">
+                  {/* Free text --------------------------------------------- */}
+                  {q.type === 'text' && (
+                    <input
+                      type="text"
+                      name={q.id}
+                      class="quiz-input"
+                      placeholder={q.placeholder ? t(q.placeholder) : undefined}
+                      autocomplete="off"
+                    />
+                  )}
+                  {q.type === 'tel' && (
+                    <input
+                      type="tel"
+                      name={q.id}
+                      class="quiz-input"
+                      placeholder={q.placeholder ? t(q.placeholder) : undefined}
+                      inputmode="tel"
+                      autocomplete="tel"
+                    />
+                  )}
+                  {q.type === 'textarea' && (
+                    <textarea
+                      name={q.id}
+                      rows="3"
+                      class="quiz-input"
+                      placeholder={q.placeholder ? t(q.placeholder) : undefined}
+                    />
+                  )}
+
+                  {/* Choice ------------------------------------------------ */}
+                  {(q.type === 'single' || q.type === 'yesno' || q.type === 'multi') && (
+                    <div
+                      class:list={[
+                        'grid gap-3',
+                        q.options?.some((o) => o.preview)
+                          ? 'sm:grid-cols-2 lg:grid-cols-3'
+                          : q.type === 'yesno'
+                            ? 'sm:grid-cols-2'
+                            : 'sm:grid-cols-2',
+                      ]}
+                    >
+                      {q.options?.map((opt) => (
+                        <label class="quiz-opt">
+                          <input
+                            type={q.type === 'multi' ? 'checkbox' : 'radio'}
+                            name={q.id}
+                            value={opt.value}
+                            class="sr-only"
+                          />
+                          <span class="quiz-opt-box">
+                            {opt.preview && <span class={`quiz-prev quiz-prev--${opt.preview}`} aria-hidden="true" />}
+                            <span class="quiz-opt-text">
+                              <span class="quiz-opt-label">{t(opt.label)}</span>
+                              {opt.hint && <span class="quiz-opt-hint">{t(opt.hint)}</span>}
+                            </span>
+                            <span class="quiz-tick" aria-hidden="true" />
+                          </span>
+                        </label>
+                      ))}
+                    </div>
+                  )}
+
+                  {/* File -------------------------------------------------- */}
+                  {q.type === 'file' && (
+                    <div class="quiz-file" data-file>
+                      <label class="quiz-drop">
+                        <input
+                          type="file"
+                          name={q.id}
+                          class="sr-only"
+                          accept={q.accept}
+                          multiple={q.multiple}
+                        />
+                        <Icon name="arrow-up-right" class="h-5 w-5 text-gold" />
+                        <span class="quiz-drop-text">
+                          <b>{t(quizUi.chooseFile)}</b>
+                          <span>{t(quizUi.dropHere)}</span>
+                        </span>
+                      </label>
+                      <ul class="quiz-files" data-file-list></ul>
+                      {q.deferrable && (
+                        <label class="quiz-defer">
+                          <input type="checkbox" name={`${q.id}__defer`} />
+                          <span>{t(quizUi.deferLabel)}</span>
+                        </label>
+                      )}
+                    </div>
+                  )}
+                </div>
+
+                <p class="quiz-error" hidden>{t(quizUi.required)}</p>
+              </div>
+            ))}
+          </fieldset>
+        ))
+      }
+
+      <!-- Controls -->
+      <div id="quiz-controls" class="mt-12 hidden items-center gap-3">
+        <button type="button" id="quiz-back" class="btn-lux btn-lux--ghost">
+          <span class="btn-lux__well"><Icon name="arrow-right" class="h-4 w-4 rotate-180 rtl:rotate-0" /></span>
+          <span class="pe-5 ps-0">{t(quizUi.back)}</span>
+        </button>
+        <button type="button" id="quiz-next" class="btn-lux btn-lux--fill cta-shine">
+          <span id="quiz-next-label">{t(quizUi.next)}</span>
+          <span class="btn-lux__well"><Icon name="arrow-right" class="h-4 w-4 rtl:rotate-180" /></span>
+        </button>
+      </div>
+    </form>
+
+    <!-- Done: the wax-seal moment (QuizDone.astro) ---------------------- -->
+    <div id="quiz-done" class="quiz-panel">
+      <QuizDone locale={locale} />
+    </div>
+
+    <!-- Error ------------------------------------------------------------ -->
+    <div id="quiz-fail" class="quiz-panel">
+      <h1 class="font-display text-[clamp(1.8rem,4.5vw,2.6rem)] font-semibold leading-[1.1] text-text-primary rtl:font-arabic-display">
+        {t(quizUi.errorTitle)}
+      </h1>
+      <p class="mt-5 max-w-lg text-lg leading-relaxed text-text-secondary">{t(quizUi.errorBody)}</p>
+      <div class="mt-9 flex flex-wrap gap-3">
+        <button type="button" id="quiz-retry" class="btn-lux btn-lux--fill">
+          <span>{t(quizUi.retry)}</span>
+          <span class="btn-lux__well"><Icon name="arrow-right" class="h-4 w-4 rtl:rotate-180" /></span>
+        </button>
+        <a
+          href={siteConfig.whatsappUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="btn-lux btn-lux--ghost"
+        >
+          <span>WhatsApp</span>
+          <span class="btn-lux__well"><Icon name="whatsapp" class="h-4 w-4" /></span>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script
+  is:inline
+  define:vars={{
+    endpoint: siteConfig.quizEndpoint,
+    locale,
+    dir,
+    tooLargeMsg: quizUi.tooLarge[locale],
+    sendingLabel: quizUi.sending[locale],
+    nextLabel: quizUi.next[locale],
+    submitLabel: quizUi.submit[locale],
+  }}
+>
+  (function () {
+    var form = document.getElementById('quiz-form');
+    if (!form) return;
+
+    var steps = Array.prototype.slice.call(form.querySelectorAll('.quiz-step'));
+    var intro = document.getElementById('quiz-intro');
+    var done = document.getElementById('quiz-done');
+    var fail = document.getElementById('quiz-fail');
+    var controls = document.getElementById('quiz-controls');
+    var progressWrap = document.getElementById('quiz-progress-wrap');
+    var progress = document.getElementById('quiz-progress');
+    var stepN = document.getElementById('quiz-step-n');
+    var stepTitle = document.getElementById('quiz-step-title');
+    var nextBtn = document.getElementById('quiz-next');
+    var backBtn = document.getElementById('quiz-back');
+    var nextLabelEl = document.getElementById('quiz-next-label');
+
+    var MAX_BYTES = 8 * 1024 * 1024;
+    var current = -1;
+    var files = {}; // qid -> [{name, type, data}]
+
+    /* ---------------------------------------------------- conditional show */
+    function answersFor(qid) {
+      var out = [];
+      form.querySelectorAll('[name="' + qid + '"]').forEach(function (el) {
+        if (el.type === 'checkbox' || el.type === 'radio') {
+          if (el.checked) out.push(el.value);
+        } else if (el.value) {
+          out.push(el.value);
+        }
+      });
+      return out;
+    }
+
+    function applyConditionals() {
+      form.querySelectorAll('.quiz-q[data-show-if]').forEach(function (q) {
+        var parts = q.getAttribute('data-show-if').split(':');
+        var visible = answersFor(parts[0]).indexOf(parts[1]) !== -1;
+        q.hidden = !visible;
+      });
+    }
+
+    /* ------------------------------------------------------------ validate */
+    function validate(stepEl) {
+      var ok = true;
+      stepEl.querySelectorAll('.quiz-q').forEach(function (q) {
+        var err = q.querySelector('.quiz-error');
+        if (err) err.hidden = true;
+        if (q.hidden) return;
+        if (q.getAttribute('data-required') !== 'true') return;
+
+        var qid = q.getAttribute('data-qid');
+        var filled = answersFor(qid).length > 0;
+        if (q.getAttribute('data-type') === 'file') {
+          filled = (files[qid] && files[qid].length > 0) || answersFor(qid + '__defer').length > 0;
+        }
+        if (!filled) {
+          ok = false;
+          if (err) err.hidden = false;
+          q.classList.add('is-invalid');
+        } else {
+          q.classList.remove('is-invalid');
+        }
+      });
+      return ok;
+    }
+
+    /* ---------------------------------------------------------------- show */
+    function show(i) {
+      [intro, done, fail].forEach(function (p) { if (p) p.classList.remove('is-active'); });
+      steps.forEach(function (s) { s.classList.remove('is-active'); });
+
+      if (i < 0) {
+        intro.classList.add('is-active');
+        controls.classList.add('hidden');
+        controls.classList.remove('flex');
+        progressWrap.classList.add('hidden');
+        current = -1;
+        return;
+      }
+
+      current = i;
+      steps[i].classList.add('is-active');
+      controls.classList.remove('hidden');
+      controls.classList.add('flex');
+      progressWrap.classList.remove('hidden');
+
+      stepN.textContent = String(i + 1);
+      stepTitle.textContent = steps[i].getAttribute('data-title') || '';
+      progress.style.width = ((i + 1) / steps.length) * 100 + '%';
+      backBtn.style.visibility = i === 0 ? 'hidden' : 'visible';
+      nextLabelEl.textContent = i === steps.length - 1 ? submitLabel : nextLabel;
+
+      applyConditionals();
+
+      // Move focus to the step so a screen reader announces the new question,
+      // and scroll the panel into view on a phone where the header eats space.
+      steps[i].setAttribute('tabindex', '-1');
+      steps[i].focus({ preventScroll: true });
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    /* --------------------------------------------------------------- files */
+    function humanSize(b) { return (b / 1048576).toFixed(1) + ' MB'; }
+
+    form.querySelectorAll('[data-file]').forEach(function (wrap) {
+      var input = wrap.querySelector('input[type="file"]');
+      var list = wrap.querySelector('[data-file-list]');
+      var qid = input.getAttribute('name');
+
+      input.addEventListener('change', function () {
+        files[qid] = files[qid] || [];
+        Array.prototype.forEach.call(input.files, function (file) {
+          if (file.size > MAX_BYTES) { alert(tooLargeMsg); return; }
+          var reader = new FileReader();
+          reader.onload = function () {
+            files[qid].push({
+              name: file.name,
+              type: file.type,
+              // Strip the data: prefix; Apps Script wants raw base64.
+              data: String(reader.result).split(',')[1],
+            });
+            render();
+          };
+          reader.readAsDataURL(file);
+        });
+        input.value = '';
+      });
+
+      function render() {
+        list.innerHTML = '';
+        (files[qid] || []).forEach(function (f, idx) {
+          var li = document.createElement('li');
+          li.className = 'quiz-file-row';
+          var name = document.createElement('span');
+          name.textContent = f.name;
+          var size = document.createElement('span');
+          size.className = 'quiz-file-size';
+          size.textContent = humanSize((f.data.length * 3) / 4);
+          var rm = document.createElement('button');
+          rm.type = 'button';
+          rm.className = 'quiz-file-rm';
+          rm.textContent = '×';
+          rm.addEventListener('click', function () { files[qid].splice(idx, 1); render(); });
+          li.appendChild(name); li.appendChild(size); li.appendChild(rm);
+          list.appendChild(li);
+        });
+      }
+    });
+
+    /* --------------------------------------------------------------- wiring */
+    document.getElementById('quiz-start').addEventListener('click', function () { show(0); });
+    backBtn.addEventListener('click', function () { if (current > 0) show(current - 1); });
+    form.addEventListener('change', applyConditionals);
+    form.addEventListener('submit', function (e) { e.preventDefault(); });
+
+    // Enter advances, except inside a textarea where it should insert a newline.
+    form.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter' && e.target.tagName !== 'TEXTAREA') {
+        e.preventDefault();
+        nextBtn.click();
+      }
+    });
+
+    nextBtn.addEventListener('click', function () {
+      if (!validate(steps[current])) return;
+      if (current < steps.length - 1) { show(current + 1); return; }
+      submit();
+    });
+
+    document.getElementById('quiz-retry').addEventListener('click', function () {
+      show(steps.length - 1);
+    });
+
+    /* --------------------------------------------------------------- submit */
+    function collect() {
+      var payload = { quiz_language: locale, answers: {}, files: [] };
+      form.querySelectorAll('.quiz-q').forEach(function (q) {
+        if (q.hidden) return;
+        var qid = q.getAttribute('data-qid');
+        if (q.getAttribute('data-type') === 'file') {
+          (files[qid] || []).forEach(function (f) {
+            payload.files.push({ question: qid, name: f.name, type: f.type, data: f.data });
+          });
+          if (answersFor(qid + '__defer').length) payload.answers[qid] = 'WhatsApp';
+          return;
+        }
+        var vals = answersFor(qid);
+        if (vals.length) payload.answers[qid] = vals.join(', ');
+      });
+      return payload;
+    }
+
+    function submit() {
+      if (!endpoint) { fail.classList.add('is-active'); steps.forEach(function (s) { s.classList.remove('is-active'); }); controls.classList.add('hidden'); return; }
+
+      nextBtn.disabled = true;
+      nextLabelEl.textContent = sendingLabel;
+
+      fetch(endpoint, {
+        method: 'POST',
+        // text/plain dodges the CORS preflight that Apps Script cannot answer.
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify(collect()),
+      })
+        .then(function (r) { return r.json(); })
+        .then(function (res) {
+          if (!res || res.ok !== true) throw new Error('rejected');
+          steps.forEach(function (s) { s.classList.remove('is-active'); });
+          controls.classList.add('hidden');
+          progressWrap.classList.add('hidden');
+          done.classList.add('is-active');
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        })
+        .catch(function () {
+          steps.forEach(function (s) { s.classList.remove('is-active'); });
+          controls.classList.add('hidden');
+          progressWrap.classList.add('hidden');
+          fail.classList.add('is-active');
+        })
+        .finally(function () {
+          nextBtn.disabled = false;
+          nextLabelEl.textContent = submitLabel;
+        });
+    }
+
+    show(-1);
+  })();
+</script>
+
+<style>
+  /* Panels swap with the house curve. Only opacity and transform move. */
+  .quiz-panel,
+  .quiz-step {
+    display: none;
+  }
+  .quiz-panel.is-active,
+  .quiz-step.is-active {
+    display: block;
+    animation: quiz-in 0.65s cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+  .quiz-step {
+    border: 0;
+    margin: 0;
+    padding: 0;
+    min-inline-size: 0;
+  }
+  .quiz-step:focus { outline: none; }
+
+  @keyframes quiz-in {
+    from { opacity: 0; transform: translateY(18px); }
+    to   { opacity: 1; transform: none; }
+  }
+
+  .quiz-q + .quiz-q { margin-top: 3rem; }
+  .quiz-q[hidden] { display: none; }
+
+  /* Inputs: a nested well, matching the control language used site-wide. */
+  .quiz-input {
+    width: 100%;
+    border-radius: 1rem;
+    border: 0;
+    background: var(--color-surface);
+    box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--color-text-primary) 12%, transparent);
+    padding: 1rem 1.15rem;
+    font: inherit;
+    font-size: 1rem;
+    color: var(--color-text-primary);
+    transition: box-shadow 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+    resize: vertical;
+  }
+  .quiz-input::placeholder { color: var(--color-text-secondary); opacity: 0.65; }
+  .quiz-input:focus {
+    outline: none;
+    box-shadow: inset 0 0 0 1.5px var(--color-accent);
+  }
+
+  /* Options */
+  .quiz-opt { display: block; cursor: pointer; }
+  .quiz-opt-box {
+    display: flex;
+    align-items: center;
+    gap: 0.9rem;
+    height: 100%;
+    border-radius: 1rem;
+    background: var(--color-surface);
+    box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--color-text-primary) 10%, transparent);
+    padding: 1rem 1.15rem;
+    transition:
+      box-shadow 0.45s cubic-bezier(0.16, 1, 0.3, 1),
+      transform 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .quiz-opt:hover .quiz-opt-box { transform: translateY(-2px); }
+  .quiz-opt input:focus-visible + .quiz-opt-box { outline: 2px solid var(--color-accent); outline-offset: 2px; }
+  .quiz-opt input:checked + .quiz-opt-box {
+    box-shadow: inset 0 0 0 1.5px var(--color-accent);
+    background: color-mix(in oklab, var(--color-accent) 6%, var(--color-surface));
+  }
+
+  .quiz-opt-text { display: flex; flex-direction: column; gap: 0.15rem; flex: 1; min-width: 0; }
+  .quiz-opt-label { font-size: 0.9688rem; font-weight: 500; color: var(--color-text-primary); }
+  .quiz-opt-hint { font-size: 0.8125rem; color: var(--color-text-secondary); }
+
+  .quiz-tick {
+    flex: 0 0 auto;
+    width: 1.15rem; height: 1.15rem;
+    border-radius: 999px;
+    box-shadow: inset 0 0 0 1.5px color-mix(in oklab, var(--color-text-primary) 20%, transparent);
+    display: grid;
+    place-content: center;
+    transition: box-shadow 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .quiz-tick::after {
+    content: '';
+    width: 0.5rem; height: 0.5rem;
+    border-radius: 999px;
+    background: var(--color-accent);
+    transform: scale(0);
+    transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .quiz-opt input:checked + .quiz-opt-box .quiz-tick {
+    box-shadow: inset 0 0 0 1.5px var(--color-accent);
+  }
+  .quiz-opt input:checked + .quiz-opt-box .quiz-tick::after { transform: scale(1); }
+
+  /* CSS sample tiles. No screenshots to ship, and they follow the theme. */
+  .quiz-prev {
+    flex: 0 0 auto;
+    width: 4.25rem;
+    height: 3.25rem;
+    border-radius: 0.6rem;
+    overflow: hidden;
+    box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--color-text-primary) 10%, transparent);
+    display: block;
+  }
+  .quiz-prev--lux {
+    background:
+      linear-gradient(var(--color-gold), var(--color-gold)) no-repeat 14% 30% / 55% 2px,
+      linear-gradient(var(--color-text-primary), var(--color-text-primary)) no-repeat 14% 52% / 34% 5px,
+      linear-gradient(color-mix(in oklab, var(--color-text-primary) 35%, transparent), color-mix(in oklab, var(--color-text-primary) 35%, transparent)) no-repeat 14% 70% / 46% 2px,
+      var(--color-bg-secondary);
+  }
+  .quiz-prev--bold {
+    background:
+      linear-gradient(var(--color-accent-strong), var(--color-accent-strong)) no-repeat 12% 26% / 62% 9px,
+      linear-gradient(var(--color-text-primary), var(--color-text-primary)) no-repeat 12% 56% / 40% 7px,
+      var(--color-bg-secondary);
+  }
+  .quiz-prev--min {
+    background:
+      linear-gradient(color-mix(in oklab, var(--color-text-primary) 55%, transparent), color-mix(in oklab, var(--color-text-primary) 55%, transparent)) no-repeat 20% 40% / 30% 2px,
+      linear-gradient(color-mix(in oklab, var(--color-text-primary) 22%, transparent), color-mix(in oklab, var(--color-text-primary) 22%, transparent)) no-repeat 20% 58% / 46% 1px,
+      var(--color-surface);
+  }
+  .quiz-prev--swatch-dark { background: linear-gradient(135deg, #161616 55%, #3a3330); }
+  .quiz-prev--swatch-light { background: linear-gradient(135deg, #F2F1ED 55%, #d9d6cd); }
+  .quiz-prev--swatch-warm { background: linear-gradient(135deg, #B38F6F 50%, #7d5a3c); }
+  .quiz-prev--swatch-bold { background: linear-gradient(135deg, #710014 50%, #c9963f); }
+  .quiz-prev--ab-photo {
+    background:
+      linear-gradient(color-mix(in oklab, var(--color-text-primary) 30%, transparent), color-mix(in oklab, var(--color-text-primary) 30%, transparent)) no-repeat 0 0 / 100% 62%,
+      linear-gradient(var(--color-text-primary), var(--color-text-primary)) no-repeat 14% 78% / 40% 4px,
+      var(--color-bg-secondary);
+  }
+  .quiz-prev--ab-type {
+    background:
+      linear-gradient(var(--color-text-primary), var(--color-text-primary)) no-repeat 12% 26% / 70% 10px,
+      linear-gradient(var(--color-text-primary), var(--color-text-primary)) no-repeat 12% 50% / 50% 10px,
+      linear-gradient(color-mix(in oklab, var(--color-text-primary) 25%, transparent), color-mix(in oklab, var(--color-text-primary) 25%, transparent)) no-repeat 12% 74% / 30% 4px,
+      var(--color-bg-secondary);
+  }
+
+  /* Upload */
+  .quiz-drop {
+    display: flex;
+    align-items: center;
+    gap: 0.9rem;
+    border-radius: 1rem;
+    padding: 1.4rem 1.25rem;
+    cursor: pointer;
+    background: var(--color-surface);
+    box-shadow: inset 0 0 0 1.5px color-mix(in oklab, var(--color-gold) 34%, transparent);
+    transition: box-shadow 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .quiz-drop:hover { box-shadow: inset 0 0 0 1.5px var(--color-gold); }
+  .quiz-drop-text { display: flex; flex-direction: column; }
+  .quiz-drop-text b { font-size: 0.9375rem; color: var(--color-text-primary); font-weight: 600; }
+  .quiz-drop-text span { font-size: 0.8125rem; color: var(--color-text-secondary); }
+
+  .quiz-files { list-style: none; margin: 0.75rem 0 0; padding: 0; display: grid; gap: 0.4rem; }
+  .quiz-file-row {
+    display: flex; align-items: center; gap: 0.6rem;
+    font-size: 0.8125rem; color: var(--color-text-secondary);
+    background: var(--color-bg-secondary);
+    border-radius: 0.6rem; padding: 0.5rem 0.75rem;
+  }
+  .quiz-file-row > span:first-child { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--color-text-primary); }
+  .quiz-file-size { font-variant-numeric: tabular-nums; }
+  .quiz-file-rm {
+    border: 0; background: none; cursor: pointer;
+    color: var(--color-text-secondary); font-size: 1.1rem; line-height: 1; padding: 0 0.2rem;
+  }
+  .quiz-file-rm:hover { color: var(--color-accent); }
+
+  .quiz-defer {
+    display: inline-flex; align-items: center; gap: 0.55rem;
+    margin-top: 0.9rem; font-size: 0.875rem; color: var(--color-text-secondary); cursor: pointer;
+  }
+  .quiz-defer input { accent-color: var(--color-accent-strong); width: 1rem; height: 1rem; }
+
+  .quiz-error {
+    margin-top: 0.85rem;
+    font-size: 0.8125rem;
+    color: var(--color-accent);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .quiz-panel.is-active,
+    .quiz-step.is-active { animation: none; }
+    .quiz-opt-box, .quiz-input, .quiz-tick, .quiz-tick::after, .quiz-drop { transition: none; }
+  }
+</style>

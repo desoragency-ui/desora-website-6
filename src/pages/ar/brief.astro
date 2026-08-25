@@ -1,0 +1,13 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import QuizForm from '../../components/quiz/QuizForm.astro';
+
+// Deliberately absent from the header and footer navigation: this page is sent
+// to a client on WhatsApp once a project is agreed, not browsed to. It is also
+// noindex, so it never surfaces in search.
+const locale = 'ar' as const;
+---
+
+<BaseLayout title="موجز المشروع" description="بعض الأسئلة لإعداد نموذج مصمّم خصيصًا لك." locale={locale} bare noindex>
+  <QuizForm locale={locale} />
+</BaseLayout>

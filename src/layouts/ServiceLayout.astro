@@ -10,6 +10,7 @@ import ServiceTestimonial from '../components/services/ServiceTestimonial.astro'
 import ServiceCaseStudy from '../components/services/ServiceCaseStudy.astro';
 import RelatedServices from '../components/services/RelatedServices.astro';
 import FinalCta from '../components/home/FinalCta.astro';
+import BriefCta from '../components/services/BriefCta.astro';
 import { useTranslations } from '../i18n/utils';
 import type { Locale } from '../i18n/config';
 import type { getServiceBySlug } from '../lib/content';
@@ -32,6 +33,7 @@ const t = useTranslations(locale);
   <FAQAccordion locale={locale} items={service.faq} />
   <ServiceTestimonial locale={locale} testimonial={service.testimonial} />
   <ServiceCaseStudy locale={locale} caseStudy={service.caseStudy} placeholder={service.caseStudyPlaceholder} />
+  {service.slug === 'creation-site-web' && <BriefCta locale={locale} />}
   <RelatedServices locale={locale} slugs={service.relatedServices} />
   <FinalCta locale={locale} heading={t('service.finalCtaHeading', { service: service.title })} description={service.tagline} />
 </BaseLayout>

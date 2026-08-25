@@ -18,6 +18,9 @@ export default defineConfig({
   },
   integrations: [
     sitemap({
+      // The brief quiz is sent privately to a client once a project is agreed.
+      // It should never appear in search results or the sitemap.
+      filter: (page) => !page.includes('/brief'),
       i18n: {
         defaultLocale: 'fr',
         locales: {

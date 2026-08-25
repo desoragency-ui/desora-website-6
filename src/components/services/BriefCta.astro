@@ -1,0 +1,83 @@
+---
+import Icon from '../Icon.astro';
+import { localizedPath } from '../../i18n/utils';
+import type { Locale } from '../../i18n/config';
+
+/**
+ * Entry point to the brief quiz, shown only on the website-creation service
+ * page (wired in ServiceLayout).
+ *
+ * Placed after the pricing and the FAQ, where a reader who is still on the page
+ * has already decided they are interested and the next question in their head
+ * is "so how do we start". The four-minute promise is doing real work in the
+ * label: the main reason people avoid a brief form is that they assume it will
+ * take an afternoon.
+ */
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+
+const copy = {
+  fr: {
+    eyebrow: 'Prêt à commencer',
+    heading: 'Répondez à quelques questions, recevez une maquette',
+    body: 'Quatre minutes de questions simples sur votre activité, votre style et vos besoins. Nous vous préparons ensuite une première maquette, faite pour vous et pas pour un modèle générique.',
+    cta: 'Commencer le brief',
+    meta: '4 minutes, sans engagement',
+  },
+  en: {
+    eyebrow: 'Ready to start',
+    heading: 'Answer a few questions, get a mockup',
+    body: 'Four minutes of simple questions about your business, your style and what you need. We then prepare a first mockup, made for you rather than for a generic template.',
+    cta: 'Start the brief',
+    meta: '4 minutes, no commitment',
+  },
+  ar: {
+    eyebrow: 'جاهز للبدء',
+    heading: 'أجب عن بعض الأسئلة، واحصل على نموذج',
+    body: 'أربع دقائق من أسئلة بسيطة حول نشاطك وأسلوبك واحتياجاتك. بعدها نُعِدّ لك نموذجًا أوليًا مصمّمًا خصيصًا لك، لا قالبًا جاهزًا.',
+    cta: 'ابدأ الاستبيان',
+    meta: 'أربع دقائق، دون أي التزام',
+  },
+}[locale];
+---
+
+<section class="mx-auto max-w-7xl px-5 pb-4 sm:px-8">
+  <div class="bezel bezel--lg">
+    <div class="bezel-core relative overflow-hidden px-6 py-14 text-center sm:px-14 sm:py-16">
+      <div class="ambient-field" aria-hidden="true">
+        <div class="ambient-plate ambient-plate--gold -end-[8vw] top-[-8vh] h-[28vw] w-[28vw]"></div>
+      </div>
+
+      <div class="relative">
+        <span class="eyebrow">{copy.eyebrow}</span>
+
+        <h2
+          class="mx-auto mt-7 max-w-2xl font-display text-[clamp(1.75rem,4vw,2.75rem)] font-semibold leading-[1.1] text-text-primary rtl:font-arabic-display rtl:leading-[1.45]"
+          data-reveal="lines"
+        >
+          {copy.heading}
+        </h2>
+
+        <p class="mx-auto mt-5 max-w-xl text-[1.0625rem] leading-relaxed text-text-secondary">
+          {copy.body}
+        </p>
+
+        <div class="mt-9 flex flex-col items-center gap-4">
+          <a href={localizedPath(locale, 'brief')} class="btn-lux btn-lux--fill cta-shine">
+            <span>{copy.cta}</span>
+            <span class="btn-lux__well">
+              <Icon name="arrow-right" class="h-4 w-4 rtl:rotate-180" />
+            </span>
+          </a>
+          <p class="flex items-center gap-2 text-sm text-text-secondary">
+            <span class="h-1.5 w-1.5 rotate-45 bg-gold" aria-hidden="true"></span>
+            {copy.meta}
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

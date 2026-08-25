@@ -15,9 +15,15 @@ interface Props {
   title: string;
   description: string;
   locale: Locale;
+  /** Hide the site header and footer. Used by the brief quiz, which is a
+   *  focused single-task page and carries its own minimal chrome: site
+   *  navigation there is an invitation to abandon the form. */
+  bare?: boolean;
+  /** Keep the page out of search results (the quiz is invite-only). */
+  noindex?: boolean;
 }
 
-const { title, description, locale } = Astro.props;
+const { title, description, locale, bare = false, noindex = false } = Astro.props;
 const dir = dirFor(locale);
 
 // Arabic pages set every glyph in Amiri (display) and Cairo (body); Latin pages
@@ -74,6 +80,7 @@ const xDefaultHref = new URL(`/fr${restPath ? `/${restPath}` : ''}`, Astro.site)
     <title>{title} · DESORA</title>
     <meta name="description" content={description} />
     <link rel="canonical" href={canonical.toString()} />
+    {noindex && <meta name="robots" content="noindex, nofollow" />}
     {alternates.map((alt) => <link rel="alternate" hreflang={alt.hreflang} href={alt.href} />)}
     <link rel="alternate" hreflang="x-default" href={xDefaultHref} />
 
@@ -128,11 +135,11 @@ const xDefaultHref = new URL(`/fr${restPath ? `/${restPath}` : ''}`, Astro.site)
       class="pointer-events-none fixed inset-x-0 top-0 z-[95] h-px origin-left scale-x-0 bg-gold"
     >
     </div>
-    <Header locale={locale} />
+    {!bare && <Header locale={locale} />}
     <main id="main-content">
       <slot />
     </main>
-    <Footer locale={locale} />
+    {!bare && <Footer locale={locale} />}
     <FloatingCTA locale={locale} />
     <script>
       import '../scripts/motion.ts';

@@ -1,0 +1,365 @@
+---
+import Icon from '../Icon.astro';
+import { siteConfig } from '../../lib/site-config';
+import { localizedPath } from '../../i18n/utils';
+import { brandIcon } from '../../lib/brand-assets';
+import type { Locale } from '../../i18n/config';
+
+/**
+ * The thank-you moment.
+ *
+ * The house photography is full of crimson wax seals on paper, so the
+ * confirmation is a seal being pressed rather than a green tick or confetti:
+ * it says "this is now sealed and sent" in the brand's own vocabulary, and it
+ * is the one flourish on an otherwise plain form.
+ *
+ * The whole sequence is CSS keyframes on a single trigger class, so it costs
+ * one animation frame budget once and nothing afterwards. Nothing here runs on
+ * scroll. Under prefers-reduced-motion the seal is simply present.
+ *
+ * Sequence, about 2.2s total:
+ *   0.00  the seal falls from above, overshooting slightly in scale
+ *   0.45  it lands, the page takes a barely perceptible knock
+ *   0.50  an impact ring expands and fades outward from the point of contact
+ *   0.70  the gold rim draws itself around the seal
+ *   0.85  the heading lines rise from behind their own clipped boxes
+ *   1.40  the three next-steps stagger in
+ */
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+
+const copy = {
+  fr: {
+    sealed: 'Brief scellé',
+    title: 'C’est entre nos mains',
+    body: 'Nous avons tout ce qu’il faut. Vous n’avez plus rien à faire.',
+    stepsTitle: 'La suite',
+    steps: [
+      { n: '01', t: 'Nous lisons votre brief', d: 'Aujourd’hui même, en entier.' },
+      { n: '02', t: 'Nous dessinons une première maquette', d: 'Faite pour votre activité, pas un modèle recoloré.' },
+      { n: '03', t: 'Vous la recevez sur WhatsApp', d: 'Sous 24 heures, avec nos questions s’il en reste.' },
+    ],
+    home: 'Retour à l’accueil',
+    talk: 'Nous écrire',
+  },
+  en: {
+    sealed: 'Brief sealed',
+    title: 'It is in our hands now',
+    body: 'We have everything we need. There is nothing else for you to do.',
+    stepsTitle: 'What happens next',
+    steps: [
+      { n: '01', t: 'We read your brief', d: 'Today, all of it.' },
+      { n: '02', t: 'We draw a first mockup', d: 'Built for your business, not a recoloured template.' },
+      { n: '03', t: 'It reaches you on WhatsApp', d: 'Within 24 hours, with any questions we still have.' },
+    ],
+    home: 'Back to home',
+    talk: 'Write to us',
+  },
+  ar: {
+    sealed: 'تم ختم الموجز',
+    title: 'أصبح الأمر بين أيدينا',
+    body: 'لدينا كل ما نحتاجه. لم يعد عليك فعل أي شيء.',
+    stepsTitle: 'ما سيحدث لاحقًا',
+    steps: [
+      { n: '01', t: 'نقرأ موجزك', d: 'اليوم، وبالكامل.' },
+      { n: '02', t: 'نرسم نموذجًا أوليًا', d: 'مصمّمًا لنشاطك، لا قالبًا معاد تلوينه.' },
+      { n: '03', t: 'يصلك عبر واتساب', d: 'خلال 24 ساعة، مع أي أسئلة تبقّت لدينا.' },
+    ],
+    home: 'العودة إلى الرئيسية',
+    talk: 'راسلنا',
+  },
+}[locale];
+---
+
+<div class="seal-scene">
+  <!-- The seal ------------------------------------------------------------ -->
+  <div class="seal-stage" aria-hidden="true">
+    <span class="seal-ring"></span>
+    <span class="seal">
+      <span class="seal-rim"></span>
+      {
+        brandIcon ? (
+          <span class="seal-mark" style={`--mark:url('${brandIcon}')`} />
+        ) : (
+          <span class="seal-fallback">ds</span>
+        )
+      }
+    </span>
+    <span class="seal-shadow"></span>
+  </div>
+
+  <!-- The words ----------------------------------------------------------- -->
+  <p class="seal-eyebrow"><span>{copy.sealed}</span></p>
+
+  <h1 class="seal-title">
+    <span class="seal-line"><span>{copy.title}</span></span>
+  </h1>
+
+  <p class="seal-body">{copy.body}</p>
+
+  <hr class="seal-rule" />
+
+  <p class="overline seal-steps-title">{copy.stepsTitle}</p>
+  <ol class="seal-steps">
+    {
+      copy.steps.map((s, i) => (
+        <li class="seal-step" style={`--i:${i}`}>
+          <span class="numeral seal-step-n">{s.n}</span>
+          <span>
+            <span class="seal-step-t">{s.t}</span>
+            <span class="seal-step-d">{s.d}</span>
+          </span>
+        </li>
+      ))
+    }
+  </ol>
+
+  <div class="seal-cta">
+    <a href={localizedPath(locale, '')} class="btn-lux btn-lux--ghost">
+      <span>{copy.home}</span>
+      <span class="btn-lux__well"><Icon name="arrow-right" class="h-4 w-4 rtl:rotate-180" /></span>
+    </a>
+    <a
+      href={siteConfig.whatsappUrl}
+      target="_blank"
+      rel="noopener noreferrer"
+      class="btn-lux btn-lux--ghost"
+    >
+      <span>{copy.talk}</span>
+      <span class="btn-lux__well"><Icon name="whatsapp" class="h-4 w-4" /></span>
+    </a>
+  </div>
+</div>
+
+<style>
+  .seal-scene { text-align: center; padding-block: 1rem 2rem; }
+
+  /* ---------------------------------------------------------------- stage */
+  .seal-stage {
+    position: relative;
+    width: 8.5rem;
+    height: 8.5rem;
+    margin: 0 auto 2.5rem;
+    display: grid;
+    place-items: center;
+  }
+
+  .seal {
+    position: relative;
+    z-index: 2;
+    width: 6.5rem;
+    height: 6.5rem;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    background:
+      radial-gradient(120% 120% at 32% 26%, color-mix(in oklab, var(--pearl-50) 26%, transparent), transparent 52%),
+      var(--color-accent-strong);
+    box-shadow:
+      inset 0 2px 5px color-mix(in oklab, var(--pearl-50) 22%, transparent),
+      inset 0 -6px 14px color-mix(in oklab, #000 45%, transparent),
+      0 16px 34px -14px color-mix(in oklab, var(--color-accent-strong) 75%, transparent);
+    /* The wax edge: a soft irregular rim rather than a geometric circle. */
+    clip-path: polygon(
+      50% 0%, 63% 3%, 74% 9%, 85% 17%, 93% 28%, 97% 40%, 100% 52%,
+      96% 64%, 91% 76%, 82% 86%, 71% 94%, 58% 99%, 45% 99%, 33% 94%,
+      21% 87%, 11% 77%, 4% 65%, 1% 52%, 3% 39%, 8% 27%, 16% 17%,
+      27% 9%, 38% 3%
+    );
+    animation: seal-drop 0.62s cubic-bezier(0.3, 1.35, 0.4, 1) both;
+  }
+
+  .seal-rim {
+    position: absolute;
+    inset: 0.55rem;
+    border-radius: 50%;
+    box-shadow: inset 0 0 0 1.5px color-mix(in oklab, var(--color-gold) 62%, transparent);
+    opacity: 0;
+    animation: seal-rim 0.7s cubic-bezier(0.16, 1, 0.3, 1) 0.68s both;
+  }
+
+  /* The real monogram, painted through a mask so it takes the pearl ink. */
+  .seal-mark {
+    width: 2.9rem;
+    height: 2.9rem;
+    background-color: var(--color-accent-foreground);
+    -webkit-mask-image: var(--mark);
+    mask-image: var(--mark);
+    -webkit-mask-repeat: no-repeat;
+    mask-repeat: no-repeat;
+    -webkit-mask-position: center;
+    mask-position: center;
+    -webkit-mask-size: contain;
+    mask-size: contain;
+    opacity: 0.94;
+  }
+  .seal-fallback {
+    font-family: var(--font-display);
+    font-size: 2.4rem;
+    font-weight: 700;
+    color: var(--color-accent-foreground);
+    line-height: 1;
+  }
+
+  /* Impact ring, expanding outward from the moment of contact. */
+  .seal-ring {
+    position: absolute;
+    z-index: 1;
+    width: 6.5rem;
+    height: 6.5rem;
+    border-radius: 50%;
+    box-shadow: 0 0 0 1.5px color-mix(in oklab, var(--color-gold) 55%, transparent);
+    opacity: 0;
+    animation: seal-ring 1.1s cubic-bezier(0.16, 1, 0.3, 1) 0.5s both;
+  }
+
+  .seal-shadow {
+    position: absolute;
+    z-index: 0;
+    bottom: 0.5rem;
+    width: 5rem;
+    height: 0.85rem;
+    border-radius: 50%;
+    background: var(--shadow-tint);
+    filter: blur(7px);
+    opacity: 0;
+    animation: seal-shadow 0.62s cubic-bezier(0.3, 1.35, 0.4, 1) both;
+  }
+
+  @keyframes seal-drop {
+    0%   { transform: translateY(-120px) scale(1.55) rotate(-9deg); opacity: 0; }
+    58%  { opacity: 1; }
+    72%  { transform: translateY(0) scale(0.94) rotate(1.5deg); }
+    100% { transform: translateY(0) scale(1) rotate(0deg); opacity: 1; }
+  }
+  @keyframes seal-shadow {
+    0%, 55% { opacity: 0; transform: scale(0.4); }
+    75%     { opacity: 0.5; transform: scale(1.1); }
+    100%    { opacity: 0.32; transform: scale(1); }
+  }
+  @keyframes seal-ring {
+    0%   { opacity: 0; transform: scale(0.92); }
+    18%  { opacity: 0.85; }
+    100% { opacity: 0; transform: scale(1.85); }
+  }
+  @keyframes seal-rim {
+    from { opacity: 0; transform: scale(1.12); }
+    to   { opacity: 1; transform: scale(1); }
+  }
+
+  /* ---------------------------------------------------------------- words */
+  .seal-eyebrow {
+    margin: 0 0 1.1rem;
+    overflow: hidden;
+  }
+  .seal-eyebrow span {
+    display: inline-block;
+    font-family: var(--font-body);
+    font-size: 0.6875rem;
+    font-weight: 600;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--color-gold);
+    animation: rise 0.85s cubic-bezier(0.16, 1, 0.3, 1) 0.82s both;
+  }
+  :global(html[dir='rtl']) .seal-eyebrow span { letter-spacing: 0.1em; }
+
+  .seal-title {
+    margin: 0;
+    font-family: var(--font-display);
+    font-size: clamp(2.1rem, 5.4vw, 3.4rem);
+    font-weight: 600;
+    line-height: 1.06;
+    color: var(--color-text-primary);
+  }
+  :global(html[dir='rtl']) .seal-title { font-family: var(--font-arabic-display); line-height: 1.4; }
+  .seal-line { display: block; overflow: hidden; }
+  .seal-line > span {
+    display: inline-block;
+    animation: rise 0.95s cubic-bezier(0.16, 1, 0.3, 1) 0.9s both;
+  }
+
+  .seal-body {
+    margin: 1.35rem auto 0;
+    max-width: 30rem;
+    font-size: 1.0625rem;
+    line-height: 1.65;
+    color: var(--color-text-secondary);
+    animation: fade 0.9s cubic-bezier(0.16, 1, 0.3, 1) 1.08s both;
+  }
+
+  .seal-rule {
+    width: min(20rem, 70%);
+    margin: 2.75rem auto 2rem;
+    border: 0;
+    height: 1px;
+    background: linear-gradient(to right, transparent, var(--color-hairline), transparent);
+    transform: scaleX(0);
+    animation: draw 1s cubic-bezier(0.16, 1, 0.3, 1) 1.25s both;
+  }
+
+  .seal-steps-title {
+    animation: fade 0.8s cubic-bezier(0.16, 1, 0.3, 1) 1.35s both;
+  }
+
+  .seal-steps {
+    list-style: none;
+    margin: 1.5rem auto 0;
+    padding: 0;
+    max-width: 27rem;
+    display: grid;
+    gap: 0.35rem;
+    text-align: start;
+  }
+  .seal-step {
+    display: grid;
+    grid-template-columns: 2.2rem 1fr;
+    gap: 0.9rem;
+    align-items: start;
+    padding: 0.85rem 0;
+    border-bottom: 1px solid var(--color-hairline);
+    animation: rise 0.85s cubic-bezier(0.16, 1, 0.3, 1) calc(1.45s + var(--i) * 0.13s) both;
+  }
+  .seal-step:last-child { border-bottom: 0; }
+  .seal-step-n { color: var(--color-gold); font-size: 0.8125rem; padding-top: 0.15rem; }
+  .seal-step-t { display: block; font-weight: 600; color: var(--color-text-primary); font-size: 0.9688rem; }
+  .seal-step-d { display: block; margin-top: 0.2rem; font-size: 0.875rem; color: var(--color-text-secondary); }
+
+  .seal-cta {
+    margin-top: 2.75rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    justify-content: center;
+    animation: fade 0.9s cubic-bezier(0.16, 1, 0.3, 1) 1.95s both;
+  }
+
+  @keyframes rise {
+    from { opacity: 0; transform: translateY(108%); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes fade {
+    from { opacity: 0; transform: translateY(14px); }
+    to   { opacity: 1; transform: none; }
+  }
+  @keyframes draw {
+    from { transform: scaleX(0); }
+    to   { transform: scaleX(1); }
+  }
+
+  /* Everything is present, nothing performs. */
+  @media (prefers-reduced-motion: reduce) {
+    .seal, .seal-rim, .seal-ring, .seal-shadow,
+    .seal-eyebrow span, .seal-line > span, .seal-body,
+    .seal-rule, .seal-steps-title, .seal-step, .seal-cta {
+      animation: none;
+      opacity: 1;
+      transform: none;
+    }
+    .seal-ring { display: none; }
+    .seal-rule { transform: scaleX(1); }
+  }
+</style>
