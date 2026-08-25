@@ -1,0 +1,61 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "redirects": [
+    {
+      "source": "/",
+      "has": [{ "type": "query", "key": "lang", "value": "en" }],
+      "destination": "/en",
+      "permanent": false
+    },
+    {
+      "source": "/",
+      "has": [{ "type": "query", "key": "lang", "value": "ar" }],
+      "destination": "/ar",
+      "permanent": false
+    },
+    {
+      "source": "/",
+      "has": [{ "type": "query", "key": "lang", "value": "fr" }],
+      "destination": "/fr",
+      "permanent": false
+    },
+
+    {
+      "source": "/",
+      "has": [{ "type": "cookie", "key": "desora-lang", "value": "en" }],
+      "destination": "/en",
+      "permanent": false
+    },
+    {
+      "source": "/",
+      "has": [{ "type": "cookie", "key": "desora-lang", "value": "ar" }],
+      "destination": "/ar",
+      "permanent": false
+    },
+    {
+      "source": "/",
+      "has": [{ "type": "cookie", "key": "desora-lang", "value": "fr" }],
+      "destination": "/fr",
+      "permanent": false
+    },
+
+    {
+      "source": "/",
+      "has": [{ "type": "header", "key": "accept-language", "value": "^en.*" }],
+      "destination": "/en",
+      "permanent": false
+    },
+    {
+      "source": "/",
+      "has": [{ "type": "header", "key": "accept-language", "value": "^ar.*" }],
+      "destination": "/ar",
+      "permanent": false
+    },
+
+    {
+      "source": "/",
+      "destination": "/fr",
+      "permanent": false
+    }
+  ]
+}
