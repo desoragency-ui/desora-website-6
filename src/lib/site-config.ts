@@ -41,5 +41,6 @@ export const siteConfig = {
    * apps-script/README.md. While it is empty the quiz still runs and simply
    * shows its "could not send" panel with the WhatsApp fallback.
    */
-  quizEndpoint: '', // PLACEHOLDER: https://script.google.com/macros/s/.../exec
+  quizEndpoint:
+    'https://script.google.com/macros/s/AKfycbyeD1WTE5C0c54Fl0ky2FGv1cqtwu44NxQr4oG7E6uHnTqjGAIR-UgjNAN7AypWAKTLpQ/exec',
 } as const;
