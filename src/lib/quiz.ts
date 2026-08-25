@@ -45,6 +45,10 @@ export type PreviewKind =
 
 export interface QuizOption {
   value: string;
+  /** Basename of a reference screenshot in src/assets/quiz. A real design a
+   *  client can point at beats a word like "premium", which means something
+   *  different to every person who reads it. */
+  image?: string;
   label: Record<Locale, string>;
   hint?: Record<Locale, string>;
   preview?: PreviewKind;
@@ -227,9 +231,9 @@ export const quizSteps: QuizStep[] = [
           ar: 'اعتمد على انطباعك الأول.',
         },
         options: [
-          { value: 'premium', preview: 'lux', label: { fr: 'Premium et luxueux', en: 'Premium & luxury', ar: 'راقٍ وفاخر' } },
-          { value: 'modern', preview: 'bold', label: { fr: 'Moderne et affirmé', en: 'Modern & bold', ar: 'عصري وجريء' } },
-          { value: 'minimal', preview: 'min', label: { fr: 'Épuré et minimal', en: 'Clean & minimal', ar: 'بسيط وأنيق' } },
+          { value: 'premium', image: 'feel-premium', label: { fr: 'Premium et luxueux', en: 'Premium & luxury', ar: 'راقٍ وفاخر' } },
+          { value: 'modern', image: 'feel-modern', label: { fr: 'Moderne et affirmé', en: 'Modern & bold', ar: 'عصري وجريء' } },
+          { value: 'minimal', image: 'feel-minimal', label: { fr: 'Épuré et minimal', en: 'Clean & minimal', ar: 'بسيط وأنيق' } },
         ],
       },
     ],

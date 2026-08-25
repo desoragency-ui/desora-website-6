@@ -77,7 +77,7 @@ const caseLabel =
           </h2>
           <p class="mt-4 text-lg leading-relaxed text-text-secondary">{description}</p>
         </div>
-        <p class="overline flex shrink-0 items-center gap-3">
+        <p class="label-caps flex shrink-0 items-center gap-3">
           <span class="hairline w-8"></span>
           {dragHint}
           <span class="tabular-nums">{String(items.length).padStart(2, '0')}</span>
@@ -146,7 +146,7 @@ const caseLabel =
                 <h3 class="font-display text-2xl font-semibold text-text-primary">{item.client}</h3>
               )}
 
-              <p class="overline mt-3">{item.sector}</p>
+              <p class="label-caps mt-3">{item.sector}</p>
 
               {item.summary ? (
                 <p class="mt-5 flex-1 text-[0.9375rem] leading-relaxed text-text-secondary">{item.summary}</p>

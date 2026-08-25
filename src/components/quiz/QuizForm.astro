@@ -1,4 +1,6 @@
 ---
+import { getImage } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
 import Icon from '../Icon.astro';
 import BrandPattern from '../BrandPattern.astro';
 import QuizDone from './QuizDone.astro';
@@ -31,16 +33,31 @@ interface Props {
 const { locale } = Astro.props;
 const t = <T extends Record<Locale, string>>(o: T) => o[locale];
 const dir = locale === 'ar' ? 'rtl' : 'ltr';
+
+// Reference screenshots for the style question, resolved at build time.
+const refFiles = import.meta.glob<{ default: ImageMetadata }>('../../assets/quiz/*.png', {
+  eager: true,
+});
+const refs: Record<string, string> = {};
+for (const [path, mod] of Object.entries(refFiles)) {
+  const name = path.split('/').pop()!.replace('.png', '');
+  const img = await getImage({
+    src: mod.default,
+    width: 720,
+    format: 'webp',
+    quality: 62,
+  });
+  refs[name] = img.src;
+}
 ---
 
-<section class="relative min-h-[100svh] overflow-hidden pb-24 pt-28 sm:pt-32">
+<section class="relative min-h-[100dvh] overflow-hidden pb-28 pt-28 sm:pb-32 sm:pt-32">
   <BrandPattern opacity={0.014} />
   <div class="ambient-field" aria-hidden="true">
-    <div class="ambient-plate ambient-plate--crimson -start-[18vw] top-[4vh] h-[46vw] w-[46vw]"></div>
-    <div class="ambient-plate ambient-plate--gold -end-[14vw] bottom-[8vh] h-[34vw] w-[34vw]"></div>
+    <div class="ambient-plate ambient-plate--gold -end-[16vw] bottom-[10vh] h-[30vw] w-[30vw]"></div>
   </div>
 
-  <div class="relative mx-auto w-full max-w-3xl px-5 sm:px-8">
+  <div class="relative mx-auto w-full max-w-4xl px-5 sm:px-8">
     <!-- Language: the quiz carries its own switcher. Someone can arrive from a
          French page and still answer more comfortably in Arabic. -->
     <div class="mb-10 flex items-center justify-between gap-4">
@@ -75,11 +92,11 @@ const dir = locale === 'ar' ? 'rtl' : 'ltr';
     <div id="quiz-intro" class="quiz-panel is-active">
       <span class="eyebrow">{t(quizUi.eyebrow)}</span>
       <h1
-        class="mt-7 font-display text-[clamp(2.2rem,5.5vw,3.4rem)] font-semibold leading-[1.06] text-text-primary rtl:font-arabic-display rtl:leading-[1.35]"
+        class="mt-7 font-display text-[clamp(2.5rem,6vw,4rem)] font-semibold leading-[1.06] text-text-primary rtl:font-arabic-display rtl:leading-[1.35]"
       >
         {t(quizUi.title)}
       </h1>
-      <p class="mt-6 max-w-xl text-lg leading-relaxed text-text-secondary">{t(quizUi.intro)}</p>
+      <p class="mt-7 max-w-2xl text-[1.15rem] leading-relaxed text-text-secondary">{t(quizUi.intro)}</p>
       <button type="button" id="quiz-start" class="btn-lux btn-lux--fill cta-shine mt-10">
         <span>{t(quizUi.start)}</span>
         <span class="btn-lux__well"><Icon name="arrow-right" class="h-4 w-4 rtl:rotate-180" /></span>
@@ -91,7 +108,7 @@ const dir = locale === 'ar' ? 'rtl' : 'ltr';
       <!-- Progress -->
       <div id="quiz-progress-wrap" class="mb-10 hidden">
         <div class="mb-3 flex items-baseline justify-between">
-          <span class="overline">
+          <span class="label-caps">
             {t(quizUi.step)} <span id="quiz-step-n" class="numeral">1</span>
             <span class="mx-1 text-gold">/</span>
             <span class="numeral">{quizSteps.length}</span>
@@ -116,10 +133,10 @@ const dir = locale === 'ar' ? 'rtl' : 'ltr';
                 data-type={q.type}
                 data-show-if={q.showIf ? `${q.showIf.id}:${q.showIf.equals}` : undefined}
               >
-                <h2 class="font-display text-[clamp(1.4rem,3.4vw,2.1rem)] font-semibold leading-[1.18] text-text-primary rtl:font-arabic-display rtl:leading-[1.5]">
+                <h2 class="font-display text-[clamp(1.65rem,4vw,2.6rem)] font-semibold leading-[1.14] text-text-primary rtl:font-arabic-display rtl:leading-[1.5]">
                   {t(q.label)}
                 </h2>
-                {q.help && <p class="mt-2.5 text-sm leading-relaxed text-text-secondary">{t(q.help)}</p>}
+                {q.help && <p class="mt-3 text-[0.9375rem] leading-relaxed text-text-secondary">{t(q.help)}</p>}
 
                 <div class="mt-6">
                   {/* Free text --------------------------------------------- */}
@@ -172,7 +189,12 @@ const dir = locale === 'ar' ? 'rtl' : 'ltr';
                             class="sr-only"
                           />
                           <span class="quiz-opt-box">
-                            <span class="quiz-opt-core">
+                            <span class:list={['quiz-opt-core', opt.image && 'quiz-opt-core--shot']}>
+                              {opt.image && refs[opt.image] && (
+                                <span class="quiz-shot" aria-hidden="true">
+                                  <img src={refs[opt.image]} alt="" loading="lazy" decoding="async" />
+                                </span>
+                              )}
                               {opt.preview && <span class={`quiz-prev quiz-prev--${opt.preview}`} aria-hidden="true" />}
                               <span class="quiz-opt-text">
                                 <span class="quiz-opt-label">{t(opt.label)}</span>
@@ -563,49 +585,81 @@ const dir = locale === 'ar' ? 'rtl' : 'ltr';
      as .bezel site-wide. Radii are concentric (core = shell minus padding) so
      the curves stay parallel, which is the whole tell of the technique. */
   .quiz-opt-box {
-    --shell-pad: 0.3125rem;
-    --shell-radius: 1.15rem;
     display: block;
     height: 100%;
-    padding: var(--shell-pad);
-    border-radius: var(--shell-radius);
-    background: color-mix(in oklab, var(--color-text-primary) 3.5%, transparent);
-    box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--color-text-primary) 6%, transparent);
-    transition:
-      box-shadow 0.45s cubic-bezier(0.32, 0.72, 0, 1),
-      transform 0.45s cubic-bezier(0.32, 0.72, 0, 1);
+    border-radius: 1.15rem;
+    background: transparent;
+    transition: transform 0.45s cubic-bezier(0.32, 0.72, 0, 1);
   }
 
+  /* One surface, one hairline. The card sits on the page rather than inside a
+     frame: on a screen made entirely of answer cards, a visible tray around
+     each one stops reading as construction and starts reading as clutter. */
   .quiz-opt-core {
     display: flex;
     align-items: center;
-    gap: 0.9rem;
+    gap: 1rem;
     height: 100%;
-    padding: 0.85rem 1rem;
-    border-radius: calc(var(--shell-radius) - var(--shell-pad));
+    padding: 1.15rem 1.3rem;
+    border-radius: 1.15rem;
     background: var(--color-surface);
     box-shadow:
-      inset 0 1px 0 0 color-mix(in oklab, var(--pearl-50) 65%, transparent),
-      inset 0 0 0 1px color-mix(in oklab, var(--color-text-primary) 5%, transparent);
-    transition: background-color 0.45s cubic-bezier(0.32, 0.72, 0, 1);
+      inset 0 0 0 1px color-mix(in oklab, var(--color-text-primary) 9%, transparent),
+      0 1px 2px color-mix(in oklab, var(--shadow-tint) 30%, transparent);
+    transition:
+      box-shadow 0.45s cubic-bezier(0.32, 0.72, 0, 1),
+      background-color 0.45s cubic-bezier(0.32, 0.72, 0, 1);
   }
-  :global(html[data-theme='dark']) .quiz-opt-core {
+  /* Style question: the reference screenshot leads and the label sits beneath,
+     so the choice is made by looking rather than by reading an adjective. */
+  .quiz-opt-core--shot {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0;
+    padding: 0.5rem 0.5rem 0.35rem;
+  }
+  .quiz-shot {
+    display: block;
+    border-radius: 0.75rem;
+    overflow: hidden;
+    background: var(--color-bg-secondary);
+    aspect-ratio: 16 / 10;
+  }
+  .quiz-shot img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: top center;
+    transition: transform 0.75s cubic-bezier(0.32, 0.72, 0, 1);
+  }
+  .quiz-opt:hover .quiz-shot img { transform: scale(1.035); }
+  .quiz-opt-core--shot .quiz-opt-text { padding: 0.9rem 0.65rem 0.6rem; }
+  .quiz-opt-core--shot .quiz-tick {
+    position: absolute;
+    inset-block-start: 1rem;
+    inset-inline-end: 1rem;
+    background: color-mix(in oklab, var(--color-bg-primary) 82%, transparent);
+    backdrop-filter: blur(6px);
+  }
+  .quiz-opt-core--shot { position: relative; }
+
+  .quiz-opt:hover .quiz-opt-core {
     box-shadow:
-      inset 0 1px 0 0 color-mix(in oklab, var(--pearl-50) 8%, transparent),
-      inset 0 0 0 1px color-mix(in oklab, var(--pearl-50) 6%, transparent);
+      inset 0 0 0 1px color-mix(in oklab, var(--color-gold) 45%, transparent),
+      0 10px 26px -14px var(--shadow-tint);
   }
 
-  .quiz-opt:hover .quiz-opt-box { transform: translateY(-2px); }
+  .quiz-opt:hover .quiz-opt-box { transform: translateY(-3px); }
   .quiz-opt input:focus-visible + .quiz-opt-box { outline: 2px solid var(--color-accent); outline-offset: 3px; }
 
   /* Selected: the tray's ring warms to crimson and the plate takes a wash. The
      ring lives on the shell, so the highlight reads as the frame responding
      rather than the whole card changing colour. */
-  .quiz-opt input:checked + .quiz-opt-box {
-    box-shadow: inset 0 0 0 1.5px var(--color-accent);
-  }
   .quiz-opt input:checked + .quiz-opt-box .quiz-opt-core {
-    background: color-mix(in oklab, var(--color-accent) 7%, var(--color-surface));
+    background: color-mix(in oklab, var(--color-accent) 5%, var(--color-surface));
+    box-shadow:
+      inset 0 0 0 1.5px var(--color-accent),
+      0 12px 30px -16px color-mix(in oklab, var(--color-accent) 55%, transparent);
   }
 
   .quiz-opt-text { display: flex; flex-direction: column; gap: 0.15rem; flex: 1; min-width: 0; }
@@ -729,5 +783,7 @@ const dir = locale === 'ar' ? 'rtl' : 'ltr';
     .quiz-panel.is-active,
     .quiz-step.is-active { animation: none; }
     .quiz-opt-box, .quiz-opt-core, .quiz-input, .quiz-tick, .quiz-tick::after, .quiz-drop { transition: none; }
+    .quiz-shot img { transition: none; }
+    .quiz-opt:hover .quiz-shot img { transform: none; }
   }
 </style>

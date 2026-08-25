@@ -210,7 +210,7 @@
    monogram-friendly serif numeral treatment. Kept minimal and on-token.
    -------------------------------------------------------------------------- */
 @layer components {
-  .overline {
+  .label-caps {
     font-family: var(--font-body);
     font-size: 0.6875rem;
     font-weight: 600;
@@ -219,7 +219,7 @@
     color: var(--color-gold);
   }
 
-  html[dir="rtl"] .overline {
+  html[dir="rtl"] .label-caps {
     letter-spacing: 0.12em;
   }
 
