@@ -124,10 +124,20 @@ const year = new Date().getFullYear();
           <h3 class="font-display text-base font-semibold text-text-primary">{t('newsletter.title')}</h3>
           <p class="mt-1.5 text-sm text-text-secondary">{t('newsletter.description')}</p>
         </div>
-        <form class="flex flex-col gap-2.5 sm:flex-row" data-newsletter-form>
+        <form
+          class="flex flex-col gap-2.5 sm:flex-row"
+          method="POST"
+          action={siteConfig.formEndpoint}
+          data-newsletter-form
+          data-endpoint={siteConfig.formEndpoint}
+          data-success={t('newsletter.success')}
+          data-error={t('newsletter.error')}
+        >
+          <input type="text" name="_honey" tabindex="-1" autocomplete="off" class="hidden" aria-hidden="true" />
           <label for="newsletter-email" class="sr-only">{t('newsletter.placeholder')}</label>
           <input
             id="newsletter-email"
+            name="email"
             type="email"
             required
             placeholder={t('newsletter.placeholder')}
@@ -140,6 +150,13 @@ const year = new Date().getFullYear();
             {t('newsletter.submit')}
           </button>
         </form>
+        <p
+          class="mt-2.5 hidden text-sm text-text-secondary md:col-start-2"
+          role="status"
+          aria-live="polite"
+          data-newsletter-status
+        >
+        </p>
       </div>
     </div>
 
@@ -159,17 +176,43 @@ const year = new Date().getFullYear();
 </footer>
 
 <script>
-  const form = document.querySelector('[data-newsletter-form]');
-  form?.addEventListener('submit', (e) => {
+  const form = document.querySelector('[data-newsletter-form]') as HTMLFormElement | null;
+
+  form?.addEventListener('submit', async (e) => {
     e.preventDefault();
-    const input = form.querySelector('input') as HTMLInputElement;
+    const input = form.querySelector('input[type="email"]') as HTMLInputElement;
     const button = form.querySelector('button') as HTMLButtonElement;
+    const status = document.querySelector('[data-newsletter-status]') as HTMLParagraphElement;
     if (!input?.value) return;
+
     const originalLabel = button.textContent;
-    button.textContent = '✓';
-    input.value = '';
-    setTimeout(() => {
-      if (originalLabel) button.textContent = originalLabel;
-    }, 2000);
+    button.disabled = true;
+
+    const data = new FormData(form);
+    data.append('_subject', `Newsletter : ${input.value}`);
+    data.append('_template', 'table');
+    data.append('_captcha', 'false');
+
+    try {
+      const res = await fetch(form.dataset.endpoint!, {
+        method: 'POST',
+        headers: { Accept: 'application/json' },
+        body: data,
+      });
+      if (!res.ok) throw new Error('rejected');
+
+      input.value = '';
+      button.textContent = '✓';
+      status.textContent = form.dataset.success!;
+      status.classList.remove('hidden');
+      setTimeout(() => {
+        if (originalLabel) button.textContent = originalLabel;
+      }, 2000);
+    } catch {
+      status.textContent = form.dataset.error!;
+      status.classList.remove('hidden');
+    } finally {
+      button.disabled = false;
+    }
   });
 </script>

@@ -12,7 +12,18 @@ const { locale, services } = Astro.props;
 const t = useTranslations(locale);
 ---
 
-<form id="contact-form" class="space-y-5" data-email={siteConfig.email}>
+<form
+  id="contact-form"
+  class="space-y-5"
+  method="POST"
+  action={siteConfig.formEndpoint}
+  data-endpoint={siteConfig.formEndpoint}
+  data-whatsapp={siteConfig.whatsappUrl}
+  data-label-submit={t('form.submit')}
+  data-label-sending={t('form.sending')}
+>
+  {/* FormSubmit's own honeypot: bots fill it, humans never see it. */}
+  <input type="text" name="_honey" tabindex="-1" autocomplete="off" class="hidden" aria-hidden="true" />
   <div>
     <label for="name" class="mb-2 block text-sm font-medium text-text-primary">{t('form.name')}</label>
     <input
@@ -60,26 +71,65 @@ const t = useTranslations(locale);
   >
     {t('form.submit')}
   </button>
-  <p class="text-center text-xs text-text-secondary">{t('form.responseTime')}</p>
+  <p class="text-center text-xs text-text-secondary" data-form-note>{t('form.responseTime')}</p>
+  <p
+    class="hidden rounded-xl bg-[color-mix(in_oklab,var(--color-accent)_8%,transparent)] px-4 py-3 text-center text-sm text-text-primary"
+    role="status"
+    aria-live="polite"
+    data-form-status
+    data-success={t('form.success')}
+    data-error={t('form.error')}
+  >
+  </p>
 </form>
 
 <script>
   const form = document.getElementById('contact-form') as HTMLFormElement | null;
 
-  form?.addEventListener('submit', (e) => {
-    e.preventDefault();
-    const email = form.dataset.email;
-    const data = new FormData(form);
-    const name = String(data.get('name') || '');
-    const company = String(data.get('company') || '');
-    const service = String(data.get('service') || '');
-    const message = String(data.get('message') || '');
+  if (form) {
+    const button = form.querySelector('button[type="submit"]') as HTMLButtonElement;
+    const status = form.querySelector('[data-form-status]') as HTMLParagraphElement;
+    const note = form.querySelector('[data-form-note]') as HTMLParagraphElement;
+    const endpoint = form.dataset.endpoint!;
+    const whatsapp = form.dataset.whatsapp!;
 
-    const subject = `Nouveau projet : ${service}, ${name}`;
-    const body = [`Nom : ${name}`, company && `Entreprise : ${company}`, `Service : ${service}`, '', message]
-      .filter(Boolean)
-      .join('\n');
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
 
-    window.location.href = `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-  });
+      const data = new FormData(form);
+      const name = String(data.get('name') || '');
+      const service = String(data.get('service') || '');
+
+      // Underscore keys are FormSubmit directives, not form fields: they set
+      // the mail subject and the reply-to, and skip the extra captcha page.
+      data.append('_subject', `Nouveau projet : ${service}, ${name}`);
+      data.append('_template', 'table');
+      data.append('_captcha', 'false');
+      data.append('page', window.location.href);
+
+      button.disabled = true;
+      button.textContent = form.dataset.labelSending!;
+
+      try {
+        const res = await fetch(endpoint, {
+          method: 'POST',
+          headers: { Accept: 'application/json' },
+          body: data,
+        });
+        if (!res.ok) throw new Error('rejected');
+
+        form.reset();
+        note?.classList.add('hidden');
+        status.textContent = status.dataset.success!;
+        status.classList.remove('hidden');
+        button.textContent = form.dataset.labelSubmit!;
+      } catch {
+        status.innerHTML = `${status.dataset.error} <a class="underline" href="${whatsapp}" target="_blank" rel="noopener">WhatsApp</a>`;
+        status.classList.remove('hidden');
+        button.textContent = form.dataset.labelSubmit!;
+      } finally {
+        button.disabled = false;
+      }
+    });
+  }
 </script>

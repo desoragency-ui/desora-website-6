@@ -43,4 +43,18 @@ export const siteConfig = {
    */
   quizEndpoint:
     'https://script.google.com/macros/s/AKfycbyeD1WTE5C0c54Fl0ky2FGv1cqtwu44NxQr4oG7E6uHnTqjGAIR-UgjNAN7AypWAKTLpQ/exec',
+
+  /**
+   * FormSubmit AJAX endpoint: every form on the site posts here and the
+   * submission lands in the DESORA inbox (siteConfig.email).
+   *
+   * No account and no key to ship: FormSubmit routes by the address in the
+   * URL, which is the same public address already exposed in the footer and
+   * the mailto links. The very first submission triggers a one-time
+   * activation email from FormSubmit, the link in it has to be clicked once
+   * before messages start arriving.
+   */
+  get formEndpoint() {
+    return `https://formsubmit.co/ajax/${this.email}`;
+  },
 } as const;
