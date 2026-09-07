@@ -10,8 +10,8 @@ export const siteConfig = {
 
   email: 'desoragency@gmail.com',
 
-  // WhatsApp Business number in E.164 (local 0687554060 → +212 687554060).
-  whatsappNumber: '212687554060',
+  // WhatsApp Business number in E.164 (local 0702243374 → +212 702243374).
+  whatsappNumber: '212702243374',
   get whatsappUrl() {
     return `https://wa.me/${this.whatsappNumber}`;
   },
