@@ -44,6 +44,11 @@ const alternates = locales.map((l) => ({
   href: new URL(`/${l}${restPath ? `/${restPath}` : ''}`, Astro.site).toString(),
 }));
 const xDefaultHref = new URL(`/fr${restPath ? `/${restPath}` : ''}`, Astro.site).toString();
+
+// Most content titles already end in "| DESORA" (or "| ديزورا"); appending the
+// brand again produced "... | DESORA · DESORA". Only brand the ones that lack it.
+const brand = isArabic ? 'ديزورا' : 'DESORA';
+const fullTitle = /DESORA|ديزورا/.test(title) ? title : `${title} | ${brand}`;
 ---
 
 <!doctype html>
@@ -77,15 +82,17 @@ const xDefaultHref = new URL(`/fr${restPath ? `/${restPath}` : ''}`, Astro.site)
     <link rel="apple-touch-icon" href={faviconHref} />
     <meta name="generator" content={Astro.generator} />
 
-    <title>{title} · DESORA</title>
+    <title>{fullTitle}</title>
     <meta name="description" content={description} />
-    <link rel="canonical" href={canonical.toString()} />
+    {/* A noindex page has nothing to canonicalise or localise: pointing search
+        engines at alternates of a page they must not index sends mixed signals. */}
     {noindex && <meta name="robots" content="noindex, nofollow" />}
-    {alternates.map((alt) => <link rel="alternate" hreflang={alt.hreflang} href={alt.href} />)}
-    <link rel="alternate" hreflang="x-default" href={xDefaultHref} />
+    {!noindex && <link rel="canonical" href={canonical.toString()} />}
+    {!noindex && alternates.map((alt) => <link rel="alternate" hreflang={alt.hreflang} href={alt.href} />)}
+    {!noindex && <link rel="alternate" hreflang="x-default" href={xDefaultHref} />}
 
     <meta property="og:type" content="website" />
-    <meta property="og:title" content={`${title} · DESORA`} />
+    <meta property="og:title" content={fullTitle} />
     <meta property="og:description" content={description} />
     <meta property="og:locale" content={locale} />
     <meta name="twitter:card" content="summary_large_image" />

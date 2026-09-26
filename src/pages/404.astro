@@ -1,0 +1,42 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHero from '../components/PageHero.astro';
+import { siteConfig } from '../lib/site-config';
+
+/**
+ * Served by the host for any URL that does not exist, whatever its language
+ * prefix, so the page stays in French (the default locale) and offers the way
+ * back in all three. noindex keeps it out of search results, and the host
+ * still answers with a real 404 status, never a soft 200.
+ */
+const locale = 'fr' as const;
+---
+
+<BaseLayout title="Page introuvable" description="Cette page n'existe pas ou a été déplacée." locale={locale} noindex>
+  <PageHero
+    eyebrow="Erreur 404"
+    title="Cette page n'existe pas, ou plus."
+    subtitle="Le lien est peut-être ancien ou mal copié. Repartez de l'accueil, ou écrivez-nous directement."
+  />
+
+  <section class="px-5 pb-24 sm:px-8">
+    <div class="mx-auto flex max-w-2xl flex-wrap gap-3">
+      <a
+        href="/fr"
+        class="press flex h-12 items-center rounded-full bg-accent-strong px-6 text-sm font-semibold text-accent-foreground transition-colors duration-500 hover:bg-accent-strong-hover"
+      >
+        Retour à l'accueil
+      </a>
+      <a
+        href={siteConfig.whatsappUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+        class="flex h-12 items-center rounded-full border border-border px-6 text-sm font-semibold text-text-primary transition-colors hover:border-accent hover:text-accent"
+      >
+        WhatsApp
+      </a>
+      <a href="/en" lang="en" class="flex h-12 items-center px-3 text-sm text-text-secondary hover:text-accent">English</a>
+      <a href="/ar" lang="ar" dir="rtl" class="flex h-12 items-center px-3 text-sm text-text-secondary hover:text-accent">العربية</a>
+    </div>
+  </section>
+</BaseLayout>

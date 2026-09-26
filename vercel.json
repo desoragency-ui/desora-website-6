@@ -1,57 +1,114 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
+  "trailingSlash": false,
   "redirects": [
     {
+      "source": "/:path(.*)",
+      "has": [
+        {
+          "type": "host",
+          "value": "desora.net"
+        }
+      ],
+      "destination": "https://www.desora.net/:path",
+      "permanent": true
+    },
+    {
       "source": "/",
-      "has": [{ "type": "query", "key": "lang", "value": "en" }],
+      "has": [
+        {
+          "type": "query",
+          "key": "lang",
+          "value": "en"
+        }
+      ],
       "destination": "/en",
       "permanent": false
     },
     {
       "source": "/",
-      "has": [{ "type": "query", "key": "lang", "value": "ar" }],
+      "has": [
+        {
+          "type": "query",
+          "key": "lang",
+          "value": "ar"
+        }
+      ],
       "destination": "/ar",
       "permanent": false
     },
     {
       "source": "/",
-      "has": [{ "type": "query", "key": "lang", "value": "fr" }],
+      "has": [
+        {
+          "type": "query",
+          "key": "lang",
+          "value": "fr"
+        }
+      ],
       "destination": "/fr",
       "permanent": false
     },
-
     {
       "source": "/",
-      "has": [{ "type": "cookie", "key": "desora-lang", "value": "en" }],
+      "has": [
+        {
+          "type": "cookie",
+          "key": "desora-lang",
+          "value": "en"
+        }
+      ],
       "destination": "/en",
       "permanent": false
     },
     {
       "source": "/",
-      "has": [{ "type": "cookie", "key": "desora-lang", "value": "ar" }],
+      "has": [
+        {
+          "type": "cookie",
+          "key": "desora-lang",
+          "value": "ar"
+        }
+      ],
       "destination": "/ar",
       "permanent": false
     },
     {
       "source": "/",
-      "has": [{ "type": "cookie", "key": "desora-lang", "value": "fr" }],
+      "has": [
+        {
+          "type": "cookie",
+          "key": "desora-lang",
+          "value": "fr"
+        }
+      ],
       "destination": "/fr",
       "permanent": false
     },
-
     {
       "source": "/",
-      "has": [{ "type": "header", "key": "accept-language", "value": "^en.*" }],
+      "has": [
+        {
+          "type": "header",
+          "key": "accept-language",
+          "value": "^en.*"
+        }
+      ],
       "destination": "/en",
       "permanent": false
     },
     {
       "source": "/",
-      "has": [{ "type": "header", "key": "accept-language", "value": "^ar.*" }],
+      "has": [
+        {
+          "type": "header",
+          "key": "accept-language",
+          "value": "^ar.*"
+        }
+      ],
       "destination": "/ar",
       "permanent": false
     },
-
     {
       "source": "/",
       "destination": "/fr",

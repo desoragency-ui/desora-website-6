@@ -2,7 +2,6 @@ import { defineConfig } from 'astro/config';
 import tailwindcss from '@tailwindcss/vite';
 import sitemap from '@astrojs/sitemap';
 
-// TODO: replace with the real production domain before going live.
 const SITE_URL = 'https://www.desora.net';
 
 export default defineConfig({
@@ -18,15 +17,23 @@ export default defineConfig({
   },
   integrations: [
     sitemap({
-      // The brief quiz is sent privately to a client once a project is agreed.
-      // It should never appear in search results or the sitemap.
-      filter: (page) => !page.includes('/brief'),
+      // Two kinds of URL stay out of the sitemap:
+      // - the bare root, which only redirects to a language and is never a
+      //   page Google can index (listing it reports as "Page with redirect");
+      // - the brief quiz, sent privately to a client once a project is agreed.
+      filter: (page) => {
+        const path = new URL(page).pathname.replace(/\/$/, '');
+        return path !== '' && !/\/brief$/.test(path);
+      },
+      // Must match the hreflang codes BaseLayout prints in <head>
+      // (src/i18n/config.ts). Mismatched codes between the two are read by
+      // Google as two conflicting annotations.
       i18n: {
         defaultLocale: 'fr',
         locales: {
           fr: 'fr-MA',
           en: 'en',
-          ar: 'ar',
+          ar: 'ar-MA',
         },
       },
     }),

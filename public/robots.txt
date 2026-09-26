@@ -1,0 +1,14 @@
+# DESORA, https://www.desora.net
+#
+# Every crawler is welcome, search engines and AI assistants alike
+# (Googlebot, Bingbot, GPTBot, OAI-SearchBot, ClaudeBot, PerplexityBot,
+# Google-Extended, Applebot...). Being read and cited is the point.
+#
+# The invite-only brief pages (/fr/brief, /en/brief, /ar/brief) are NOT
+# blocked here on purpose: they carry <meta name="robots" content="noindex">,
+# and a crawler can only obey that tag on a page it is allowed to fetch.
+
+User-agent: *
+Allow: /
+
+Sitemap: https://www.desora.net/sitemap-index.xml
