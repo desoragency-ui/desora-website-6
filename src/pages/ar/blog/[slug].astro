@@ -9,6 +9,8 @@ import Icon from '../../../components/Icon.astro';
 import { useTranslations, localizedPath } from '../../../i18n/utils';
 import { getBlogPosts, getCategoryMeta, estimateReadingMinutes } from '../../../lib/content';
 import { getCollection } from 'astro:content';
+import { getImage } from 'astro:assets';
+import { blogPosting, abs } from '../../../lib/schema';
 
 export async function getStaticPaths() {
   const all = await getCollection('blog', (entry) => entry.id.startsWith('ar/'));
@@ -28,9 +30,30 @@ const category = await getCategoryMeta(locale, post.entry.data.category);
 const categoryLabel = category.slug === 'marketing-general' ? t('blog.category.marketingGeneral') : category.label;
 const readingMinutes = estimateReadingMinutes(post.entry.body ?? '');
 const formattedDate = new Intl.DateTimeFormat('ar', { dateStyle: 'long' }).format(post.entry.data.publishDate);
+
+const url = new URL(Astro.url.pathname, Astro.site).toString();
+const heroMedia = getMedia(`blog-${slug}`);
+const heroImage = heroMedia ? await getImage({ src: heroMedia, width: 1200, format: 'jpg', quality: 80 }) : undefined;
+const articleSchema = blogPosting({
+  url,
+  headline: post.entry.data.title,
+  description: post.entry.data.excerpt,
+  locale,
+  datePublished: post.entry.data.publishDate,
+  section: categoryLabel,
+  wordCount: (post.entry.body ?? '').trim().split(/\s+/).length,
+  image: heroImage ? abs(heroImage.src) : undefined,
+});
 ---
 
-<BaseLayout title={post.entry.data.seoTitle} description={post.entry.data.seoDescription} locale={locale}>
+<BaseLayout
+  title={post.entry.data.seoTitle}
+  description={post.entry.data.seoDescription}
+  locale={locale}
+  schema={[articleSchema]}
+  mainEntityId={`${url}#article`}
+  breadcrumbName={post.entry.data.title}
+>
   <article class="px-5 pb-24 pt-32 sm:px-8">
     <div class="mx-auto max-w-3xl" data-reveal>
       <a href={localizedPath(locale, 'blog')} class="flex items-center gap-2 text-sm font-medium text-text-secondary hover:text-accent">

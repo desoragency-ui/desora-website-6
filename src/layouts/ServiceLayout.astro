@@ -12,6 +12,7 @@ import RelatedServices from '../components/services/RelatedServices.astro';
 import FinalCta from '../components/home/FinalCta.astro';
 import BriefCta from '../components/services/BriefCta.astro';
 import { useTranslations } from '../i18n/utils';
+import { service as serviceNode, faqPage } from '../lib/schema';
 import type { Locale } from '../i18n/config';
 import type { getServiceBySlug } from '../lib/content';
 
@@ -22,9 +23,27 @@ interface Props {
 
 const { locale, service } = Astro.props;
 const t = useTranslations(locale);
+
+const url = new URL(Astro.url.pathname, Astro.site).toString();
+const schema = [
+  serviceNode({
+    url,
+    name: service.title,
+    description: service.seoDescription,
+    subServices: service.subServices,
+  }),
+  ...(service.faq.length ? [faqPage(url, service.faq)] : []),
+];
 ---
 
-<BaseLayout title={service.seoTitle} description={service.seoDescription} locale={locale}>
+<BaseLayout
+  title={service.seoTitle}
+  description={service.seoDescription}
+  locale={locale}
+  schema={schema}
+  mainEntityId={`${url}#service`}
+  breadcrumbName={service.title}
+>
   <ServiceHero locale={locale} icon={service.icon} title={service.title} h1={service.h1} slug={service.slug} />
   <IncludedGrid locale={locale} items={service.includedItems} />
   <SubServicesList items={service.subServices} />

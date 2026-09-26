@@ -7,6 +7,7 @@ import { getCaseStudy } from '../lib/case-studies';
 import { findClient } from '../lib/clients';
 import { getMedia } from '../lib/media';
 import { siteConfig } from '../lib/site-config';
+import { caseStudyArticle } from '../lib/schema';
 import { useTranslations, localizedPath } from '../i18n/utils';
 import type { Locale } from '../i18n/config';
 
@@ -69,9 +70,26 @@ const labels = {
 }[locale];
 
 const title = `${study.client}, ${labels.eyebrow.toLowerCase()}`;
+
+const url = new URL(Astro.url.pathname, Astro.site).toString();
+const articleSchema = caseStudyArticle({
+  url,
+  headline: title,
+  description: study.summary,
+  locale,
+  client: study.client,
+  sector: study.sector,
+});
 ---
 
-<BaseLayout title={title} description={study.summary} locale={locale}>
+<BaseLayout
+  title={title}
+  description={study.summary}
+  locale={locale}
+  schema={[articleSchema]}
+  mainEntityId={`${url}#article`}
+  breadcrumbName={study.client}
+>
   <!-- Opening. The client's own mark carries the page, not our headline. -->
   <header class="relative overflow-hidden pb-16 pt-36 sm:pb-20 sm:pt-44" data-depth-scope>
     <div class="ambient-field" aria-hidden="true">

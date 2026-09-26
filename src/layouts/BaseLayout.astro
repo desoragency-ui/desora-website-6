@@ -5,6 +5,17 @@ import Preloader from '../components/Preloader.astro';
 import FloatingCTA from '../components/FloatingCTA.astro';
 import { locales, dirFor, hreflangTags, type Locale } from '../i18n/config';
 import { brandFavicon } from '../lib/brand-assets';
+import { useTranslations } from '../i18n/utils';
+import { getHome, getServices } from '../lib/content';
+import {
+  organization,
+  website,
+  webPage,
+  breadcrumbList,
+  toJsonLd,
+  type PageType,
+  type SchemaNode,
+} from '../lib/schema';
 import '../styles/global.css';
 
 // Use the real brand icon if present, else the generated monogram favicon.
@@ -21,9 +32,24 @@ interface Props {
   bare?: boolean;
   /** Keep the page out of search results (the quiz is invite-only). */
   noindex?: boolean;
+  /** Page-specific JSON-LD nodes (Service, BlogPosting...), merged into the page's @graph. */
+  schema?: SchemaNode[];
+  /** @id of the node this page is about, e.g. the Service or BlogPosting it describes. */
+  mainEntityId?: string;
+  /** Short label for this page's last breadcrumb. Defaults to the title minus its brand suffix. */
+  breadcrumbName?: string;
 }
 
-const { title, description, locale, bare = false, noindex = false } = Astro.props;
+const {
+  title,
+  description,
+  locale,
+  bare = false,
+  noindex = false,
+  schema = [],
+  mainEntityId,
+  breadcrumbName,
+} = Astro.props;
 const dir = dirFor(locale);
 
 // Arabic pages set every glyph in Amiri (display) and Cairo (body); Latin pages
@@ -49,6 +75,56 @@ const xDefaultHref = new URL(`/fr${restPath ? `/${restPath}` : ''}`, Astro.site)
 // brand again produced "... | DESORA · DESORA". Only brand the ones that lack it.
 const brand = isArabic ? 'ديزورا' : 'DESORA';
 const fullTitle = /DESORA|ديزورا/.test(title) ? title : `${title} | ${brand}`;
+
+// Structured data: one connected @graph per indexable page. Page type and
+// breadcrumb trail are read off the URL, so ordinary pages need no props;
+// pages that describe a service, article or case study pass extra nodes.
+let jsonLd: string | null = null;
+if (!noindex) {
+  const t = useTranslations(locale);
+  const rest = segments.slice(1);
+  const pageUrl = canonical.toString();
+
+  const pageType: PageType =
+    rest.length === 1 && rest[0] === 'a-propos'
+      ? 'AboutPage'
+      : rest.length === 1 && rest[0] === 'contact'
+        ? 'ContactPage'
+        : rest.length === 1 && rest[0] === 'blog'
+          ? 'CollectionPage'
+          : 'WebPage';
+
+  // Only real pages go in the trail: /services and /realisations have no
+  // index page of their own, /blog does.
+  const trail: { name: string; url: string }[] = [];
+  if (rest.length > 0) {
+    trail.push({ name: t('nav.home'), url: new URL(`/${locale}`, Astro.site).toString() });
+    if (rest[0] === 'blog' && rest.length > 1) {
+      trail.push({ name: t('nav.blog'), url: new URL(`/${locale}/blog`, Astro.site).toString() });
+    }
+    trail.push({ name: breadcrumbName ?? title.split(' | ')[0], url: pageUrl });
+  }
+
+  const home = await getHome(locale);
+  const services = await getServices(locale);
+
+  const nodes: SchemaNode[] = [
+    organization(home?.seoDescription ?? description, services.map((s) => s.title)),
+    website(),
+    webPage({
+      url: pageUrl,
+      name: fullTitle,
+      description,
+      locale,
+      type: pageType,
+      hasBreadcrumb: trail.length > 0,
+      mainEntityId,
+    }),
+    ...(trail.length > 0 ? [breadcrumbList(pageUrl, trail)] : []),
+    ...schema,
+  ];
+  jsonLd = toJsonLd(nodes);
+}
 ---
 
 <!doctype html>
@@ -96,6 +172,7 @@ const fullTitle = /DESORA|ديزورا/.test(title) ? title : `${title} | ${bran
     <meta property="og:description" content={description} />
     <meta property="og:locale" content={locale} />
     <meta name="twitter:card" content="summary_large_image" />
+    {jsonLd && <script type="application/ld+json" is:inline set:html={jsonLd} />}
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
