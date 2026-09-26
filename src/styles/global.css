@@ -1252,3 +1252,43 @@ html.preloader-skip #preloader {
     transform: none;
   }
 }
+
+/* ---------------------------------------------------------------- article prose
+   Elements the blog templates' utility classes do not cover: numbered steps,
+   comparison tables and emphasis. Tables scroll inside their own box on a
+   phone so the page itself never scrolls sideways. */
+.prose-content ol {
+  margin-top: 1rem;
+  list-style: decimal;
+  padding-inline-start: 1.25rem;
+}
+.prose-content ol li::marker {
+  color: var(--color-accent);
+  font-weight: 600;
+}
+.prose-content strong {
+  color: var(--color-text-primary);
+  font-weight: 600;
+}
+.prose-content table {
+  display: block;
+  overflow-x: auto;
+  margin-top: 1.5rem;
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+.prose-content th,
+.prose-content td {
+  border-bottom: 1px solid var(--color-border);
+  padding: 0.6rem 1rem 0.6rem 0;
+  text-align: start;
+  vertical-align: top;
+}
+.prose-content th {
+  color: var(--color-text-primary);
+  font-weight: 600;
+}
+.prose-content td {
+  color: var(--color-text-secondary);
+}

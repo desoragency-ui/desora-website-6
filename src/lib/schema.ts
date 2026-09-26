@@ -167,11 +167,13 @@ export function blogPosting(opts: {
   description: string;
   locale: Locale;
   datePublished: Date;
+  dateModified?: Date;
   section: string;
   wordCount: number;
   image?: string;
 }): SchemaNode {
   const date = opts.datePublished.toISOString().slice(0, 10);
+  const modified = (opts.dateModified ?? opts.datePublished).toISOString().slice(0, 10);
   return {
     '@type': 'BlogPosting',
     '@id': `${opts.url}#article`,
@@ -179,7 +181,7 @@ export function blogPosting(opts: {
     description: opts.description,
     inLanguage: hreflangTags[opts.locale],
     datePublished: date,
-    dateModified: date,
+    dateModified: modified,
     author: { '@id': ORG_ID },
     publisher: { '@id': ORG_ID },
     mainEntityOfPage: { '@id': `${opts.url}#webpage` },

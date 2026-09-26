@@ -17,7 +17,7 @@ Quand quelqu'un cherche "agence immobilière Casablanca" plutôt que "agence imm
 
 ## La fiche Google Business, le levier le plus sous-exploité
 
-La majorité des PME marocaines ont soit aucune fiche Google Business, soit une fiche incomplète : horaires absents, catégorie mal choisie, aucune photo récente. C'est pourtant souvent le premier élément que voit un client potentiel, avant même de visiter le site. Une fiche complète et régulièrement mise à jour peut à elle seule générer plus de contacts qu'un site mal référencé.
+La majorité des PME marocaines ont soit aucune fiche Google Business, soit une fiche incomplète : horaires absents, catégorie mal choisie, aucune photo récente. C'est pourtant souvent le premier élément que voit un client potentiel, avant même de visiter le site. Une fiche complète et régulièrement mise à jour peut à elle seule générer plus de contacts qu'un site mal référencé. Nous détaillons chaque étape dans notre [guide Google Business Profile au Maroc](/fr/blog/google-business-profile-maroc).
 
 ## Le contenu qui cible une ville, pas juste un secteur
 

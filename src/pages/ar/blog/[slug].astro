@@ -10,7 +10,8 @@ import { useTranslations, localizedPath } from '../../../i18n/utils';
 import { getBlogPosts, getCategoryMeta, estimateReadingMinutes } from '../../../lib/content';
 import { getCollection } from 'astro:content';
 import { getImage } from 'astro:assets';
-import { blogPosting, abs } from '../../../lib/schema';
+import { blogPosting, faqPage, abs } from '../../../lib/schema';
+import FAQAccordion from '../../../components/services/FAQAccordion.astro';
 import { ogImageFrom } from '../../../lib/og';
 
 export async function getStaticPaths() {
@@ -31,6 +32,9 @@ const category = await getCategoryMeta(locale, post.entry.data.category);
 const categoryLabel = category.slug === 'marketing-general' ? t('blog.category.marketingGeneral') : category.label;
 const readingMinutes = estimateReadingMinutes(post.entry.body ?? '');
 const formattedDate = new Intl.DateTimeFormat('ar', { dateStyle: 'long' }).format(post.entry.data.publishDate);
+const formattedUpdated = post.entry.data.updatedDate
+  ? new Intl.DateTimeFormat('ar', { dateStyle: 'long' }).format(post.entry.data.updatedDate)
+  : null;
 
 const url = new URL(Astro.url.pathname, Astro.site).toString();
 const heroMedia = getMedia(`blog-${slug}`);
@@ -42,6 +46,7 @@ const articleSchema = blogPosting({
   description: post.entry.data.excerpt,
   locale,
   datePublished: post.entry.data.publishDate,
+  dateModified: post.entry.data.updatedDate,
   section: categoryLabel,
   wordCount: (post.entry.body ?? '').trim().split(/\s+/).length,
   // Until a post has its own photograph, the branded card stands in: Google
@@ -54,7 +59,7 @@ const articleSchema = blogPosting({
   title={post.entry.data.seoTitle}
   description={post.entry.data.seoDescription}
   locale={locale}
-  schema={[articleSchema]}
+  schema={[articleSchema, ...(post.entry.data.faq?.length ? [faqPage(url, post.entry.data.faq)] : [])]}
   mainEntityId={`${url}#article`}
   breadcrumbName={post.entry.data.title}
   ogImage={ogImage}
@@ -75,7 +80,17 @@ const articleSchema = blogPosting({
         {post.entry.data.title}
       </h1>
       <div class="mt-5 flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-text-secondary">
+        <a href={localizedPath(locale, 'a-propos')} class="font-medium text-text-primary hover:text-accent">{t('blog.byline')}</a>
+        <span aria-hidden="true">·</span>
         <span>{t('blog.publishedOn', { date: formattedDate })}</span>
+        {
+          formattedUpdated && (
+            <>
+              <span aria-hidden="true">·</span>
+              <span>{t('blog.updatedOn', { date: formattedUpdated })}</span>
+            </>
+          )
+        }
         <span aria-hidden="true">·</span>
         <span>{t('blog.readingTime', { min: String(readingMinutes) })}</span>
       </div>
@@ -126,4 +141,5 @@ const articleSchema = blogPosting({
       </aside>
     </div>
   </article>
+  {post.entry.data.faq?.length ? <FAQAccordion locale={locale} items={post.entry.data.faq} /> : null}
 </BaseLayout>

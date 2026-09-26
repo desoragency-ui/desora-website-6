@@ -26,4 +26,4 @@ Pour des services à forte intention d'achat immédiate (urgence médicale, rép
 
 ## La question à se poser avant de choisir
 
-Plutôt que de se demander quelle plateforme est la meilleure dans l'absolu, la bonne question est : est-ce que mes clients savent déjà qu'ils ont besoin de mon produit, ou est-ce que je dois d'abord leur donner envie ? La réponse détermine la plateforme de départ, sans empêcher de combiner les deux une fois le budget disponible.
+Plutôt que de se demander quelle plateforme est la meilleure dans l'absolu, la bonne question est : est-ce que mes clients savent déjà qu'ils ont besoin de mon produit, ou est-ce que je dois d'abord leur donner envie ? La réponse détermine la plateforme de départ, sans empêcher de combiner les deux une fois le budget disponible. Si vous démarrez avec Meta, suivez notre [guide pour lancer votre première campagne Meta Ads](/fr/blog/lancer-campagne-meta-ads-maroc).

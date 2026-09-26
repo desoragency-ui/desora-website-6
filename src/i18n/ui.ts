@@ -47,6 +47,8 @@ export const ui = {
     'faq.title': 'Questions fréquentes',
 
     'related.title': 'Services complémentaires',
+
+    'related.posts': 'Articles liés',
     'service.finalCtaHeading': 'Prêt à discuter de {service} ?',
 
     'caseStudy.label': 'Étude de cas',
@@ -95,6 +97,8 @@ export const ui = {
     'blog.tableOfContents': 'Sommaire',
     'blog.share': 'Partager',
     'blog.publishedOn': 'Publié le {date}',
+    'blog.updatedOn': 'Mis à jour le {date}',
+    'blog.byline': 'Par DESORA',
     'blog.empty': 'Aucun article dans cette catégorie pour le moment.',
 
     'preloader.loading': 'Chargement',
@@ -149,6 +153,8 @@ export const ui = {
     'faq.title': 'Frequently asked questions',
 
     'related.title': 'Related services',
+
+    'related.posts': 'Related articles',
     'service.finalCtaHeading': 'Ready to discuss {service}?',
 
     'caseStudy.label': 'Case study',
@@ -197,6 +203,8 @@ export const ui = {
     'blog.tableOfContents': 'Table of contents',
     'blog.share': 'Share',
     'blog.publishedOn': 'Published on {date}',
+    'blog.updatedOn': 'Updated on {date}',
+    'blog.byline': 'By DESORA',
     'blog.empty': 'No articles in this category yet.',
 
     'preloader.loading': 'Loading',
@@ -251,6 +259,8 @@ export const ui = {
     'faq.title': 'الأسئلة الشائعة',
 
     'related.title': 'خدمات مكملة',
+
+    'related.posts': 'مقالات ذات صلة',
     'service.finalCtaHeading': 'هل أنت مستعد لمناقشة {service}؟',
 
     'caseStudy.label': 'دراسة حالة',
@@ -299,6 +309,8 @@ export const ui = {
     'blog.tableOfContents': 'المحتويات',
     'blog.share': 'مشاركة',
     'blog.publishedOn': 'نُشر في {date}',
+    'blog.updatedOn': 'حُدّث في {date}',
+    'blog.byline': 'بقلم ديزورا',
     'blog.empty': 'لا توجد مقالات في هذه الفئة حاليًا.',
 
     'preloader.loading': 'جارٍ التحميل',

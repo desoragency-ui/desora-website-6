@@ -26,4 +26,4 @@ For services with strong immediate buying intent (medical emergencies, repairs, 
 
 ## The question to ask before choosing
 
-Rather than asking which platform is best in the abstract, the right question is: do my customers already know they need my product, or do I need to create that desire first? The answer determines the starting platform, without ruling out combining both once budget allows.
+Rather than asking which platform is best in the abstract, the right question is: do my customers already know they need my product, or do I need to create that desire first? The answer determines the starting platform, without ruling out combining both once budget allows. If you start with Meta, follow our [guide to launching your first Meta Ads campaign](/en/blog/lancer-campagne-meta-ads-maroc).

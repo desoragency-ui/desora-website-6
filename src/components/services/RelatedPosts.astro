@@ -1,0 +1,34 @@
+---
+import BlogCard from '../blog/BlogCard.astro';
+import { useTranslations } from '../../i18n/utils';
+import { getBlogPosts } from '../../lib/content';
+import type { Locale } from '../../i18n/config';
+
+/**
+ * Articles filed under this service's category. Links each service page to
+ * the guides that answer its buyers' questions, and each guide gets a link
+ * back from the page it supports: the two-way internal linking that tells
+ * search engines which page is the authority on the topic.
+ */
+interface Props {
+  locale: Locale;
+  category: string;
+}
+
+const { locale, category } = Astro.props;
+const t = useTranslations(locale);
+const posts = (await getBlogPosts(locale)).filter((p) => p.entry.data.category === category).slice(0, 3);
+---
+
+{
+  posts.length > 0 && (
+    <section class="mx-auto max-w-7xl px-5 pb-4 pt-20 sm:px-8" data-curtain>
+      <h2 class="font-display text-2xl font-semibold text-text-primary" data-reveal="lines">{t('related.posts')}</h2>
+      <div class="mt-8 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3" data-reveal-group>
+        {posts.map((post) => (
+          <BlogCard locale={locale} slug={post.slug} entry={post.entry} />
+        ))}
+      </div>
+    </section>
+  )
+}

@@ -17,7 +17,7 @@ When someone searches "real estate agency Casablanca" instead of "real estate ag
 
 ## Your Google Business profile, the most underused lever
 
-Most Moroccan SMEs either have no Google Business profile or an incomplete one: missing hours, the wrong category, no recent photos. Yet it's often the first thing a potential customer sees, even before visiting the website. A complete, regularly updated profile can generate more contacts on its own than a poorly optimized site.
+Most Moroccan SMEs either have no Google Business profile or an incomplete one: missing hours, the wrong category, no recent photos. Yet it's often the first thing a potential customer sees, even before visiting the website. A complete, regularly updated profile can generate more contacts on its own than a poorly optimized site. We walk through every step in our [Google Business Profile guide for Morocco](/en/blog/google-business-profile-maroc).
 
 ## Content that targets a city, not just an industry
 

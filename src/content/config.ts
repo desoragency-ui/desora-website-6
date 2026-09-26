@@ -91,9 +91,13 @@ const blog = defineCollection({
     excerpt: z.string(),
     category: z.string(),
     publishDate: z.coerce.date(),
+    /** Set only when the post was substantially revised: drives dateModified and the "updated" line. */
+    updatedDate: z.coerce.date().optional(),
     heroImage: z.string().optional(),
     /** Answer-first summary shown at the top of the post: what AI answer engines quote. */
     keyTakeaways: z.array(z.string()).optional(),
+    /** Questions answered at the end of the post, mirrored as FAQPage structured data. */
+    faq: z.array(z.object({ question: z.string(), answer: z.string() })).optional(),
     seoTitle: z.string(),
     seoDescription: z.string(),
   }),
