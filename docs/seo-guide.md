@@ -88,6 +88,9 @@ ChatGPT, Perplexity and Gemini recommend businesses that are *described consiste
 | 6 | **Real client quotes** with permission (name, role) | Testimonials and reviews are never invented on this site |
 | 7 | **Real numbers you can prove** (results, projects delivered, years active) | Specific facts are what AI answers quote |
 | 8 | **Directory profile links** once created (Clutch, Sortlist...) | Added to `sameAs` |
+| 9 | **Your real price ranges** (even "from X MAD" per pack) | "prix site web maroc" is the biggest search cluster; the price guide ranks better with real figures |
+| 10 | **Real photos** of your work, workspace, or you at work | Replace the abstract blog covers and stock service photos: original images rank in Google Images and build trust |
+| 11 | **Confirmation of the cities you actually serve** | Unlocks city pages ("agence marketing digital casablanca / rabat / tanger"): you have real clients in all three |
 
 ---
 
@@ -97,3 +100,34 @@ ChatGPT, Perplexity and Gemini recommend businesses that are *described consiste
 - Refresh an old article every month (new facts, new date).
 - Internal link from every new article to the matching service page.
 - Check Search Console weekly, Bing monthly.
+
+---
+
+## 8. Articles already published (FR, EN, AR)
+
+| Article | Main queries targeted |
+|---|---|
+| Google Business Profile au Maroc | google my business maroc, comment créer / optimiser google my business, fiche google my business prix |
+| Meta Ads au Maroc : première campagne | meta ads maroc, comment lancer une campagne meta ads, prix publicité facebook maroc |
+| Prix d'un site web au Maroc | prix site web maroc, création site web maroc prix, devis creation site web maroc |
+| SEO local au Maroc | seo local maroc, référencement local |
+| Meta Ads ou Google Ads | meta ads ou google ads, publicité pme maroc |
+| WhatsApp ou formulaire | whatsapp business maroc, formulaire de contact |
+
+## 9. Next articles, in priority order (from Google Autocomplete, Morocco)
+
+1. **WhatsApp Business pour entreprise au Maroc**: whatsapp business maroc, comment utiliser whatsapp business, whatsapp business api prix
+2. **Community manager au Maroc: missions, tarifs, freelance ou agence**: community manager maroc tarif, gestion reseaux sociaux prix
+3. **Identité visuelle: étapes et ce qui fait le prix**: prix identité visuelle, création logo maroc prix, comment créer une identité visuelle
+4. **Landing page qui convertit**: comment créer une landing page qui convertit, landing page prix maroc
+5. **Site e-commerce au Maroc: paiement, livraison, coûts**: site e commerce maroc prix, création site e commerce maroc
+6. **Référencement naturel: délais et ce qui fait le prix**: prix référencement naturel, agence seo maroc
+7. **Comment choisir une agence marketing digital au Maroc**: agence marketing digital maroc, casablanca, rabat, tanger
+
+## 10. Checking search volumes in Google Keyword Planner (free)
+
+1. https://ads.google.com > create an account. If it pushes you to create a campaign, choose **Switch to Expert Mode**, then **Create an account without a campaign**.
+2. **Tools > Planning > Keyword Planner > Get search volume and forecasts**.
+3. Paste the queries above. Location: **Morocco**. Language: **French** (run again with **Arabic**).
+4. Without active ad spend, Google shows ranges (for example 100 to 1K) instead of exact numbers: enough to rank the list.
+
