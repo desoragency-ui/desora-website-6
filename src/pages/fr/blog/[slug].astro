@@ -11,6 +11,7 @@ import { getBlogPosts, getCategoryMeta, estimateReadingMinutes } from '../../../
 import { getCollection } from 'astro:content';
 import { getImage } from 'astro:assets';
 import { blogPosting, abs } from '../../../lib/schema';
+import { ogImageFrom } from '../../../lib/og';
 
 export async function getStaticPaths() {
   const all = await getCollection('blog', (entry) => entry.id.startsWith('fr/'));
@@ -36,6 +37,7 @@ const formattedDate = new Intl.DateTimeFormat(locale === 'fr' ? 'fr-MA' : locale
 const url = new URL(Astro.url.pathname, Astro.site).toString();
 const heroMedia = getMedia(`blog-${slug}`);
 const heroImage = heroMedia ? await getImage({ src: heroMedia, width: 1200, format: 'jpg', quality: 80 }) : undefined;
+const ogImage = await ogImageFrom(heroMedia);
 const articleSchema = blogPosting({
   url,
   headline: post.entry.data.title,
@@ -44,7 +46,9 @@ const articleSchema = blogPosting({
   datePublished: post.entry.data.publishDate,
   section: categoryLabel,
   wordCount: (post.entry.body ?? '').trim().split(/\s+/).length,
-  image: heroImage ? abs(heroImage.src) : undefined,
+  // Until a post has its own photograph, the branded card stands in: Google
+  // recommends an image on every article.
+  image: abs(heroImage ? heroImage.src : ogImage.src),
 });
 ---
 
@@ -55,6 +59,9 @@ const articleSchema = blogPosting({
   schema={[articleSchema]}
   mainEntityId={`${url}#article`}
   breadcrumbName={post.entry.data.title}
+  ogImage={ogImage}
+  ogType="article"
+  publishedTime={post.entry.data.publishDate}
 >
   <article class="px-5 pb-24 pt-32 sm:px-8">
     <div class="mx-auto max-w-3xl" data-reveal>
@@ -75,6 +82,28 @@ const articleSchema = blogPosting({
         <span>{t('blog.readingTime', { min: String(readingMinutes) })}</span>
       </div>
     </div>
+
+    {/* Answer first: the post's conclusions in plain sentences, in the HTML
+        before the body, where readers skimming and AI answer engines
+        quoting both look first. */}
+    {
+      post.entry.data.keyTakeaways && (
+        <aside
+          class="mx-auto mt-10 max-w-3xl rounded-2xl border border-border bg-surface p-6 sm:p-8"
+          aria-labelledby="key-takeaways"
+        >
+          <h2 id="key-takeaways" class="label-caps">{t('blog.keyTakeaways')}</h2>
+          <ul class="mt-4 space-y-3">
+            {post.entry.data.keyTakeaways.map((item) => (
+              <li class="flex gap-3 leading-relaxed text-text-primary">
+                <span class="mt-2.5 h-1.5 w-1.5 shrink-0 rotate-45 bg-gold" aria-hidden="true" />
+                <span>{item}</span>
+              </li>
+            ))}
+          </ul>
+        </aside>
+      )
+    }
 
     <div class="mx-auto mt-10 max-w-5xl" data-reveal>
       <Figure

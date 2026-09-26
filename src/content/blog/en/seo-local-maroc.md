@@ -5,6 +5,10 @@ category: "seo"
 publishDate: 2026-06-10
 seoTitle: "Local SEO in Morocco: A Practical Guide | DESORA"
 seoDescription: "The local SEO levers that actually matter for a Moroccan SME: Google Business profile, city-specific content, customer reviews."
+keyTakeaways:
+  - "For local searches, Google prioritises proximity, local relevance and the Google Business Profile."
+  - "A complete Google Business Profile (right category, opening hours, recent photos) can bring more enquiries than a poorly ranked website."
+  - "Name the cities you serve explicitly, with genuinely useful content, and collect recent Google reviews that you reply to."
 ---
 
 ## Why local SEO is different from classic SEO

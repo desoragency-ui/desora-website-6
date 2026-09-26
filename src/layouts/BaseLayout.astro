@@ -16,6 +16,7 @@ import {
   type PageType,
   type SchemaNode,
 } from '../lib/schema';
+import { defaultOgImage, type OgImage } from '../lib/og';
 import '../styles/global.css';
 
 // Use the real brand icon if present, else the generated monogram favicon.
@@ -38,6 +39,12 @@ interface Props {
   mainEntityId?: string;
   /** Short label for this page's last breadcrumb. Defaults to the title minus its brand suffix. */
   breadcrumbName?: string;
+  /** Share-card image. Defaults to the branded card. */
+  ogImage?: OgImage;
+  /** Blog posts are articles to Open Graph; everything else is a website page. */
+  ogType?: 'website' | 'article';
+  /** Article publish date, printed as article:published_time. */
+  publishedTime?: Date;
 }
 
 const {
@@ -49,6 +56,9 @@ const {
   schema = [],
   mainEntityId,
   breadcrumbName,
+  ogImage = defaultOgImage,
+  ogType = 'website',
+  publishedTime,
 } = Astro.props;
 const dir = dirFor(locale);
 
@@ -75,6 +85,10 @@ const xDefaultHref = new URL(`/fr${restPath ? `/${restPath}` : ''}`, Astro.site)
 // brand again produced "... | DESORA · DESORA". Only brand the ones that lack it.
 const brand = isArabic ? 'ديزورا' : 'DESORA';
 const fullTitle = /DESORA|ديزورا/.test(title) ? title : `${title} | ${brand}`;
+
+// Open Graph wants ll_CC locales, not BCP-47 tags.
+const ogLocales: Record<Locale, string> = { fr: 'fr_MA', en: 'en_US', ar: 'ar_MA' };
+const ogImageUrl = new URL(ogImage.src, Astro.site).toString();
 
 // Structured data: one connected @graph per indexable page. Page type and
 // breadcrumb trail are read off the URL, so ordinary pages need no props;
@@ -167,11 +181,26 @@ if (!noindex) {
     {!noindex && alternates.map((alt) => <link rel="alternate" hreflang={alt.hreflang} href={alt.href} />)}
     {!noindex && <link rel="alternate" hreflang="x-default" href={xDefaultHref} />}
 
-    <meta property="og:type" content="website" />
+    <meta property="og:type" content={ogType} />
+    <meta property="og:site_name" content="DESORA" />
     <meta property="og:title" content={fullTitle} />
     <meta property="og:description" content={description} />
-    <meta property="og:locale" content={locale} />
+    <meta property="og:url" content={canonical.toString()} />
+    <meta property="og:locale" content={ogLocales[locale]} />
+    {locales.filter((l) => l !== locale).map((l) => <meta property="og:locale:alternate" content={ogLocales[l]} />)}
+    <meta property="og:image" content={ogImageUrl} />
+    <meta property="og:image:type" content={ogImage.type} />
+    <meta property="og:image:width" content={String(ogImage.width)} />
+    <meta property="og:image:height" content={String(ogImage.height)} />
+    <meta property="og:image:alt" content={fullTitle} />
+    {ogType === 'article' && publishedTime && (
+      <meta property="article:published_time" content={publishedTime.toISOString()} />
+    )}
     <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={fullTitle} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImageUrl} />
+    <meta name="theme-color" content="#161616" />
     {jsonLd && <script type="application/ld+json" is:inline set:html={jsonLd} />}
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />

@@ -1,6 +1,6 @@
 ---
 seoTitle: "À propos de DESORA | Agence marketing digital au Maroc"
-seoDescription: "DESORA est une agence marketing digital pilotée directement par son fondateur, avec une approche systémique et une vraie capacité multilingue au service des marques marocaines."
+seoDescription: "DESORA, agence marketing digital au Maroc pilotée par son fondateur : approche systémique, accès direct, et une vraie capacité multilingue FR, EN, AR."
 hero:
   title: "DESORA n'est pas une agence de plus. C'est un choix délibéré de rester petit et direct."
   subtitle: "Pas de hiérarchie à traverser, pas de compte confié à un junior pendant qu'un senior a vendu le projet. Une seule personne responsable, du premier brief au dernier résultat."

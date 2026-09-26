@@ -13,6 +13,8 @@ import FinalCta from '../components/home/FinalCta.astro';
 import BriefCta from '../components/services/BriefCta.astro';
 import { useTranslations } from '../i18n/utils';
 import { service as serviceNode, faqPage } from '../lib/schema';
+import { ogImageFrom } from '../lib/og';
+import { getServiceMedia } from '../lib/media';
 import type { Locale } from '../i18n/config';
 import type { getServiceBySlug } from '../lib/content';
 
@@ -34,6 +36,7 @@ const schema = [
   }),
   ...(service.faq.length ? [faqPage(url, service.faq)] : []),
 ];
+const ogImage = await ogImageFrom(getServiceMedia(service.slug));
 ---
 
 <BaseLayout
@@ -43,6 +46,7 @@ const schema = [
   schema={schema}
   mainEntityId={`${url}#service`}
   breadcrumbName={service.title}
+  ogImage={ogImage}
 >
   <ServiceHero locale={locale} icon={service.icon} title={service.title} h1={service.h1} slug={service.slug} />
   <IncludedGrid locale={locale} items={service.includedItems} />

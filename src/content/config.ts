@@ -92,6 +92,8 @@ const blog = defineCollection({
     category: z.string(),
     publishDate: z.coerce.date(),
     heroImage: z.string().optional(),
+    /** Answer-first summary shown at the top of the post: what AI answer engines quote. */
+    keyTakeaways: z.array(z.string()).optional(),
     seoTitle: z.string(),
     seoDescription: z.string(),
   }),

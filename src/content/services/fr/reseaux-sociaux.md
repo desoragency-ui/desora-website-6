@@ -4,7 +4,7 @@ icon: "social"
 title: "Réseaux Sociaux & Contenu"
 h1: "Du contenu qui construit une marque. Pas juste des posts qui remplissent un calendrier."
 tagline: "Une présence sociale cohérente, qui donne envie de suivre et de recommander."
-seoTitle: "Gestion des réseaux sociaux & création de contenu au Maroc | DESORA"
+seoTitle: "Réseaux sociaux & création de contenu au Maroc | DESORA"
 seoDescription: "Stratégie éditoriale, création de contenu et community management pensés pour construire une marque reconnaissable, pas remplir un calendrier de publication."
 includedItems:
   - icon: "target"

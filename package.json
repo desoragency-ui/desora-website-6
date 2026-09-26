@@ -9,7 +9,8 @@
     "build": "astro check && astro build",
     "preview": "astro preview",
     "astro": "astro",
-    "check": "astro check"
+    "check": "astro check",
+    "postbuild": "node scripts/indexnow.mjs"
   },
   "dependencies": {
     "astro": "^5.0.0",

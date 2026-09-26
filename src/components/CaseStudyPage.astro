@@ -8,6 +8,8 @@ import { findClient } from '../lib/clients';
 import { getMedia } from '../lib/media';
 import { siteConfig } from '../lib/site-config';
 import { caseStudyArticle } from '../lib/schema';
+import { getServiceBySlug } from '../lib/content';
+import { ogImageFrom } from '../lib/og';
 import { useTranslations, localizedPath } from '../i18n/utils';
 import type { Locale } from '../i18n/config';
 
@@ -69,7 +71,17 @@ const labels = {
   },
 }[locale];
 
-const title = `${study.client}, ${labels.eyebrow.toLowerCase()}`;
+// "Centre Dentaire Messnana, Dr. Nafie Fadoua" -> "Centre Dentaire Messnana":
+// the practitioner's name is on the page, the title keeps the business name.
+const shortClient = study.client.split(/[,،]/)[0].trim();
+const serviceTitle = (await getServiceBySlug(locale, study.serviceSlug))?.title;
+const title = serviceTitle
+  ? {
+      fr: `${shortClient} : étude de cas ${serviceTitle}`,
+      en: `${shortClient}: ${serviceTitle} case study`,
+      ar: `${shortClient}: دراسة حالة ${serviceTitle}`,
+    }[locale]
+  : `${shortClient}, ${labels.eyebrow.toLowerCase()}`;
 
 const url = new URL(Astro.url.pathname, Astro.site).toString();
 const articleSchema = caseStudyArticle({
@@ -80,6 +92,7 @@ const articleSchema = caseStudyArticle({
   client: study.client,
   sector: study.sector,
 });
+const ogImage = await ogImageFrom(hero);
 ---
 
 <BaseLayout
@@ -89,6 +102,7 @@ const articleSchema = caseStudyArticle({
   schema={[articleSchema]}
   mainEntityId={`${url}#article`}
   breadcrumbName={study.client}
+  ogImage={ogImage}
 >
   <!-- Opening. The client's own mark carries the page, not our headline. -->
   <header class="relative overflow-hidden pb-16 pt-36 sm:pb-20 sm:pt-44" data-depth-scope>
@@ -102,14 +116,19 @@ const articleSchema = caseStudyArticle({
     <div class="relative mx-auto max-w-5xl px-5 sm:px-8">
       <div><span class="eyebrow">{labels.eyebrow}</span></div>
 
+      {/* The page's one H1 is always the client. When their logo is drawn,
+          the name stays in the heading as screen-reader text, so search
+          engines and assistive tech read the same heading either way. */}
       {
         client?.ink ? (
-          <span
-            class="logo-ink mt-8 block h-14 w-56 !opacity-90 [mask-position:left_center] [-webkit-mask-position:left_center] rtl:[mask-position:right_center] rtl:[-webkit-mask-position:right_center]"
-            style={`--logo-src:url('${client.ink}')`}
-            role="img"
-            aria-label={study.client}
-          />
+          <h1 class="mt-8">
+            <span
+              class="logo-ink block h-14 w-56 !opacity-90 [mask-position:left_center] [-webkit-mask-position:left_center] rtl:[mask-position:right_center] rtl:[-webkit-mask-position:right_center]"
+              style={`--logo-src:url('${client.ink}')`}
+              aria-hidden="true"
+            />
+            <span class="sr-only">{study.client}</span>
+          </h1>
         ) : (
           <h1 class="display-lg mt-8 text-text-primary">{study.client}</h1>
         )
