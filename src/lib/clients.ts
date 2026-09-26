@@ -39,7 +39,9 @@ export interface ClientEntry {
   builtByDesora?: boolean;
 }
 
-const asset = (slug: string, ext: 'png' | 'svg') => ({
+// Raster logos ship as WebP (converted from the PNG masters in the same
+// folder, about 55% lighter with the same alpha edges); vector logos stay SVG.
+const asset = (slug: string, ext: 'webp' | 'svg') => ({
   ink: `/brand/clients/${slug}.${ext}`,
   color: `/brand/clients/${slug}-color.${ext}`,
 });
@@ -65,7 +67,7 @@ export const clients: ClientEntry[] = [
       en: 'Construction and fit-out, Casablanca',
       ar: 'البناء والتجهيز، الدار البيضاء',
     },
-    ...asset('wolcons', 'png'),
+    ...asset('wolcons', 'webp'),
     builtByDesora: true,
   },
   {
@@ -89,7 +91,7 @@ export const clients: ClientEntry[] = [
       en: 'Distribution and market services, Casablanca',
       ar: 'التوزيع والخدمات، الدار البيضاء',
     },
-    ...asset('gsi', 'png'),
+    ...asset('gsi', 'webp'),
     aliases: ['Slaoui Industry', 'Groupe Slaoui'],
   },
   {
@@ -101,7 +103,7 @@ export const clients: ClientEntry[] = [
       en: 'Transport and logistics',
       ar: 'النقل واللوجستيك',
     },
-    ...asset('ma-logistics', 'png'),
+    ...asset('ma-logistics', 'webp'),
     // "FesDistri" and "Fes Logistics" appear in published copy but no source was
     // given for them, and they are not this company. Left unmapped on purpose:
     // an unresolved logo is honest, a wrong one is not.
@@ -116,7 +118,7 @@ export const clients: ClientEntry[] = [
       en: 'Restaurant, Casablanca',
       ar: 'مطعم، الدار البيضاء',
     },
-    ...asset('cabestan', 'png'),
+    ...asset('cabestan', 'webp'),
   },
   {
     slug: 'loctave',
@@ -127,7 +129,7 @@ export const clients: ClientEntry[] = [
       en: 'Restaurant and music hall, Casablanca',
       ar: 'مطعم وقاعة موسيقى، الدار البيضاء',
     },
-    ...asset('loctave', 'png'),
+    ...asset('loctave', 'webp'),
   },
   {
     slug: 'fastway',
@@ -138,7 +140,7 @@ export const clients: ClientEntry[] = [
       en: 'Study-abroad consultancy, Rabat',
       ar: 'الاستشارة في الدراسة بالخارج، الرباط',
     },
-    ...asset('fastway', 'png'),
+    ...asset('fastway', 'webp'),
     tile: true,
     builtByDesora: true,
   },
@@ -151,7 +153,7 @@ export const clients: ClientEntry[] = [
       en: 'Niche perfumery',
       ar: 'عطور نيش',
     },
-    ...asset('desora-beauty', 'png'),
+    ...asset('desora-beauty', 'webp'),
   },
   {
     slug: 'dar-souiri',
@@ -162,7 +164,7 @@ export const clients: ClientEntry[] = [
       en: 'Culture and heritage, Essaouira',
       ar: 'الثقافة والتراث، الصويرة',
     },
-    ...asset('dar-souiri', 'png'),
+    ...asset('dar-souiri', 'webp'),
     aliases: ['Riad Dar Souiri', 'Association Essaouira Mogador'],
   },
   {
@@ -174,7 +176,7 @@ export const clients: ClientEntry[] = [
       en: 'Automotive',
       ar: 'السيارات',
     },
-    ...asset('motor-zone', 'png'),
+    ...asset('motor-zone', 'webp'),
     aliases: ['MoteurZone', 'Moteur Zone'],
     tile: true,
   },
@@ -187,7 +189,7 @@ export const clients: ClientEntry[] = [
       en: 'Streetwear, made in Morocco',
       ar: 'ملابس ستريت وير مغربية',
     },
-    ...asset('oversize', 'png'),
+    ...asset('oversize', 'webp'),
     aliases: ["L'Oversized", 'Oversized'],
     tile: true,
   },

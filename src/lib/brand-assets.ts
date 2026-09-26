@@ -28,7 +28,7 @@ function firstExisting(candidates: string[]): string | null {
 }
 
 /** Wordmark, tintable (transparent). Optional pre-coloured dark variant. */
-export const brandWordmark = firstExisting(['brand/wordmark.svg', 'brand/wordmark.png']);
+export const brandWordmark = firstExisting(['brand/wordmark.svg', 'brand/wordmark.webp', 'brand/wordmark.png']);
 export const brandWordmarkDark = firstExisting(['brand/wordmark-dark.svg', 'brand/wordmark-dark.png']);
 
 /** "ds" monogram, tintable (transparent). */
@@ -43,7 +43,7 @@ export const brandFavicon = firstExisting([
 ]);
 
 /** Scattered-letterform pattern tile. */
-export const brandPattern = firstExisting(['brand/pattern.svg', 'brand/pattern.png']);
+export const brandPattern = firstExisting(['brand/pattern.svg', 'brand/pattern.webp', 'brand/pattern.png']);
 
 /** True when the wordmark asset can be tinted per-theme via CSS mask (SVG or transparent PNG). */
 export const wordmarkTintable = Boolean(brandWordmark);
