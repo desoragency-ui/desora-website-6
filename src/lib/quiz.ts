@@ -39,9 +39,7 @@ export type PreviewKind =
   | 'swatch-dark'
   | 'swatch-light'
   | 'swatch-warm'
-  | 'swatch-bold'
-  | 'ab-photo'
-  | 'ab-type';
+  | 'swatch-bold';
 
 export interface QuizOption {
   value: string;
@@ -278,8 +276,8 @@ export const quizSteps: QuizStep[] = [
           ar: 'أيّهما تفضّل؟',
         },
         options: [
-          { value: 'photo', preview: 'ab-photo', label: { fr: 'De grandes photos', en: 'Big photography', ar: 'صور كبيرة' } },
-          { value: 'type', preview: 'ab-type', label: { fr: 'De grands titres', en: 'Big typography', ar: 'عناوين كبيرة' } },
+          { value: 'photo', image: 'ab-photo', label: { fr: 'De grandes photos', en: 'Big photography', ar: 'صور كبيرة' } },
+          { value: 'type', image: 'ab-type', label: { fr: 'De grands titres', en: 'Big typography', ar: 'عناوين كبيرة' } },
         ],
       },
     ],
