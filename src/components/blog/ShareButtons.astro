@@ -1,6 +1,6 @@
 ---
 import Icon from '../Icon.astro';
-import { useTranslations } from '../../i18n/utils';
+import { useTranslations, cleanPath } from '../../i18n/utils';
 import type { Locale } from '../../i18n/config';
 
 interface Props {
@@ -10,7 +10,7 @@ interface Props {
 
 const { locale, title } = Astro.props;
 const t = useTranslations(locale);
-const pageUrl = Astro.url.toString();
+const pageUrl = new URL(cleanPath(Astro.url.pathname), Astro.site).toString();
 
 const links = [
   { name: 'whatsapp', href: `https://wa.me/?text=${encodeURIComponent(`${title} ${pageUrl}`)}` },

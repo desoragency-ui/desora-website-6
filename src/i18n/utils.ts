@@ -1,6 +1,15 @@
 import { defaultLocale, locales, type Locale } from './config';
 import { ui, type UiKey } from './ui';
 
+/**
+ * The public address of a page. The build saves each page as a file (`/fr/blog/x.html`, see build.format in
+ * astro.config.mjs) and Cloudflare Pages serves it at `/fr/blog/x`. Canonical, hreflang, og:url, share and
+ * language links must all use that one address, never the `.html` file name.
+ */
+export function cleanPath(pathname: string): string {
+  return pathname.replace(/(\/index)?\.html$/, '') || '/';
+}
+
 export function getLangFromUrl(url: URL): Locale {
   const [, maybeLocale] = url.pathname.split('/');
   if (locales.includes(maybeLocale as Locale)) {

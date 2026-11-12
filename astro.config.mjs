@@ -7,6 +7,10 @@ const SITE_URL = 'https://www.desora.net';
 export default defineConfig({
   site: SITE_URL,
   trailingSlash: 'never',
+  // One address per page: 'file' builds /fr/blog/x.html, served by Cloudflare Pages at /fr/blog/x (no "/" at the
+  // end), the same address as the canonical tag. The default 'directory' built /fr/blog/x/index.html, served at
+  // /fr/blog/x/, so Google saw two addresses for one page. Page code reads addresses through cleanPath().
+  build: { format: 'file' },
   i18n: {
     defaultLocale: 'fr',
     locales: ['fr', 'en', 'ar'],

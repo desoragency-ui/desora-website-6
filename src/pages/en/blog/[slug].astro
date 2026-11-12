@@ -6,7 +6,7 @@ import ShareButtons from '../../../components/blog/ShareButtons.astro';
 import Figure from '../../../components/Figure.astro';
 import { getMedia } from '../../../lib/media';
 import Icon from '../../../components/Icon.astro';
-import { useTranslations, localizedPath } from '../../../i18n/utils';
+import { useTranslations, localizedPath, cleanPath } from '../../../i18n/utils';
 import { getBlogPosts, getCategoryMeta, estimateReadingMinutes } from '../../../lib/content';
 import { getCollection } from 'astro:content';
 import { getImage } from 'astro:assets';
@@ -36,7 +36,7 @@ const formattedUpdated = post.entry.data.updatedDate
   ? new Intl.DateTimeFormat('en', { dateStyle: 'long' }).format(post.entry.data.updatedDate)
   : null;
 
-const url = new URL(Astro.url.pathname, Astro.site).toString();
+const url = new URL(cleanPath(Astro.url.pathname), Astro.site).toString();
 const heroMedia = getMedia(`blog-${slug}`);
 const heroImage = heroMedia ? await getImage({ src: heroMedia, width: 1200, format: 'jpg', quality: 80 }) : undefined;
 const ogImage = await ogImageFrom(heroMedia);

@@ -10,7 +10,7 @@ import { siteConfig } from '../lib/site-config';
 import { caseStudyArticle } from '../lib/schema';
 import { getServiceBySlug } from '../lib/content';
 import { ogImageFrom } from '../lib/og';
-import { useTranslations, localizedPath } from '../i18n/utils';
+import { useTranslations, localizedPath, cleanPath } from '../i18n/utils';
 import type { Locale } from '../i18n/config';
 
 /**
@@ -83,7 +83,7 @@ const title = serviceTitle
     }[locale]
   : `${shortClient}, ${labels.eyebrow.toLowerCase()}`;
 
-const url = new URL(Astro.url.pathname, Astro.site).toString();
+const url = new URL(cleanPath(Astro.url.pathname), Astro.site).toString();
 const articleSchema = caseStudyArticle({
   url,
   headline: title,

@@ -12,7 +12,7 @@ import RelatedServices from '../components/services/RelatedServices.astro';
 import RelatedPosts from '../components/services/RelatedPosts.astro';
 import FinalCta from '../components/home/FinalCta.astro';
 import BriefCta from '../components/services/BriefCta.astro';
-import { useTranslations } from '../i18n/utils';
+import { useTranslations, cleanPath } from '../i18n/utils';
 import { service as serviceNode, faqPage } from '../lib/schema';
 import { ogImageFrom } from '../lib/og';
 import { getServiceMedia } from '../lib/media';
@@ -27,7 +27,7 @@ interface Props {
 const { locale, service } = Astro.props;
 const t = useTranslations(locale);
 
-const url = new URL(Astro.url.pathname, Astro.site).toString();
+const url = new URL(cleanPath(Astro.url.pathname), Astro.site).toString();
 const schema = [
   serviceNode({
     url,

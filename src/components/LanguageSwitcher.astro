@@ -1,6 +1,6 @@
 ---
 import { locales, localeNames, localeFullNames, type Locale } from '../i18n/config';
-import { switchLocalePath, useTranslations } from '../i18n/utils';
+import { switchLocalePath, useTranslations, cleanPath } from '../i18n/utils';
 import Icon from './Icon.astro';
 
 interface Props {
@@ -12,7 +12,7 @@ interface Props {
 
 const { locale, compact = false } = Astro.props;
 const t = useTranslations(locale);
-const currentPath = Astro.url.pathname;
+const currentPath = cleanPath(Astro.url.pathname);
 ---
 
 <div class="relative" data-lang-switcher>

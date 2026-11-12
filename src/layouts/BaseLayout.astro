@@ -5,7 +5,7 @@ import Preloader from '../components/Preloader.astro';
 import FloatingCTA from '../components/FloatingCTA.astro';
 import { locales, dirFor, hreflangTags, type Locale } from '../i18n/config';
 import { brandFavicon } from '../lib/brand-assets';
-import { useTranslations } from '../i18n/utils';
+import { useTranslations, cleanPath } from '../i18n/utils';
 import { getHome, getServices } from '../lib/content';
 import {
   organization,
@@ -71,10 +71,11 @@ const googleFontsHref = isArabic
   : 'https://fonts.googleapis.com/css2?family=Cormorant:ital,wght@0,500;0,600;0,700;1,600&display=swap';
 
 const url = Astro.url;
-const segments = url.pathname.split('/').filter(Boolean);
+const pathname = cleanPath(url.pathname); // one public address, never the .html file name
+const segments = pathname.split('/').filter(Boolean);
 const restPath = segments.slice(1).join('/');
 
-const canonical = new URL(url.pathname, Astro.site);
+const canonical = new URL(pathname, Astro.site);
 const alternates = locales.map((l) => ({
   hreflang: hreflangTags[l],
   href: new URL(`/${l}${restPath ? `/${restPath}` : ''}`, Astro.site).toString(),
